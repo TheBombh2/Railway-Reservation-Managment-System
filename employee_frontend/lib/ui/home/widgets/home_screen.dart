@@ -7,11 +7,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> buttons = [
-      {
-        'label': 'Assigned Trains',
-        'icon': 'assets/svg/map_train_station.svg',
-        'isSVG': true
-      },
+      {'label': 'Assigned Trains','icon': 'assets/svg/map_train_station.svg','isSVG': true},
       {'label': 'Profile', 'icon': 'assets/svg/profile.svg', 'isSVG': true},
       {'label': 'Tasks', 'icon': 'assets/svg/tasks.svg', 'isSVG': true},
       {'label': 'Appraisals', 'icon': 'assets/images/star.png', 'isSVG': false},
@@ -56,15 +52,13 @@ class HomeScreen extends StatelessWidget {
                 width: 200,
                 child: Text(
                   maxLines: 2,
-                  
                   'Good Morning! ELGamed',
                   style: TextStyle(
                       fontSize: 24,
                       color: Colors.black.withValues(
                         alpha: 0.6,
                       ),
-                      fontWeight: FontWeight.bold
-                      ),
+                      fontWeight: FontWeight.bold),
                 ),
               )
             ],
