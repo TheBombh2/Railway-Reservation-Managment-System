@@ -66,9 +66,9 @@ flutter:
     - assets/images/home_screen.png
     - assets/svg/map_train_station.svg
     - assets/svg/profile.svg
-    - assets/svg/star.svg
+    - assets/images/star.png
     - assets/svg/tasks.svg
-    - assets/svg/warning.svg
+    - assets/images/warning.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
