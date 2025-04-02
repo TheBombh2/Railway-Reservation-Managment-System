@@ -12,7 +12,7 @@ class InputTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 29),
       child: TextField(
         obscureText: isPassword,
         enableSuggestions: !isPassword,

@@ -7,16 +7,18 @@ class CircleButton extends StatelessWidget {
     required this.asset,
     this.width = 90,
     this.isSVG = true,
+    required this.onTap,
     super.key,
   });
   final String asset;
   final String labelText;
   final double width;
   final bool isSVG;
+  final void Function() onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Column(
         children: [
           Container(
@@ -26,10 +28,17 @@ class CircleButton extends StatelessWidget {
             height: 72,
             width: 72,
             child: Center(
-              child: isSVG? SvgPicture.asset(asset) : Image.asset(asset,color: Color(0xff0076CB),),
+              child: isSVG
+                  ? SvgPicture.asset(asset)
+                  : Image.asset(
+                      asset,
+                      color: Color(0xff0076CB),
+                    ),
             ),
           ),
-          SizedBox(height: 8,),
+          SizedBox(
+            height: 8,
+          ),
           SizedBox(
               width: width,
               child: Text(

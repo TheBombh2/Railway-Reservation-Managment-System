@@ -1,5 +1,6 @@
 import 'package:employee_frontend/ui/core/ui/circle_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,7 +8,11 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> buttons = [
-      {'label': 'Assigned Trains','icon': 'assets/svg/map_train_station.svg','isSVG': true},
+      {
+        'label': 'Assigned Trains',
+        'icon': 'assets/svg/map_train_station.svg',
+        'isSVG': true
+      },
       {'label': 'Profile', 'icon': 'assets/svg/profile.svg', 'isSVG': true},
       {'label': 'Tasks', 'icon': 'assets/svg/tasks.svg', 'isSVG': true},
       {'label': 'Appraisals', 'icon': 'assets/images/star.png', 'isSVG': false},
@@ -93,6 +98,9 @@ class HomeScreen extends StatelessWidget {
                     labelText: allowedButtons[index]['label']!,
                     asset: allowedButtons[index]['icon']!,
                     isSVG: allowedButtons[index]['isSVG'],
+                    onTap: () {
+                      context.push('/home/profile');
+                    },
                   );
                 },
               ),
