@@ -1,5 +1,6 @@
 import 'package:employee_frontend/ui/core/ui/input_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -14,7 +15,9 @@ class LoginScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset('assets/images/login_image.png'),
-              SizedBox(height: 104,),
+              SizedBox(
+                height: 104,
+              ),
               InputTextField(hintText: 'Username'),
               SizedBox(
                 height: 20,
@@ -45,14 +48,16 @@ class LoginScreen extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.go('/home');
+                    },
                     style: FilledButton.styleFrom(
-                      backgroundColor: Color(0xFF0076CB),
-                      padding: EdgeInsetsDirectional.symmetric(
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
-                    ),
+                        backgroundColor: Color(0xFF0076CB),
+                        padding: EdgeInsetsDirectional.symmetric(
+                          vertical: 15,
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
                     child: Text(
                       'Login',
                       style: TextStyle(
