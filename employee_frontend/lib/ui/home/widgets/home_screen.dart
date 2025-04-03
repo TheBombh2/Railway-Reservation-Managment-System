@@ -11,15 +11,42 @@ class HomeScreen extends StatelessWidget {
       {
         'label': 'Assigned Trains',
         'icon': 'assets/svg/map_train_station.svg',
-        'isSVG': true
+        'isSVG': true,
+        'onTap': () {
+          debugPrint("Train screen");
+        }
       },
-      {'label': 'Profile', 'icon': 'assets/svg/profile.svg', 'isSVG': true},
-      {'label': 'Tasks', 'icon': 'assets/svg/tasks.svg', 'isSVG': true},
-      {'label': 'Appraisals', 'icon': 'assets/images/star.png', 'isSVG': false},
+      {
+        'label': 'Profile',
+        'icon': 'assets/svg/profile.svg',
+        'isSVG': true,
+        'onTap': () {
+          context.push('/home/profile');
+        }
+      },
+      {
+        'label': 'Tasks',
+        'icon': 'assets/svg/tasks.svg',
+        'isSVG': true,
+        'onTap': () {
+          context.push('/home/tasks');
+        }
+      },
+      {
+        'label': 'Appraisals',
+        'icon': 'assets/images/star.png',
+        'isSVG': false,
+        'onTap': () {
+          debugPrint("Appraisals screen");
+        }
+      },
       {
         'label': 'Citations',
         'icon': 'assets/images/warning.png',
-        'isSVG': false
+        'isSVG': false,
+        'onTap': () {
+          debugPrint("Citations screen");
+        }
       },
       // More buttons can be added dynamically
     ];
@@ -98,9 +125,7 @@ class HomeScreen extends StatelessWidget {
                     labelText: allowedButtons[index]['label']!,
                     asset: allowedButtons[index]['icon']!,
                     isSVG: allowedButtons[index]['isSVG'],
-                    onTap: () {
-                      context.push('/home/profile');
-                    },
+                    onTap: allowedButtons[index]['onTap'],
                   );
                 },
               ),
