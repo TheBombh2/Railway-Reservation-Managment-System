@@ -32,6 +32,7 @@ class MissionItem extends StatelessWidget {
               amount: amount,
             );
           }),
+          splashColor: Color(0xffF3F5FF),
       contentPadding: EdgeInsets.all(20),
       leading: Container(
         width: 60,
