@@ -1,3 +1,4 @@
+import 'package:employee_frontend/ui/core/ui/mission_item_details.dart';
 import 'package:flutter/material.dart';
 
 enum MissionType { task, citation, appraisal }
@@ -14,6 +15,17 @@ class MissionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () => showModalBottomSheet(
+          context: context,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+          useSafeArea: true,
+          enableDrag: true,
+          builder: (ctx) {
+            return MissionItemDetails(
+              type: type,
+            );
+          }),
       contentPadding: EdgeInsets.all(20),
       leading: Container(
         width: 60,
