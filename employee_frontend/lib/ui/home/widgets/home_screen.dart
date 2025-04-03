@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/images/star.png',
         'isSVG': false,
         'onTap': () {
-          debugPrint("Appraisals screen");
+          context.push('/home/appraisals');
         }
       },
       {
@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/images/warning.png',
         'isSVG': false,
         'onTap': () {
-          debugPrint("Citations screen");
+          context.push('/home/citations');
         }
       },
       // More buttons can be added dynamically

@@ -1,4 +1,6 @@
+import 'package:employee_frontend/ui/appraisals/widgets/appraisals_screen.dart';
 import 'package:employee_frontend/ui/auth/widgets/login_screen.dart';
+import 'package:employee_frontend/ui/citations/widgets/citations_screen.dart';
 import 'package:employee_frontend/ui/home/widgets/home_screen.dart';
 import 'package:employee_frontend/ui/profile/widgets/profile_screen.dart';
 import 'package:employee_frontend/ui/tasks/widgets/tasks_screen.dart';
@@ -38,6 +40,9 @@ final _router = GoRouter(
         routes: [
           GoRoute(path: 'profile', builder: (ctx, state) => const ProfileScreen()),
           GoRoute(path: 'tasks', builder: (ctx, state) => const TasksScreen()),
+          GoRoute(path: 'appraisals', builder: (ctx, state) => const AppraisalsScreen()),
+          GoRoute(path: 'citations', builder: (ctx, state) => const CitationsScreen()),
+
         ]),
   ],
 );
