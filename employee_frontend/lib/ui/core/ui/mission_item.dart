@@ -7,11 +7,15 @@ class MissionItem extends StatelessWidget {
   const MissionItem({
     required this.type,
     required this.content,
+    required this.title,
+    this.amount,
     super.key,
   });
 
   final MissionType type;
   final String content;
+  final String title;
+  final double? amount;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -24,6 +28,8 @@ class MissionItem extends StatelessWidget {
           builder: (ctx) {
             return MissionItemDetails(
               type: type,
+              title: title,
+              amount: amount,
             );
           }),
       contentPadding: EdgeInsets.all(20),

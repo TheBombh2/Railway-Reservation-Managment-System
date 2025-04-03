@@ -16,6 +16,8 @@ class MissionsList extends StatelessWidget {
           type: type,
           content:
               'Assigned for a Task to blah blah blahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblahblah balh blah balh blah blaht',
+          title: 'Some mission',
+          amount: 500,
         );
       },
     );
