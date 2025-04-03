@@ -67,13 +67,13 @@ class HomeScreen extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [Colors.black, Colors.transparent],
                   ).createShader(
-                    Rect.fromLTRB(0, 300, rect.width, rect.height),
+                    Rect.fromLTRB(0, 250, rect.width, rect.height),
                   );
                 },
                 blendMode: BlendMode.dstIn,
                 child: Image.asset(
                   'assets/images/home_screen.png',
-                  height: 450,
+                  height: 400,
                   width: double.infinity,
                   fit: BoxFit.fitHeight,
                 ),
@@ -96,7 +96,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 70,
+            height: 50,
           ),
           Expanded(
             child: Container(

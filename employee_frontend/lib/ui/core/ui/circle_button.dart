@@ -25,14 +25,15 @@ class CircleButton extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Color(0xffE9F3F9),
                 borderRadius: BorderRadius.circular(40)),
-            height: 72,
-            width: 72,
+            height: 50,
+            width: 50,
             child: Center(
               child: isSVG
-                  ? SvgPicture.asset(asset)
+                  ? SvgPicture.asset(asset,width: 40,)
                   : Image.asset(
                       asset,
                       color: Color(0xff0076CB),
+                      width: 32,
                     ),
             ),
           ),
@@ -45,7 +46,7 @@ class CircleButton extends StatelessWidget {
                 labelText,
                 textAlign: TextAlign.center,
                 maxLines: 2,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 14),
               ))
         ],
       ),

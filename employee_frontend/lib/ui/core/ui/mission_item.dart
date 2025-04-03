@@ -33,6 +33,8 @@ class MissionItem extends StatelessWidget {
             );
           }),
           splashColor: Color(0xffF3F5FF),
+          hoverColor: Color(0xffF3F5FF),
+          focusColor: Color(0xffF3F5FF),
       contentPadding: EdgeInsets.all(20),
       leading: Container(
         width: 60,
