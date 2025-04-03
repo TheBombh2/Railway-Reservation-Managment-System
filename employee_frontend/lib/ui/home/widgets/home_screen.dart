@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/svg/map_train_station.svg',
         'isSVG': true,
         'onTap': () {
-          debugPrint("Train screen");
+          context.push('/home/assigned_trains');
         }
       },
       {

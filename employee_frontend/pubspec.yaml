@@ -38,6 +38,7 @@ dependencies:
   flutter_svg: ^2.0.17
   go_router: ^14.8.1
   auto_size_text: ^3.0.0
+  flutter_dash: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
     - assets/svg/tasks.svg
     - assets/images/warning.png
     - assets/images/pfp.png
+    - assets/images/map_placeholder.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
