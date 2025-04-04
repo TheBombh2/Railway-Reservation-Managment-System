@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class AssignedTrainsListItem extends StatelessWidget {
   const AssignedTrainsListItem({super.key});
@@ -29,17 +30,17 @@ class AssignedTrainsListItem extends StatelessWidget {
           ],
         ),
         trailing: FloatingActionButton.small(
-          onPressed: () {},
+          onPressed: () {
+            context.push('/home/train_tracking');
+            debugPrint("new screen?");
+          },
           backgroundColor: Colors.white,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Color(
-                0xff0076CB,
-              ),
+          child: Icon(
+            Icons.arrow_forward_ios_rounded,
+            color: Color(
+              0xff0076CB,
             ),
           ),
         ));

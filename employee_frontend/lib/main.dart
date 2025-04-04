@@ -5,6 +5,7 @@ import 'package:employee_frontend/ui/citations/widgets/citations_screen.dart';
 import 'package:employee_frontend/ui/home/widgets/home_screen.dart';
 import 'package:employee_frontend/ui/profile/widgets/profile_screen.dart';
 import 'package:employee_frontend/ui/tasks/widgets/tasks_screen.dart';
+import 'package:employee_frontend/ui/train_tracking/widgets/train_tracking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,6 +45,7 @@ final _router = GoRouter(
           GoRoute(path: 'appraisals', builder: (ctx, state) => const AppraisalsScreen()),
           GoRoute(path: 'citations', builder: (ctx, state) => const CitationsScreen()),
           GoRoute(path: 'assigned_trains', builder: (ctx, state) => const AssignedTrainsScreen()),
+          GoRoute(path: 'train_tracking', builder: (ctx, state) => const TrainTrackingScreen()),
         ]),
   ],
 );
