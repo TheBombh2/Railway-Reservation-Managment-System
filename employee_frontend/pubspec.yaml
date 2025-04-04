@@ -71,6 +71,7 @@ flutter:
     - assets/svg/profile.svg
     - assets/images/star.png
     - assets/svg/tasks.svg
+    - assets/svg/train.svg
     - assets/images/warning.png
     - assets/images/pfp.png
     - assets/images/map_placeholder.png
