@@ -1,4 +1,4 @@
-import 'package:employee_frontend/ui/core/ui/mission_item_details.dart';
+import 'package:employee_frontend/ui/core/shared_widgets/mission_item_details.dart';
 import 'package:flutter/material.dart';
 
 enum MissionType { task, citation, appraisal }

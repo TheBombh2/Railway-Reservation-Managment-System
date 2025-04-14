@@ -1,4 +1,4 @@
-import 'package:employee_frontend/ui/core/ui/circle_button.dart';
+import 'package:employee_frontend/ui/core/shared_widgets/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
