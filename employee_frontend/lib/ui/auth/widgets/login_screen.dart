@@ -15,9 +15,31 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset('assets/images/login_image.png'),
+                Stack(
+                  children: [
+                    ShaderMask(
+                      shaderCallback: (rect) {
+                        return LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.black, Colors.transparent],
+                        ).createShader(
+                          Rect.fromLTRB(0, 200, rect.width, rect.height),
+                        );
+                      },
+                      blendMode: BlendMode.dstIn,
+                      child: Image.asset(
+                        'assets/images/login_image_new.jpg',
+                        height: 300,
+                        width: double.infinity,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ),
+                   
+                  ],
+                ),
                 SizedBox(
-                  height: 104,
+                  height: 60,
                 ),
                 InputTextField(hintText: 'Username'),
                 SizedBox(
