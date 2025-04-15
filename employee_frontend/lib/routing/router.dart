@@ -1,3 +1,4 @@
+import 'package:employee_frontend/ui/conductor/verfity_tickets/widgets/verfiy_ticket_screen.dart';
 import 'package:employee_frontend/ui/maintenance/maintenance_jobs/widgets/maintenance_jobs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -43,6 +44,7 @@ final router = GoRouter(
           GoRoute(path: 'assigned_trains', builder: (ctx, state) => const AssignedTrainsScreen()),
           GoRoute(path: 'train_tracking', builder: (ctx, state) => const TrainTrackingScreen()),
           GoRoute(path: 'maintenance_jobs', builder: (ctx, state) => const MaintenanceJobsScreen()),
+          GoRoute(path: 'verify_ticket', builder: (ctx, state) => const VerfiyTicketScreen()),
         ]),
   ],
 );

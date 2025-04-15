@@ -57,6 +57,15 @@ class HomeScreen extends StatelessWidget {
         },
         'fontSize': 11.4,
       },
+      {
+        'label': 'Verify Ticket',
+        'icon': 'assets/svg/ticket.svg',
+        'isSVG': true,
+        'onTap': () {
+          context.push('/home/verify_ticket');
+        },
+        
+      },
       // More buttons can be added dynamically
     ];
 
@@ -155,6 +164,7 @@ class HomeScreen extends StatelessWidget {
       'Appraisals',
       'Citations',
       'Maintenance Jobs',
+      'Verify Ticket',
     ];
     return allowed.contains(label);
   }
