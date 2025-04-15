@@ -70,26 +70,49 @@ class MissionItemDetails extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Amount: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                  : type == MissionType.maintenanceJob
+                      ? SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: () {
+                              context.pop();
+                            },
+                            style: FilledButton.styleFrom(
+                                backgroundColor: Color(0xFF0076CB),
+                                padding: EdgeInsetsDirectional.symmetric(
+                                  vertical: 15,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                            child: Text(
+                              'Take Job',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
                             ),
                           ),
+                        )
+                      : Text.rich(
                           TextSpan(
-                            text: type == MissionType.appraisal
-                                ? '+\$$amount'
-                                : '-\$$amount',
-                            style:
-                                TextStyle(color: Color.fromRGBO(0, 0, 0, 0.6)),
-                          )
-                        ],
-                      ),
-                      style: TextStyle(fontSize: 18),
-                    ),
+                            children: [
+                              TextSpan(
+                                text: 'Amount: ',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: type == MissionType.appraisal
+                                    ? '+\$$amount'
+                                    : '-\$$amount',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(0, 0, 0, 0.6)),
+                              )
+                            ],
+                          ),
+                          style: TextStyle(fontSize: 18),
+                        ),
             ],
           ),
         ),

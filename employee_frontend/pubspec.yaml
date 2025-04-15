@@ -73,6 +73,7 @@ flutter:
     - assets/svg/tasks.svg
     - assets/svg/train.svg
     - assets/svg/train-journey.svg
+    - assets/svg/tools.svg
     - assets/images/warning.png
     - assets/images/pfp.png
     - assets/images/map_placeholder.png

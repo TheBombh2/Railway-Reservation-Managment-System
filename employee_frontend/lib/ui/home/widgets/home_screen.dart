@@ -48,6 +48,15 @@ class HomeScreen extends StatelessWidget {
           context.push('/home/citations');
         }
       },
+      {
+        'label': 'Maintenance Jobs',
+        'icon': 'assets/svg/tools.svg',
+        'isSVG': true,
+        'onTap': () {
+          context.push('/home/maintenance_jobs');
+        },
+        'fontSize': 11.4,
+      },
       // More buttons can be added dynamically
     ];
 
@@ -111,13 +120,13 @@ class HomeScreen extends StatelessWidget {
                         blurStyle: BlurStyle.outer)
                   ]),
               child: GridView.builder(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.all(15),
                 itemCount: allowedButtons.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount:
                       allowedButtons.length <= 4 ? allowedButtons.length : 4,
-                  mainAxisSpacing: 0,
-                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 16,
                   childAspectRatio: 0.6,
                 ),
                 itemBuilder: (ctx, index) {
@@ -126,6 +135,7 @@ class HomeScreen extends StatelessWidget {
                     asset: allowedButtons[index]['icon']!,
                     isSVG: allowedButtons[index]['isSVG'],
                     onTap: allowedButtons[index]['onTap'],
+                    fontSize: allowedButtons[index]['fontSize'] ?? 14.0,
                   );
                 },
               ),
@@ -143,7 +153,8 @@ class HomeScreen extends StatelessWidget {
       'Profile',
       'Tasks',
       'Appraisals',
-      'Citations'
+      'Citations',
+      'Maintenance Jobs',
     ];
     return allowed.contains(label);
   }

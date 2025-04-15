@@ -1,7 +1,7 @@
 import 'package:employee_frontend/ui/core/shared_widgets/mission_item_details.dart';
 import 'package:flutter/material.dart';
 
-enum MissionType { task, citation, appraisal }
+enum MissionType { task, citation, appraisal, maintenanceJob }
 
 class MissionItem extends StatelessWidget {
   const MissionItem({
@@ -32,9 +32,9 @@ class MissionItem extends StatelessWidget {
               amount: amount,
             );
           }),
-          splashColor: Color(0xffF3F5FF),
-          hoverColor: Color(0xffF3F5FF),
-          focusColor: Color(0xffF3F5FF),
+      splashColor: Color(0xffF3F5FF),
+      hoverColor: Color(0xffF3F5FF),
+      focusColor: Color(0xffF3F5FF),
       contentPadding: EdgeInsets.all(20),
       leading: Container(
         width: 60,
@@ -47,7 +47,9 @@ class MissionItem extends StatelessWidget {
                 ? Icons.task_outlined
                 : type == MissionType.appraisal
                     ? Icons.star_outline_rounded
-                    : Icons.warning_amber_rounded,
+                    : type == MissionType.maintenanceJob
+                        ? Icons.tune_rounded
+                        : Icons.warning_amber_rounded,
             color: Color(0xff0077CD),
             size: 46,
           ),
