@@ -1,4 +1,4 @@
-import 'package:employee_frontend/ui/assigned_trains/widgets/assigned_trains_list_item.dart';
+import 'package:employee_frontend/ui/train_driver/assigned_trains/widgets/assigned_trains_list_item.dart';
 import 'package:flutter/material.dart';
 
 class AssignedTrainsList extends StatelessWidget {

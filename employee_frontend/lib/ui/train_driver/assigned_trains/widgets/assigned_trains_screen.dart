@@ -1,5 +1,5 @@
-import 'package:employee_frontend/ui/assigned_trains/widgets/assigned_trains_list.dart';
-import 'package:employee_frontend/ui/assigned_trains/widgets/from_to_information_box.dart';
+import 'package:employee_frontend/ui/train_driver/assigned_trains/widgets/assigned_trains_list.dart';
+import 'package:employee_frontend/ui/train_driver/assigned_trains/widgets/from_to_information_box.dart';
 import 'package:flutter/material.dart';
 
 class AssignedTrainsScreen extends StatefulWidget {

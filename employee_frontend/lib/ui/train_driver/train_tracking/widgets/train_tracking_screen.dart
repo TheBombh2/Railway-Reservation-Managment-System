@@ -1,4 +1,4 @@
-import 'package:employee_frontend/ui/assigned_trains/widgets/from_to_information_box.dart';
+import 'package:employee_frontend/ui/train_driver/assigned_trains/widgets/from_to_information_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
