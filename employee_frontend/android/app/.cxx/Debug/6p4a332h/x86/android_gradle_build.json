@@ -1,0 +1,28 @@
+{
+  "buildFiles": [
+    "/home/elgamed/dev/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/elgamed/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/elgamed/New Volume/Railway-Reservation-Managment-System/employee_frontend/android/app/.cxx/Debug/6p4a332h/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/elgamed/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/elgamed/New Volume/Railway-Reservation-Managment-System/employee_frontend/android/app/.cxx/Debug/6p4a332h/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {},
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/elgamed/Android/Sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/elgamed/Android/Sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": []
+}

@@ -1,0 +1,20 @@
+                        -H/home/elgamed/dev/flutter/packages/flutter_tools/gradle/src/main/groovy
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=21
+-DANDROID_PLATFORM=android-21
+-DANDROID_ABI=x86
+-DCMAKE_ANDROID_ARCH_ABI=x86
+-DANDROID_NDK=/home/elgamed/Android/Sdk/ndk/26.3.11579264
+-DCMAKE_ANDROID_NDK=/home/elgamed/Android/Sdk/ndk/26.3.11579264
+-DCMAKE_TOOLCHAIN_FILE=/home/elgamed/Android/Sdk/ndk/26.3.11579264/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/home/elgamed/Android/Sdk/cmake/3.22.1/bin/ninja
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/elgamed/New Volume/Railway-Reservation-Managment-System/employee_frontend/build/app/intermediates/cxx/Debug/6p4a332h/obj/x86
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/home/elgamed/New Volume/Railway-Reservation-Managment-System/employee_frontend/build/app/intermediates/cxx/Debug/6p4a332h/obj/x86
+-DCMAKE_BUILD_TYPE=Debug
+-B/home/elgamed/New Volume/Railway-Reservation-Managment-System/employee_frontend/android/app/.cxx/Debug/6p4a332h/x86
+-GNinja
+-Wno-dev
+--no-warn-unused-cli
+                        Build command args: []
+                        Version: 2
