@@ -1,0 +1,13 @@
+[Unit]
+Description=This is the authorization and authentication microservice for RRMS
+After=network.target
+
+[Service]
+# Placeholder!
+ExecStart=/usr/bin/echo ""
+User=rrms
+Group=rrms
+
+[Install]
+WantedBy=multi-user.target
+
