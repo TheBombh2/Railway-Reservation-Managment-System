@@ -9,6 +9,14 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> buttons = [
       {
+        'label': 'Trains',
+        'icon': 'assets/svg/map_train_station.svg',
+        'isSVG': true,
+        'onTap': () {
+          context.push('/home/trains');
+        }
+      },
+      {
         'label': 'Profile',
         'icon': 'assets/svg/profile.svg',
         'isSVG': true,
@@ -19,9 +27,7 @@ class HomeScreen extends StatelessWidget {
       
     ];
 
-    // Simulate filtering buttons based on permissions
-    List<Map<String, dynamic>> allowedButtons =
-        buttons.where((button) => checkPermission(button['label']!)).toList();
+    
 
     return Scaffold(
       body: Column(
@@ -80,21 +86,21 @@ class HomeScreen extends StatelessWidget {
                   ]),
               child: GridView.builder(
                 padding: EdgeInsets.all(15),
-                itemCount: allowedButtons.length,
+                itemCount: buttons.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount:
-                      allowedButtons.length <= 4 ? allowedButtons.length : 4,
+                      buttons.length <= 4 ? buttons.length : 4,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 16,
                   childAspectRatio: 0.6,
                 ),
                 itemBuilder: (ctx, index) {
                   return CircleButton(
-                    labelText: allowedButtons[index]['label']!,
-                    asset: allowedButtons[index]['icon']!,
-                    isSVG: allowedButtons[index]['isSVG'],
-                    onTap: allowedButtons[index]['onTap'],
-                    fontSize: allowedButtons[index]['fontSize'] ?? 14.0,
+                    labelText: buttons[index]['label']!,
+                    asset: buttons[index]['icon']!,
+                    isSVG: buttons[index]['isSVG'],
+                    onTap: buttons[index]['onTap'],
+                    fontSize: buttons[index]['fontSize'] ?? 14.0,
                   );
                 },
               ),
@@ -105,11 +111,5 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  bool checkPermission(String label) {
-    // Simulated permission checking
-    List<String> allowed = [
-      'Profile',
-    ];
-    return allowed.contains(label);
-  }
+  
 }
