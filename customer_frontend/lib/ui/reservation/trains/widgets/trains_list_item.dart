@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 class TrainsListItem extends StatelessWidget {
   const TrainsListItem({super.key});
@@ -45,12 +46,8 @@ class TrainsListItem extends StatelessWidget {
       ),
       trailing: FloatingActionButton.small(
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (ctx) {
-              return Placeholder();
-            },
-          );
+          context.go('/home/ticket_reserve');
+          
         },
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

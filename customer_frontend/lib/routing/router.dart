@@ -1,6 +1,7 @@
 import 'package:customer_frontend/ui/auth/widgets/login_screen.dart';
 import 'package:customer_frontend/ui/home/widgets/home_screen.dart';
 import 'package:customer_frontend/ui/profile/widgets/profile_screen.dart';
+import 'package:customer_frontend/ui/reservation/tickets/widgets/ticket_reservation_screen.dart';
 import 'package:customer_frontend/ui/reservation/trains/widgets/trains_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -33,6 +34,7 @@ final router = GoRouter(
         routes: [
           GoRoute(path: 'profile', builder: (ctx, state) => const ProfileScreen()),
           GoRoute(path: 'trains', builder: (ctx, state) => const TrainsScreen()),
+          GoRoute(path: 'ticket_reserve', builder: (ctx, state) => const TicketReservationScreen()),
         ]),
   ],
 );
