@@ -18,3 +18,9 @@ mkdir /etc/rrms
 echo "Modifying permissions for newly created directories"
 chown -R rrms:rrms /var/log/rrms
 chown -R rrms:rrms /etc/rrms
+
+echo "Installing dependencies for an arch based system"
+sudo pacman -Sy --needed cmake make gcc boost boost-libs yaml-cpp
+
+echo "Please note SOCI will be downloaded from the AUR from source!"
+yay -S soci-git
