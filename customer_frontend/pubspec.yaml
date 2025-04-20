@@ -75,6 +75,9 @@ flutter:
     - assets/svg/train-journey.svg
     - assets/svg/tools.svg
     - assets/svg/ticket.svg
+    - assets/svg/first_class.svg
+    - assets/svg/second_class.svg
+    - assets/svg/third_class.svg
     - assets/images/warning.png
     - assets/images/pfp.png
     - assets/images/map_placeholder.png
