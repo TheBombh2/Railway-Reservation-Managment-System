@@ -34,7 +34,7 @@ std::string CeasarCipher(const std::string& inputText, CEASAR_CIPHER_MODE mode, 
   output.resize(inputText.size());
   
   //ASCII letters range from 32 to 126
-  for(int i = 0; i < inputText.size(); i++)
+  for(unsigned int i = 0; i < inputText.size(); i++)
   {
     int asciiVal = static_cast<int>(inputText[i]);
     if(mode == CEASAR_CIPHER_MODE::Encrypt)

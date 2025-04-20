@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 #include <yaml-cpp/yaml.h>
 #include <initializer_list>
 #include <fstream>
@@ -37,7 +38,7 @@ void WriteInitialSecretsFile()
   YAML::Node application; 
   YAML::Node services;
 
-  database["DB_IP"] = "";
+  database["DB_IP"] = "127.0.0.1";
   database["DB_NAME"] = "";
   database["DB_USER"] = "";
   database["DB_PASSWORD"] = "";
@@ -60,8 +61,18 @@ void WriteInitialSecretsFile()
   root["application"] = application;
   root["services"] = services;
   
-  std::ofstream outputFile(ConcatenatePaths({PROGRAM_ROOT_DIRECTORY, "secrets.yaml"}));
+  std::ofstream outputFile(SECRETS_LOCATION);
   outputFile << root;
   outputFile.close();
 }
 
+YAML::Node LoadSecretsFile()
+{
+  YAML::Node root = YAML::LoadFile(SECRETS_LOCATION);
+  if(!root)
+  {
+    std::cerr << "ERROR: Failed to load " << SECRETS_LOCATION << "/secrets.yaml. This is a fatal error. Program will now terminate\n";
+    throw std::runtime_error("Failed to load secrets.yaml");
+  }
+  return root;
+}

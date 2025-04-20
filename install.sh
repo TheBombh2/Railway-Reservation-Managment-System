@@ -6,8 +6,15 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo "Creating user to run as the programs"
-sudo useradd rrms
+useradd rrms
 
 echo "Creating directory for logs"
 mkdir /var/log/rrms
-sudo chown -R rrms:rrms /var/log/rrms
+mkdir /var/log/rrms/database/
+
+echo "Creating directory for config information"
+mkdir /etc/rrms
+
+echo "Modifying permissions for newly created directories"
+chown -R rrms:rrms /var/log/rrms
+chown -R rrms:rrms /etc/rrms

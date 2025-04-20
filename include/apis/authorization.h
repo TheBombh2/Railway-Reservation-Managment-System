@@ -1,2 +1,5 @@
 #pragma once
-//To-do...add actual implemenation
+#include "crow/app.h"
+
+void AddGETRequests(crow::SimpleApp& app);
+void AddPOSTRequest(crow::SimpleApp& app);

@@ -20,9 +20,18 @@ find_package(yaml-cpp REQUIRED)
 
 #This is for my main headers
 include_directories("./include")
+include_directories("./include/apis")
 include_directories("./include/crow")
 
+# Libraries go here
 add_library(crypto STATIC ./src/crypto.cpp)
+add_library(misc_functions STATIC ./src/misc_functions.cpp)
+
+# Executables (microservices) go here
+add_executable(authorization ./src/authorization/authorization.cpp ./src/authorization/authorizationGET.cpp)
+
+# Linking goes here
+target_link_libraries(authorization PRIVATE misc_functions yaml-cpp)
 
 add_compile_options(
     $<$<CONFIG:Debug>:-g>
