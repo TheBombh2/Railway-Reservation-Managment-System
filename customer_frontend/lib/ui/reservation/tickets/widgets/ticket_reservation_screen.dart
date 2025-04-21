@@ -2,6 +2,7 @@ import 'package:customer_frontend/ui/reservation/tickets/widgets/class_select_bu
 import 'package:customer_frontend/ui/reservation/tickets/widgets/trip_progress_bar.dart';
 import 'package:customer_frontend/ui/reservation/tickets/widgets/tickets_to_buy_counter.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class TicketReservationScreen extends StatefulWidget {
   const TicketReservationScreen({super.key});
@@ -77,6 +78,24 @@ class _TicketReservationScreenState extends State<TicketReservationScreen> {
               increase: () => _incremenTickets(),
               decrease: () => _decrementTickets(),
             ),
+            Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+              backgroundColor: Color(0xff0076CB),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              context.go('/home/ticket_details');
+            },
+            child: Text(
+              'Buy Tickets',
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+          ),
+        ),
           ],
         ),
       ),

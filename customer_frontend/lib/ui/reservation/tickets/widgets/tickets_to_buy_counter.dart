@@ -50,22 +50,7 @@ class TicketsToBuyCounter extends StatelessWidget {
         SizedBox(height: 24),
     
         // Buy Tickets button
-        Center(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-              backgroundColor: Color(0xff0076CB),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            onPressed: () {},
-            child: Text(
-              'Buy Tickets',
-              style: TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ),
-        ),
+        
       ],
     );
   }
