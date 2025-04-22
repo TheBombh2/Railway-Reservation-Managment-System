@@ -45,7 +45,8 @@ add_library(tokens STATIC ./src/tokens.cpp)
 add_executable(authorization ./src/authorization/authorization.cpp ./src/authorization/authorizationGET.cpp)
 
 # Linking goes here
-target_link_libraries(authorization PRIVATE ${COMMON_LIBS})
+target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
+target_link_libraries(authorization PRIVATE ${COMMON_LIBS} crypto)
 target_link_libraries(database_connector PRIVATE misc_functions)
 
 add_compile_options(

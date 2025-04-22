@@ -1,19 +1,21 @@
 #include <format>
 #include <iostream>
+#include <soci/mysql/soci-mysql.h>
+#include <soci/session.h>
 #include "global_variables.h"
 #include "misc_functions.h"
 #include "database_connector.h"
 
 //One could make the argument to make sure that those values exist in the first place
 //I agree. I should also check if they are initialized but not now. 
-//Host is the only optional parameter
-void InitializeConnector()
+//Host is the only optional parameter from secrets.yaml
+void InitializeConnectionString()
 {
   YAML::Node root = LoadSecretsFile();
   std::string dbName = root["database"]["DB_NAME"].as<std::string>();
   std::string dbUser = root["database"]["DB_USER"].as<std::string>();
   std::string dbPassword = root["database"]["DB_PASSWORD"].as<std::string>();
-  std::string dbHost = root["database"]["DB_HOST"].as<std::string>();
+  std::string dbIP = root["database"]["DB_IP"].as<std::string>();
   unsigned short dbPort = 0;
   dbPort = root["database"]["DB_PORT"].as<unsigned short>();
 
@@ -23,7 +25,7 @@ void InitializeConnector()
     return;
   }
 
-  if(dbHost.empty())
+  if(dbIP.empty())
   {
     connectionString = std::format(
     "db={} "
@@ -31,7 +33,7 @@ void InitializeConnector()
     "password={} "
     "host=127.0.0.1 "
     "port={} ",
-    dbName, dbUser, dbPassword, dbHost, dbPort
+    dbName, dbUser, dbPassword, dbIP, dbPort
     );  
     return;
   }
@@ -42,7 +44,9 @@ void InitializeConnector()
       "password={} "
       "host={} "
       "port={} ",
-      dbName, dbUser, dbPassword, dbHost, dbPort
-      );  
+      dbName, dbUser, dbPassword, dbIP, dbPort
+      );
+  std::cout << "Sizeof soci session: " << sizeof(soci::session) << '\n';
+  //dbConnector = soci::session(soci::mysql, connectionString);
 }
 

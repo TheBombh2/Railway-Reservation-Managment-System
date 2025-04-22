@@ -12,7 +12,8 @@
 
 int main(int argc, char** argv)
 {
-  //InitializeConnector();
+  InitializeConnectionString();
+  soci::session db(soci::mysql, connectionString);
   if(setuid(getuid()) != 0)
   {
     std::cerr << "ERROR: failed to set effective uid. This means the authorization module won't be able to write its own data in its own directory!. Aborting program...\n";
@@ -25,12 +26,11 @@ int main(int argc, char** argv)
     WriteInitialSecretsFile();
     return -2;
   }
-  
   YAML::Node root = LoadSecretsFile();
+
   crow::SimpleApp authorizationApp;
-
-  AddGETRequests(authorizationApp); 
-
+  AddGETRequests(authorizationApp, db); 
+  AddPOSTRequest(authorizationApp, db);
   unsigned short portNum = root["services"]["AUTHORIZATION_PORT_NUMBER"].as<unsigned short>();
   authorizationApp.multithreaded().port(portNum).run();
 }

@@ -7,7 +7,7 @@ enum CEASAR_CIPHER_MODE
   Encrypt,
 };
 
-const inline int SALT_LENGTH = 64;
+const inline int SALT_LENGTH = 16;
 
 std::string GetSHA256Digest(const std::string& inputStr);
 std::string GetRandomSalt(const int& length = SALT_LENGTH);
