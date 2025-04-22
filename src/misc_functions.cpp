@@ -39,6 +39,7 @@ void WriteInitialSecretsFile()
   YAML::Node services;
 
   database["DB_IP"] = "127.0.0.1";
+  database["DB_PORT"] = 3306;
   database["DB_NAME"] = "";
   database["DB_USER"] = "";
   database["DB_PASSWORD"] = "";
@@ -49,12 +50,14 @@ void WriteInitialSecretsFile()
   services["AUTHORIZATION_PORT_NUMBER"] = 5450;
   services["AUTHORIZATION_IP_ADDRESS"] = "127.0.0.1";
   services["RESERVATION_PORT_NUMBER"] = 5451;
+  services["RESERVATION_IP_ADDRESS"] = "127.0.0.1";
+  services["AUTHORIZATION_PORT_NUMBER"] = 5452;
   services["AUTHORIZATION_IP_ADDRESS"] = "127.0.0.1";
-  services["MANAGEMENT_PORT_NUMBER"] = 5452;
+  services["MANAGEMENT_PORT_NUMBER"] = 5453;
   services["MANAGEMENT_IP_ADDRESS"] = "127.0.0.1";
-  services["EMPLOYEE_PORT_NUMBER"] = 5453;
+  services["EMPLOYEE_PORT_NUMBER"] = 5454;
   services["EMPLOYEE_IP_ADDRESS"] = "127.0.0.1";
-  services["FINANCIAL_PORT_NUMBER"] = 5454;
+  services["FINANCIAL_PORT_NUMBER"] = 5455;
   services["FINANCIAL_IP_ADDRESS"] = "127.0.0.1";
 
   root["database"] = database;
