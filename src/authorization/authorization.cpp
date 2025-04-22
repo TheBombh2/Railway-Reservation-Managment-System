@@ -2,25 +2,17 @@
 #include <iostream>
 #include <soci/session.h>
 #include <unistd.h>
-#include <vector>
 #include <soci/soci.h>
 #include <soci/mysql/soci-mysql.h>
 #include "authorization.h"
 #include "crow/app.h"
+#include "database_connector.h"
 #include "global_variables.h"
 #include "misc_functions.h"
 
 int main(int argc, char** argv)
 {
-  soci::session mariadb(soci::mysql, "db=DatabaseProject user=DatabaseProjectUser password=123456aA# host=192.168.1.7 port=3306");
-  std::vector<std::string> names(100);
-  const std::string stm = "SELECT Name FROM AdminInformation;";
-  mariadb << stm, soci::into(names);
-  for(const auto& elm : names)
-  {
-    std::cout << "Name: " << elm << '\n';
-  }
-
+  //InitializeConnector();
   if(setuid(getuid()) != 0)
   {
     std::cerr << "ERROR: failed to set effective uid. This means the authorization module won't be able to write its own data in its own directory!. Aborting program...\n";
