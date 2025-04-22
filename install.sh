@@ -22,5 +22,6 @@ chown -R rrms:rrms /etc/rrms
 echo "Installing dependencies for an arch based system"
 sudo pacman -Sy --needed cmake make gcc boost boost-libs yaml-cpp
 
+export CMAKE_POLICY_VERSION_MINIMUM=3.5
 echo "Please note SOCI will be downloaded from the AUR from source!"
-yay -S soci-git
+yay -S soci

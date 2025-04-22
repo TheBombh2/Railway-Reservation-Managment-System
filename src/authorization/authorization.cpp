@@ -12,8 +12,6 @@
 
 int main(int argc, char** argv)
 {
-  InitializeConnectionString();
-  soci::session db(soci::mysql, connectionString);
   if(setuid(getuid()) != 0)
   {
     std::cerr << "ERROR: failed to set effective uid. This means the authorization module won't be able to write its own data in its own directory!. Aborting program...\n";
@@ -26,6 +24,8 @@ int main(int argc, char** argv)
     WriteInitialSecretsFile();
     return -2;
   }
+  InitializeConnectionString();
+  soci::session db(soci::mysql, connectionString);
   YAML::Node root = LoadSecretsFile();
 
   crow::SimpleApp authorizationApp;
