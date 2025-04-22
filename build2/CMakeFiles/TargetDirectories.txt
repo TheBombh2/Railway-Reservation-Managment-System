@@ -1,9 +1,0 @@
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/crypto.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/misc_functions.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/database_connector.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/tokens.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/authorization.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/debug.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/release.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/edit_cache.dir
-/home/aly/Work/C++ Scripts/Railway-Reservation-Managment-System/build2/CMakeFiles/rebuild_cache.dir

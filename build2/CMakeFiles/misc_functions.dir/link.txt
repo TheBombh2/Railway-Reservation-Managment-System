@@ -1,2 +1,0 @@
-/usr/bin/ar qc libmisc_functions.a CMakeFiles/misc_functions.dir/src/misc_functions.cpp.o
-/usr/bin/ranlib libmisc_functions.a
