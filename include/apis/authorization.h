@@ -3,8 +3,9 @@
 #include <soci/soci.h>
 #include "crow/app.h"
 
-void AddGETRequests(crow::SimpleApp& app, soci::session& db);
-void AddPOSTRequest(crow::SimpleApp& app, soci::session& db);
+void AddGETRequests(crow::SimpleApp& app);
+void AddPOSTRequests(crow::SimpleApp& app);
+void AddDELETERequests(crow::SimpleApp& app);
 
 const inline std::string CREATE_CUSTOMER_QUERY_BASIC_INFO = 
 "INSERT INTO CustomerBasicInformation "
@@ -23,3 +24,15 @@ const inline std::string CREATE_CUSTOMER_QUERY_CONTACT_INFO =
 "(ID, Email, PhoneNumber) "
 "VALUES "
 "(:ID, :Email, :PhoneNumber);";
+
+const inline std::string DELETE_CUSTOMER_QUERY_BASIC_INFO = 
+"DELETE FROM CustomerBasicInformation WHERE ID=:ID;";
+
+const inline std::string DELETE_CUSTOMER_QUERY_CONTACT_INFO =
+"DELETE FROM CustomerContactInformation WHERE ID=:ID;";
+
+const inline std::string DELETE_CUSTOMER_QUERY_SECURITY_INFO =
+"DELETE FROM CustomerSecurityInformation WHERE ID=:ID";
+
+const inline std::string SELECT_CUSTOMER_PASSWORD_SALT_QUERY = 
+"SELECT PasswordSalt FROM CustomerSecurityInformation WHERE ID=:ID;";

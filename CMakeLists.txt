@@ -43,7 +43,8 @@ add_library(database_connector STATIC ./src/database_connector.cpp)
 add_library(tokens STATIC ./src/tokens.cpp)
 
 # Executables (microservices) go here
-add_executable(authorization ./src/authorization/authorization.cpp ./src/authorization/authorizationGET.cpp)
+add_executable(authorization ./src/authorization/authorization.cpp
+./src/authorization/authorizationGET.cpp ./src/authorization/authorizationPOST.cpp)
 
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)

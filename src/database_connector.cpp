@@ -50,3 +50,11 @@ void InitializeConnectionString()
   //dbConnector = soci::session(soci::mysql, connectionString);
 }
 
+void InitializeConnectionPool()
+{
+  for(unsigned int i = 0; i < THREADS_NUMBER; i++)
+  {
+    soci::session& temp = pool.at(i);
+    temp.open(soci::mysql, connectionString);
+  }
+}

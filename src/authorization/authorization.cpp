@@ -25,12 +25,12 @@ int main(int argc, char** argv)
     return -2;
   }
   InitializeConnectionString();
-  soci::session db(soci::mysql, connectionString);
+  InitializeConnectionPool();
   YAML::Node root = LoadSecretsFile();
 
   crow::SimpleApp authorizationApp;
-  AddGETRequests(authorizationApp, db); 
-  AddPOSTRequest(authorizationApp, db);
+  AddGETRequests(authorizationApp); 
+  AddPOSTRequests(authorizationApp);
   unsigned short portNum = root["services"]["AUTHORIZATION_PORT_NUMBER"].as<unsigned short>();
   authorizationApp.multithreaded().port(portNum).run();
 }
