@@ -2,6 +2,10 @@
 #include <sstream>
 #include <iomanip>
 #include <assert.h>
+#include <random>
+#include <array>
+#include <chrono>
+#include <algorithm>
 #include <openssl/rand.h>
 #include <openssl/sha.h>
 #include "crypto.h"
@@ -60,7 +64,7 @@ std::string GetUUIDv7()
   //I am not sure if this is the most optimized implemenation in the world, but it'll have to do
 
   // random bytes
-  /*std::random_device rd;
+  std::random_device rd;
   std::array<uint8_t, 16> random_bytes;
   std::generate(random_bytes.begin(), random_bytes.end(), std::ref(rd));
   std::array<uint8_t, 16> value;
@@ -84,11 +88,29 @@ std::string GetUUIDv7()
   value[6] = (value[6] & 0x0F) | 0x70;
   value[8] = (value[8] & 0x3F) | 0x80;
 
-  return value;*/
+  std::stringstream ss;
+  for(unsigned int i = 0; i < value.size(); i++)
+  {
+    if(i == 4 || i == 6 || i == 8 || i == 10)
+      ss << '-';
+    ss << std::hex << std::setw(2) << std::setfill('0') << (int)value[i];
+  }
+  return ss.str();
 }
 
 std::string GetUUIDv4()
 {
-
+  unsigned char buffer[16];
+  int result = RAND_bytes(buffer, 16);
+  assert(result == 1 && "ERROR: Generating a secure token has failed.");
+  
+  std::stringstream ss;
+  for(unsigned int i = 0; i < 16; i++)
+  {
+    if(i == 4 || i == 6 || i == 8 || i == 10)
+      ss << '-';
+    ss << std::hex << std::setw(2) << std::setfill('0') << (int)buffer[i];
+  }
+  return ss.str();
 }
 
