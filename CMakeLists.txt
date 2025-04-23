@@ -9,6 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 # Setting output lib and bin directories for debug and release mode 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/$<CONFIG>")
 
 # Used for concise linking 
