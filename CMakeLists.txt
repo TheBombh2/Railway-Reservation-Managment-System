@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/$<CONFIG>")
+set(CMAKE_INSTALL_PREFIX "/usr")
 
 # Used for concise linking 
 set(COMMON_LIBS
@@ -45,15 +46,22 @@ add_library(database_common STATIC ./src/database_common.cpp)
 add_library(tokens STATIC ./src/tokens.cpp)
 
 # Executables (microservices) go here
-add_executable(authorization ./src/authorization/authorization.cpp
+add_executable(rrms-authorization ./src/authorization/authorization.cpp
 ./src/authorization/authorizationGET.cpp ./src/authorization/authorizationPOST.cpp
 ./src/authorization/authorizationDELETE.cpp)
 
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
-target_link_libraries(authorization PRIVATE ${COMMON_LIBS} crypto tokens)
+target_link_libraries(rrms-authorization PRIVATE ${COMMON_LIBS} crypto tokens)
 target_link_libraries(database_connector PRIVATE hiredis misc_functions redis++ pthread)
 target_link_libraries(database_common PRIVATE database_connector)
+
+install(TARGETS rrms-authorization)
+
+install(FILES ./src/systemd/rrms-authorization.service
+        DESTINATION /etc/systemd/system
+        COMPONENT systemd_service)
+
 
 add_compile_options(
     $<$<CONFIG:Debug>:-g>
