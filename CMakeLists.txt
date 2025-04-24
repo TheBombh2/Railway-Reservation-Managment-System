@@ -19,6 +19,7 @@ set(COMMON_LIBS
   SOCI::soci_mysql
   misc_functions
   database_connector
+  database_common
 )
 
 # For OpenSSL
@@ -40,16 +41,19 @@ include_directories("/usr/include/mysql")
 add_library(crypto STATIC ./src/crypto.cpp)
 add_library(misc_functions STATIC ./src/misc_functions.cpp)
 add_library(database_connector STATIC ./src/database_connector.cpp)
+add_library(database_common STATIC ./src/database_common.cpp)
 add_library(tokens STATIC ./src/tokens.cpp)
 
 # Executables (microservices) go here
 add_executable(authorization ./src/authorization/authorization.cpp
-./src/authorization/authorizationGET.cpp ./src/authorization/authorizationPOST.cpp)
+./src/authorization/authorizationGET.cpp ./src/authorization/authorizationPOST.cpp
+./src/authorization/authorizationDELETE.cpp)
 
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
-target_link_libraries(authorization PRIVATE ${COMMON_LIBS} crypto)
+target_link_libraries(authorization PRIVATE ${COMMON_LIBS} crypto tokens)
 target_link_libraries(database_connector PRIVATE misc_functions)
+target_link_libraries(database_common PRIVATE database_connector)
 
 add_compile_options(
     $<$<CONFIG:Debug>:-g>

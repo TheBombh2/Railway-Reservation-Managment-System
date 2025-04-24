@@ -1,7 +1,9 @@
+#include "crow/common.h"
+#include "database_common.h"
 #include "database_connector.h"
 #include "authorization.h"
+#include "tokens.h"
 #include "crypto.h"
-#include <soci/transaction.h>
 
 void AddPOSTRequests(crow::SimpleApp &app)
 {
@@ -31,8 +33,30 @@ void AddPOSTRequests(crow::SimpleApp &app)
       soci::use(passwordSalt, "PasswordSalt");
       trans.commit();
 
-      return crow::response(201, "customer user created succesfully");
+      return crow::response(201, "customer user created successfully");
    });
+
+    CROW_ROUTE(app, "/login").methods(crow::HTTPMethod::POST)
+    ([](const crow::request& req)
+     {
+        auto body = crow::json::load(req.body);
+        std::string email = body["email"].s();
+        std::string passwordHashRequest = body["passwordHash"].s();
+        soci::session db(pool);
+        std::string uuid = GetCustomerUUID(email);
+        if(uuid.empty())
+        {
+            return crow::response(404, "user not found");
+        }
+        std::string passwordHashDB;
+        db << GET_CUSTOMER_PASSWORD_HASH, soci::use(uuid), soci::into(passwordHashDB);
+        if(passwordHashRequest != passwordHashDB)
+            return crow::response(404, "authentication failure");
+
+        std::string tokenNum = GetUUIDv4();
+        //SESSION_TOKENS[tokenNum] = SessionTokenInfo(0, 0, uuid);
+        return crow::response(201, tokenNum);
+     });
 
    
 }

@@ -1,7 +1,8 @@
 #pragma once
-#include <soci/connection-pool.h>
 #include <soci/soci.h>
 #include <soci/mysql/soci-mysql.h>
+#include <soci/connection-pool.h>
+#include <soci/transaction.h>
 #include "global_variables.h"
 
 inline std::string connectionString;

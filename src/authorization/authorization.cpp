@@ -31,6 +31,8 @@ int main(int argc, char** argv)
   crow::SimpleApp authorizationApp;
   AddGETRequests(authorizationApp); 
   AddPOSTRequests(authorizationApp);
+  AddDELETERequests(authorizationApp);
+
   unsigned short portNum = root["services"]["AUTHORIZATION_PORT_NUMBER"].as<unsigned short>();
   authorizationApp.multithreaded().port(portNum).run();
 }

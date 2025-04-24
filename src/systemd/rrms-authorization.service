@@ -1,10 +1,9 @@
 [Unit]
-Description=This is the authorization and authentication microservice for RRMS
+Description=Authentication and Authorization service for RRMS
 After=network.target
 
 [Service]
-# Placeholder!
-ExecStart=/usr/bin/echo ""
+ExecStart=/usr/bin/rrms-authorization
 User=rrms
 Group=rrms
 

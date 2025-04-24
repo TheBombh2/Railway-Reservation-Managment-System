@@ -1,6 +1,3 @@
-#include <soci/session.h>
-#include <soci/soci-backend.h>
-#include <soci/transaction.h>
 #include "database_connector.h"
 #include "authorization.h"
 #include "crow/common.h"
