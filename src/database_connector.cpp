@@ -1,3 +1,4 @@
+#include <chrono>
 #include <format>
 #include <iostream>
 #include <soci/mysql/soci-mysql.h>
@@ -9,7 +10,7 @@
 //One could make the argument to make sure that those values exist in the first place
 //I agree. I should also check if they are initialized but not now. 
 //Host is the only optional parameter from secrets.yaml
-void InitializeConnectionString()
+void InitializeConnectionStrings()
 {
   YAML::Node root = LoadSecretsFile();
   std::string dbName = root["database"]["DB_NAME"].as<std::string>();
@@ -18,13 +19,12 @@ void InitializeConnectionString()
   std::string dbIP = root["database"]["DB_IP"].as<std::string>();
   unsigned short dbPort = 0;
   dbPort = root["database"]["DB_PORT"].as<unsigned short>();
-
   if(dbName.empty() || dbUser.empty() || dbPassword.empty() || dbPort == 0)
   {
-    std::cerr << SECRETS_LOCATION << " does not contain either a database name, username, password, or port number. Please revise those values";
+    std::cerr << SECRETS_LOCATION << " does not contain either a MariaDB/MySQL database name, username, password, or port number. Please revise those values";
     return;
   }
-
+  
   if(dbIP.empty())
   {
     connectionString = std::format(
@@ -48,6 +48,27 @@ void InitializeConnectionString()
       );
   std::cout << "Sizeof soci session: " << sizeof(soci::session) << '\n';
   //dbConnector = soci::session(soci::mysql, connectionString);
+}
+
+void InitializeRedisString()
+{
+  YAML::Node root = LoadSecretsFile();
+  std::string redisIP = root["database"]["REDIS_IP"].as<std::string>();
+  std::string redisPassword = root["database"]["REDIS_PASSWORD"].as<std::string>();
+  unsigned short redisPort = 0;
+  redisPort = root["database"]["REDIS_PORT"].as<unsigned short>();
+  
+  if(redisIP.empty())
+    redisConnectionOptions.host = "127.0.0.1";
+  redisConnectionOptions.host = redisIP;
+  redisConnectionOptions.password = redisPassword;
+  redisConnectionOptions.port = redisPort;
+  redisConnectionOptions.socket_timeout = std::chrono::milliseconds(200);
+  redisConnectionOptions.connect_timeout = std::chrono::milliseconds(200);
+  redisConnectionOptions.db = 0;
+  redisPoolOptions.size = THREADS_NUMBER;
+  std::cout << "Size of redis object: " << sizeof(redis::Redis) << '\n';
+    std::cout << "HOST: " << redisIP << '\n';
 }
 
 void InitializeConnectionPool()

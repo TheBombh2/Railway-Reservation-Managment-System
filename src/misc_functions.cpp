@@ -44,6 +44,9 @@ void WriteInitialSecretsFile()
   database["DB_USER"] = "";
   database["DB_PASSWORD"] = "";
   database["DB_SSL_CERT"] = "";
+  database["REDIS_IP"] = "";
+  database["REDIS_PORT"] = 6379;
+  database["REDIS_PASSWORD"] = "";
 
   application["DB_LOG_LOCATION"] = "/var/log/rrms/database/";
 

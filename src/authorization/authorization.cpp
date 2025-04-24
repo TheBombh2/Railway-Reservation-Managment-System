@@ -1,6 +1,8 @@
 #include <filesystem>
 #include <iostream>
 #include <soci/session.h>
+#include <sw/redis++/connection.h>
+#include <sw/redis++/redis.h>
 #include <unistd.h>
 #include <soci/soci.h>
 #include <soci/mysql/soci-mysql.h>
@@ -24,8 +26,10 @@ int main(int argc, char** argv)
     WriteInitialSecretsFile();
     return -2;
   }
-  InitializeConnectionString();
+  InitializeConnectionStrings();
   InitializeConnectionPool();
+  InitializeRedisString();
+  dbRedis = new redis::Redis(redisConnectionOptions, redisPoolOptions);
   YAML::Node root = LoadSecretsFile();
 
   crow::SimpleApp authorizationApp;

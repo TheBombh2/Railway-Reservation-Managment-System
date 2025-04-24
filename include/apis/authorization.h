@@ -1,15 +1,17 @@
 #pragma once
 #include <soci/session.h>
 #include <soci/soci.h>
-#include <unordered_map>
+#include <sw/redis++/redis.h>
 #include "crow/app.h"
-#include "tokens.h"
+#include "database_connector.h"
+
+//Pointer for deferred initialization
+inline redis::Redis* dbRedis;
 
 void AddGETRequests(crow::SimpleApp& app);
 void AddPOSTRequests(crow::SimpleApp& app);
 void AddDELETERequests(crow::SimpleApp& app);
 const unsigned int EXPECTED_USERS = 2000;
-inline std::unordered_map<std::string, SessionTokenInfo> SESSION_TOKENS(EXPECTED_USERS * 2);
 
 const inline std::string CREATE_CUSTOMER_QUERY_BASIC_INFO = 
 "INSERT INTO CustomerBasicInformation "

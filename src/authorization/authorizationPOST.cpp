@@ -54,7 +54,8 @@ void AddPOSTRequests(crow::SimpleApp &app)
             return crow::response(404, "authentication failure");
 
         std::string tokenNum = GetUUIDv4();
-        //SESSION_TOKENS[tokenNum] = SessionTokenInfo(0, 0, uuid);
+        SessionTokenInfo tokenInfo = SessionTokenInfo(0, 0, uuid);
+        dbRedis->set(tokenNum, tokenInfo.GetData());
         return crow::response(201, tokenNum);
      });
 

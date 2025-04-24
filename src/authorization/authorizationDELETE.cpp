@@ -1,4 +1,5 @@
 #include <soci/transaction.h>
+#include <sw/redis++/command.h>
 #include "authorization.h"
 #include "crow/app.h"
 #include "crow/common.h"
@@ -18,5 +19,19 @@ void AddDELETERequests(crow::SimpleApp &app)
         db << DELETE_CUSTOMER_PREVIOUS_PASSWORDS, soci::use(uuid);
         trans.commit();
         return crow::response(200, "successfully deleted user");
+     });
+
+    CROW_ROUTE(app, "/logout/").methods(crow::HTTPMethod::DELETE)
+    ([](const crow::request& req)
+    {
+        auto authorizationHeader = req.get_header_value("Authorization");
+        if(authorizationHeader.empty())
+            return crow::response(400, "no authorization header");
+        std::string token = authorizationHeader.substr(7);
+        int res = dbRedis->del(token);
+        std::cout << "AUTH TOKEN: "  << authorizationHeader << '\n';
+        if(res == 0)
+            return crow::response(400, "invalid authorization");
+        return crow::response(204, "logged out successfully");
      });
 }

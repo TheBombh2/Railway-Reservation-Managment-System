@@ -52,7 +52,7 @@ add_executable(authorization ./src/authorization/authorization.cpp
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
 target_link_libraries(authorization PRIVATE ${COMMON_LIBS} crypto tokens)
-target_link_libraries(database_connector PRIVATE misc_functions)
+target_link_libraries(database_connector PRIVATE hiredis misc_functions redis++ pthread)
 target_link_libraries(database_common PRIVATE database_connector)
 
 add_compile_options(

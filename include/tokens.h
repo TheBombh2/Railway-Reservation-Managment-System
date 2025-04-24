@@ -6,9 +6,11 @@ class SessionTokenInfo
 {
   public:
     SessionTokenInfo(uint8_t permission, uint8_t subPermission, std::string uuid);
+    SessionTokenInfo(const std::string& inputString);
     uint8_t GetPermission();
     uint8_t GetSubPermission();
     std::string GetUUID();
+    std::string GetData();
 
   private:
     uint8_t permission;

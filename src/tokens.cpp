@@ -1,6 +1,6 @@
-#include "tokens.h"
 #include <cstdint>
-#include <sys/types.h>
+#include <sstream>
+#include "tokens.h"
 
 SessionTokenInfo::SessionTokenInfo(uint8_t permission, uint8_t subPermission, std::string uuid)
 {
@@ -8,6 +8,15 @@ SessionTokenInfo::SessionTokenInfo(uint8_t permission, uint8_t subPermission, st
   this->uuid = uuid;
   this->permission = permission;
   this->subPermission = subPermission;
+}
+
+SessionTokenInfo::SessionTokenInfo(const std::string& inputString)
+{
+    std::istringstream sts(inputString);
+    this->uuid.reserve(36);
+    uint8_t permission, subPermission;
+    std::string uuid;
+    sts >> permission >> subPermission >> uuid;
 }
 
 uint8_t SessionTokenInfo::GetPermission()
@@ -23,4 +32,10 @@ uint8_t SessionTokenInfo::GetSubPermission()
 std::string SessionTokenInfo::GetUUID()
 {
   return this->uuid;
+}
+
+std::string SessionTokenInfo::GetData()
+{
+    return std::to_string(this->permission) + ' ' + 
+    std::to_string(this->subPermission) + ' ' + this->uuid;
 }

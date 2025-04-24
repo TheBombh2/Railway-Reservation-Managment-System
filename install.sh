@@ -29,6 +29,7 @@ sudo chown -R rrms:rrms /etc/rrms
 echo "Installing dependencies for an arch based system"
 sudo pacman -Sy --needed --noconfirm cmake make gcc boost boost-libs yaml-cpp valkey hiredis
 sudo systemctl enable --now valkey.service
+sudo sysctl vm.overcommit_memory=1 # Allow valkey to overcommit memory for performance
 
 if ! IsDBInstalled; then 
     echo "Neither MariaDB or MySQL are installed. The script will not install MariaDB with default settings"
@@ -36,6 +37,12 @@ if ! IsDBInstalled; then
     sudo pacman -Sy --needed --noconfirm mariadb
     sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
     sudo systemctl enable --now mariadb.service
+
+echo "NOTE:"
+echo "IF IT IS YOUR FIRST TIME RUNNING VALKEY, THEN THERE ARE SOME CONFIGURATIONS THAT MUST BE DONE"
+echo "FIRSTLY, YOU CAN OPTIONALLY PROVIDE A PASSWORD IN ITS CONFIGURATION FILE AT THE 'requirepass' LINE"
+echo "SECONDLY, YOU HAVE TO BIND THE IP ADDRESS OF THE SERVER ON WHICH THE BACKEND AND VALKEY WILL BE HOSTED ON IN THE 'bind' SECTION OF THE CONFIG FILE"
+echo "THE CONFIG FILE IS LOCATED AT /etc/valkey/valkey.conf"
 
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
 echo "Please note SOCI (MariaDB database wrapper) and redis-plus-plus (redis database wrapper) will be downloaded from the AUR from source!"
