@@ -1,27 +1,42 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ]; then
-  echo "This script must be run as root. Exiting..."
-  exit 1
-fi
+if ! grep -qi "arch" /etc/os-release; then
+    echo "This install script is only supported on Arch Linux. Either install Arch Linux or manually download the dependencies for the project in dependencies.txt. You can also use the precompiled binaries. You will need to install the database management systems (Redis/Valeky and MariaDB/MySQL)."
+    return -1
+
+IsDBInstalled() {
+    if command -v mariadb > /dev/null || command -v mysql > /dev/null; then
+        return 0 # Either MariaDB or MySQL is installed...even though I support MariaDB more
+    else
+        return 1 # None are installed
+    fi
+}
 
 echo "Creating user to run as the programs"
-useradd rrms
+sudo useradd -M -s /bin/nologin rrms
 
 echo "Creating directory for logs"
-mkdir /var/log/rrms
-mkdir /var/log/rrms/database/
+sudo mkdir /var/log/rrms
+sudo mkdir /var/log/rrms/database/
 
 echo "Creating directory for config information"
-mkdir /etc/rrms
+sudo mkdir /etc/rrms
 
 echo "Modifying permissions for newly created directories"
-chown -R rrms:rrms /var/log/rrms
-chown -R rrms:rrms /etc/rrms
+sudo chown -R rrms:rrms /var/log/rrms
+sudo chown -R rrms:rrms /etc/rrms
 
 echo "Installing dependencies for an arch based system"
-sudo pacman -Sy --needed cmake make gcc boost boost-libs yaml-cpp
+sudo pacman -Sy --needed --noconfirm cmake make gcc boost boost-libs yaml-cpp valkey hiredis
+sudo systemctl enable --now valkey.service
+
+if ! IsDBInstalled; then 
+    echo "Neither MariaDB or MySQL are installed. The script will not install MariaDB with default settings"
+    echo "Note: It is recommended to read the arch wiki to improve its security or change its data location"
+    sudo pacman -Sy --needed --noconfirm mariadb
+    sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+    sudo systemctl enable --now mariadb.service
 
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
-echo "Please note SOCI will be downloaded from the AUR from source!"
-yay -S soci
+echo "Please note SOCI (MariaDB database wrapper) and redis-plus-plus (redis database wrapper) will be downloaded from the AUR from source!"
+yay -S soci redis-plus-plus
