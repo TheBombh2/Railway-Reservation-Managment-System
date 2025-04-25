@@ -21,7 +21,7 @@ void AddDELETERequests(crow::SimpleApp &app)
         return crow::response(200, "successfully deleted user");
      });
 
-    CROW_ROUTE(app, "/logout/").methods(crow::HTTPMethod::DELETE)
+    CROW_ROUTE(app, "/logout").methods(crow::HTTPMethod::DELETE)
     ([](const crow::request& req)
     {
         auto authorizationHeader = req.get_header_value("Authorization");

@@ -12,6 +12,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/$<CONFIG>")
 set(CMAKE_INSTALL_PREFIX "/usr")
+set(BUILD_SHARED_LIBS ON)
+set(CPR_USE_SYSTEM_CURL ON)
 
 # Used for concise linking 
 set(COMMON_LIBS
@@ -30,6 +32,7 @@ find_package(Boost REQUIRED COMPONENTS system date_time)   # Asio requires Boost
 set(SOCI_STATIC true)
 find_package(SOCI REQUIRED)
 find_package(yaml-cpp REQUIRED)
+find_package(cpr REQUIRED)
 
 #This is for my main headers
 include_directories("./include")
@@ -50,9 +53,13 @@ add_executable(rrms-authorization ./src/authorization/authorization.cpp
 ./src/authorization/authorizationGET.cpp ./src/authorization/authorizationPOST.cpp
 ./src/authorization/authorizationDELETE.cpp)
 
+add_executable(rrms-employee ./src/employee/employee.cpp ./src/employee/employeeGET.cpp
+./src/employee/employeePOST.cpp ./src/employee/employeeDELETE.cpp)
+
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
 target_link_libraries(rrms-authorization PRIVATE ${COMMON_LIBS} crypto tokens)
+target_link_libraries(rrms-employee PRIVATE ${COMMON_LIBS} cpr::cpr)
 target_link_libraries(database_connector PRIVATE hiredis misc_functions redis++ pthread)
 target_link_libraries(database_common PRIVATE database_connector)
 

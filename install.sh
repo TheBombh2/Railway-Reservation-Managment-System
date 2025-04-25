@@ -45,5 +45,6 @@ echo "SECONDLY, YOU HAVE TO BIND THE IP ADDRESS OF THE SERVER ON WHICH THE BACKE
 echo "THE CONFIG FILE IS LOCATED AT /etc/valkey/valkey.conf"
 
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
-echo "Please note SOCI (MariaDB database wrapper) and redis-plus-plus (redis database wrapper) will be downloaded from the AUR from source!"
-yay -S soci redis-plus-plus
+echo "Please note SOCI (MariaDB database wrapper), redis-plus-plus (redis database wrapper), and cpr (HTTP requests library wrapper for libcurl) will be downloaded from the AUR from source!"
+yay -S soci redis-plus-plus --noconfirm
+yay -S cpr --noconfirm --mflags="--nocheck" # --nocheck is due a bug with the latest version of curl
