@@ -2,6 +2,7 @@
 #include <cpr/bearer.h>
 #include <cpr/cprtypes.h>
 #include <cpr/response.h>
+#include <cpr/session.h>
 #include <yaml-cpp/yaml.h>
 #include <cpr/cpr.h>
 #include "middleware.h"
@@ -34,10 +35,9 @@ void InitializeAuthURL()
     }
 }
 
-SessionTokenInfo GetSessionTokenInfo(const std::string& authHeader)
+SessionTokenInfo GetSessionTokenInfo(const std::string& token)
 {
-    std::string sessionToken = authHeader.substr(7);
-    cpr::Response r = cpr::Get(cpr::Url(authTokenPath), cpr::Bearer(sessionToken));
+    cpr::Response r = cpr::Get(cpr::Url(authServiceURL +  authTokenPath), cpr::Bearer(token));
     if(r.status_code == 200)
     {
         crow::json::rvalue body = crow::json::load(r.text); 
@@ -49,4 +49,32 @@ SessionTokenInfo GetSessionTokenInfo(const std::string& authHeader)
     {
         return SessionTokenInfo(0,0,"0");
     }
+}
+
+
+void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, context& ctx)
+{
+    std::string authHeader = req.get_header_value("Authorization");
+    if(authHeader.length() < 7)
+    {
+        res.code = 404;
+        res.body = "no authorization";
+        res.end();
+    }
+
+    std::string token = authHeader.substr(7);
+    SessionTokenInfo tokenInfo = GetSessionTokenInfo(token);
+    if(tokenInfo.GetUUID() == "0")
+    {
+        res.code = 401;
+        res.body = "invalid session token";
+        res.end();
+    }
+    ctx.token = token;
+    ctx.tokenInfo = tokenInfo;
+}
+
+void AUTH_MIDDLEWARE::after_handle(crow::request& req, crow::response& res, context& ctx)
+{
+    //no-op
 }

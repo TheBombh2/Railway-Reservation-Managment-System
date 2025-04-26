@@ -1,7 +1,12 @@
 #pragma once
-#include "tokens.h"
 #include <string>
 #include <regex>
+#include "crow/crow.h"
+#include "tokens.h"
+
+#define AUTH_INIT \
+auto& ctx = app.get_context<AUTH_MIDDLEWARE>(req); \
+SessionTokenInfo& tokenInfo = ctx.tokenInfo; \
 
 inline std::string authServiceURL;
 const inline std::string authTokenPath = "/users/token-info";
@@ -9,5 +14,17 @@ const inline std::string authTokenPath = "/users/token-info";
 const inline std::regex IPv4Regex("(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])");
 const inline std::regex IPv6Regex("((([0-9a-fA-F]){1,4})\\:){7}([0-9a-fA-F]){1,4}");
 void InitializeAuthURL();
-SessionTokenInfo GetSessionTokenInfo(const std::string& authHeader);
+SessionTokenInfo GetSessionTokenInfo(const std::string& token);
+
+struct AUTH_MIDDLEWARE
+{
+    struct context
+    {
+        std::string token;
+        SessionTokenInfo tokenInfo;
+    };
+
+    void before_handle(crow::request& req, crow::response& res, context& ctx);
+    void after_handle(crow::request& req, crow::response& res, context& ctx);
+};
 

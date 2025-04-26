@@ -6,21 +6,12 @@
 #include "tokens.h"
 #include "permissions.h"
 
-void AddEmployeePOSTRequests(crow::SimpleApp &app)
+void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
     CROW_ROUTE(app, "/jobs/create").methods(crow::HTTPMethod::GET)
-        ([](const crow::request& req)
+        ([&](const crow::request& req)
          {
-         const std::string& authorizationHeader = req.get_header_value("Authorization");
-         if(authorizationHeader.length() == 6)
-            return crow::response(404, "no authorization");
-
-         //A session token whose UUID is 0 means it is an error because no information was found for
-         //it. In other words, the user is using an expired session token
-         SessionTokenInfo tokenInfo = GetSessionTokenInfo(authorizationHeader);
-         if(tokenInfo.GetUUID() == "0")
-            return crow::response(401, "invalid session token");
-
+         AUTH_INIT
          if(tokenInfo.HasPermission(PERMISSIONS::JOBS) && tokenInfo.HasSubPermission(SUB_PERMISSIONS::CREATE_JOB))
          {
             crow::json::rvalue body = crow::json::load(req.body);
@@ -37,5 +28,12 @@ void AddEmployeePOSTRequests(crow::SimpleApp &app)
          {
             return crow::response(403, "forbidden");
          }
+         });
+
+    CROW_ROUTE(app, "/users/create/employee").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT
+
          });
 }

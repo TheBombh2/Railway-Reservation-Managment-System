@@ -5,7 +5,7 @@
 #include "crow/app.h"
 #include "database_connector.h"
 
-void AddAuthorizationGETRequests(crow::SimpleApp& app);
+void AddAuthorizationGETRequests(crow::App<>& app);
 void AddAuthorizationPOSTRequests(crow::SimpleApp& app);
 void AddAuthorizationDELETERequests(crow::SimpleApp& app);
 

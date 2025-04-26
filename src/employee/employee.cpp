@@ -30,7 +30,7 @@ int main(int argc, char** argv)
   dbRedis = new redis::Redis(redisConnectionOptions, redisPoolOptions);
   YAML::Node root = LoadSecretsFile();
 
-  crow::SimpleApp employeeApp;
+  crow::App<AUTH_MIDDLEWARE> employeeApp;
   AddEmployeeGETRequests(employeeApp); 
   AddEmployeePOSTRequests(employeeApp);
   AddEmployeeDELETERequests(employeeApp);
