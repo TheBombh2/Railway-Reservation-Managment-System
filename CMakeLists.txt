@@ -59,9 +59,10 @@ add_executable(rrms-employee ./src/employee/employee.cpp ./src/employee/employee
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
 target_link_libraries(rrms-authorization PRIVATE ${COMMON_LIBS} crypto tokens)
-target_link_libraries(rrms-employee PRIVATE ${COMMON_LIBS} cpr::cpr middleware)
+target_link_libraries(rrms-employee PRIVATE ${COMMON_LIBS} cpr::cpr middleware crypto)
 target_link_libraries(database_connector PRIVATE hiredis misc_functions redis++ pthread)
 target_link_libraries(database_common PRIVATE database_connector)
+target_link_libraries(middleware PRIVATE tokens cpr::cpr)
 
 install(TARGETS rrms-authorization rrms-employee)
 

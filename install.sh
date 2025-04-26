@@ -48,3 +48,12 @@ export CMAKE_POLICY_VERSION_MINIMUM=3.5
 echo "Please note SOCI (MariaDB database wrapper), redis-plus-plus (redis database wrapper), and cpr (HTTP requests library wrapper for libcurl) will be downloaded from the AUR from source!"
 yay -S soci redis-plus-plus --noconfirm
 yay -S cpr --noconfirm --mflags="--nocheck" # --nocheck is due a bug with the latest version of curl
+
+echo "Now, the project (microservices backend) will start compiling"
+echo "This might take a few minutes depending on your CPU's strength"
+cmake -S . -B ./build/ -DCMAKE_BUILD_TYPE=release
+cd ./build/
+sudo make install
+sudo systemctl daemon-reload
+sudo systemctl enable --now rrms-authorization.service
+sudo systemctl enable --now rrms-employee.service
