@@ -5,7 +5,7 @@
 #include "crow/common.h"
 #include "database_connector.h"
 
-void AddDELETERequests(crow::SimpleApp &app)
+void AddAuthorizationDELETERequests(crow::SimpleApp &app)
 {
   CROW_ROUTE(app, "/users/<string>/delete").methods(crow::HTTPMethod::DELETE)
     ([](const crow::request& req, const std::string& uuid)

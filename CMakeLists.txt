@@ -47,19 +47,19 @@ add_library(misc_functions STATIC ./src/misc_functions.cpp)
 add_library(database_connector STATIC ./src/database_connector.cpp)
 add_library(database_common STATIC ./src/database_common.cpp)
 add_library(tokens STATIC ./src/tokens.cpp)
+add_library(middleware STATIC ./src/middleware.cpp)
 
 # Executables (microservices) go here
 add_executable(rrms-authorization ./src/authorization/authorization.cpp
 ./src/authorization/authorizationGET.cpp ./src/authorization/authorizationPOST.cpp
 ./src/authorization/authorizationDELETE.cpp)
-
 add_executable(rrms-employee ./src/employee/employee.cpp ./src/employee/employeeGET.cpp
 ./src/employee/employeePOST.cpp ./src/employee/employeeDELETE.cpp)
 
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
 target_link_libraries(rrms-authorization PRIVATE ${COMMON_LIBS} crypto tokens)
-target_link_libraries(rrms-employee PRIVATE ${COMMON_LIBS} cpr::cpr)
+target_link_libraries(rrms-employee PRIVATE ${COMMON_LIBS} cpr::cpr middleware)
 target_link_libraries(database_connector PRIVATE hiredis misc_functions redis++ pthread)
 target_link_libraries(database_common PRIVATE database_connector)
 

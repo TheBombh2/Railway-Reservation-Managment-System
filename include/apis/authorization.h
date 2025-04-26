@@ -5,13 +5,9 @@
 #include "crow/app.h"
 #include "database_connector.h"
 
-//Pointer for deferred initialization
-inline redis::Redis* dbRedis;
-
-void AddGETRequests(crow::SimpleApp& app);
-void AddPOSTRequests(crow::SimpleApp& app);
-void AddDELETERequests(crow::SimpleApp& app);
-const unsigned int EXPECTED_USERS = 2000;
+void AddAuthorizationGETRequests(crow::SimpleApp& app);
+void AddAuthorizationPOSTRequests(crow::SimpleApp& app);
+void AddAuthorizationDELETERequests(crow::SimpleApp& app);
 
 const inline std::string CREATE_CUSTOMER_QUERY_BASIC_INFO = 
 "INSERT INTO CustomerBasicInformation "

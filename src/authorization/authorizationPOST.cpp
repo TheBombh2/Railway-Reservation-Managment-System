@@ -5,7 +5,7 @@
 #include "tokens.h"
 #include "crypto.h"
 
-void AddPOSTRequests(crow::SimpleApp &app)
+void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
 {
   CROW_ROUTE(app, "/users/create/customer").methods(crow::HTTPMethod::POST)
   ([&](const crow::request& req)

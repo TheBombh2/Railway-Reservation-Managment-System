@@ -52,14 +52,19 @@ void WriteInitialSecretsFile()
 
   services["AUTHORIZATION_PORT_NUMBER"] = 5450;
   services["AUTHORIZATION_IP_ADDRESS"] = "127.0.0.1";
+  services["AUTHORIZATION_USE_SSL"] = false;
   services["RESERVATION_PORT_NUMBER"] = 5451;
   services["RESERVATION_IP_ADDRESS"] = "127.0.0.1";
+  services["RESERVATION_USE_SSL"] = false;
   services["MANAGEMENT_PORT_NUMBER"] = 5452;
   services["MANAGEMENT_IP_ADDRESS"] = "127.0.0.1";
+  services["MANAGEMENT_USE_SSL"] = false;
   services["EMPLOYEE_PORT_NUMBER"] = 5453;
   services["EMPLOYEE_IP_ADDRESS"] = "127.0.0.1";
+  services["EMPLOYEE_USE_SSL"] = false;
   services["FINANCIAL_PORT_NUMBER"] = 5454;
   services["FINANCIAL_IP_ADDRESS"] = "127.0.0.1";
+  services["FINANCIAL_USE_SSL"] = false;
 
   root["database"] = database;
   root["application"] = application;

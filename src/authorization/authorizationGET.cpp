@@ -5,7 +5,7 @@
 #include "crow/common.h"
 #include "crypto.h"
 
-void AddGETRequests(crow::SimpleApp &app)
+void AddAuthorizationGETRequests(crow::SimpleApp &app)
 {
   //Utility Section
   CROW_ROUTE(app, "/utility/salt").methods(crow::HTTPMethod::GET)

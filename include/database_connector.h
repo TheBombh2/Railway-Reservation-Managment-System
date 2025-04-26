@@ -10,6 +10,8 @@
 
 using namespace sw;
 
+//Pointer for deferred initialization
+inline redis::Redis* dbRedis = nullptr;
 inline std::string connectionString;
 inline std::string redisString;
 void InitializeConnectionStrings();
