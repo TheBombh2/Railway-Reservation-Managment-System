@@ -1,4 +1,5 @@
 #pragma once
+#include <soci/soci-backend.h>
 #include <soci/soci.h>
 #include <soci/mysql/soci-mysql.h>
 #include <soci/connection-pool.h>
@@ -20,3 +21,6 @@ void InitializeRedisString();
 inline redis::ConnectionOptions redisConnectionOptions;
 inline redis::ConnectionPoolOptions redisPoolOptions;
 inline soci::connection_pool pool(THREADS_NUMBER);
+
+inline soci::indicator NULL_INDICATOR = soci::indicator::i_null;
+inline soci::indicator OK_INDICATOR = soci::indicator::i_ok;

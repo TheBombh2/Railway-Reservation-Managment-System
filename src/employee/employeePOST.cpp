@@ -1,5 +1,7 @@
+#include <ctime>
 #include "database_connector.h"
 #include "crow/common.h"
+#include "global_variables.h"
 #include "middleware.h"
 #include "crypto.h"
 #include "employee.h"
@@ -34,6 +36,31 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
         ([&](const crow::request& req)
          {
          AUTH_INIT
-
+         crow::json::rvalue jsonBody = crow::json::load(req.body);
+         std::string firstName = jsonBody["firstName"].s();
+         std::string middleName = jsonBody["middleName"].s();
+         std::string lastName = jsonBody["lastName"].s();
+         std::string gender = jsonBody["gender"].s();
+         double salary = jsonBody["salary"].d();
+         std::string departmentID = jsonBody["departmentID"].s();
+         std::string jobID = jsonBody["jobID"].s();
+         std::string managerID = jsonBody["managerID"].s();
+         std::string tempManagerHireDate = jsonBody["managerHireDate"].s();
+         std::tm managerHireDate;
+         if(!strptime(tempManagerHireDate.c_str(), TIME_FORMAT_STRING, &managerHireDate))
+            return crow::response(400, "invalid manager hire date");
+         std::string id = GetUUIDv7();
+         soci::session db(pool);
+         db << CREATE_EMPLOYEE_QUERY, 
+         soci::use(id), soci::use(firstName),
+         soci::use(middleName, middleName.empty() ? NULL_INDICATOR : OK_INDICATOR),
+         soci::use(lastName),
+         soci::use(gender, gender.empty() ? NULL_INDICATOR : OK_INDICATOR),
+         soci::use(salary),
+         soci::use(departmentID, departmentID.size() ? NULL_INDICATOR : OK_INDICATOR),
+         soci::use(jobID, jobID.size() ? NULL_INDICATOR : OK_INDICATOR),
+         soci::use(managerID, managerID.size() ? NULL_INDICATOR : OK_INDICATOR),
+         soci::use(managerHireDate, managerID.size() ? NULL_INDICATOR : OK_INDICATOR);
+         return crow::response(201, "user successfully created");
          });
 }

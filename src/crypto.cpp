@@ -3,7 +3,6 @@
 #include <iomanip>
 #include <assert.h>
 #include <random>
-#include <array>
 #include <chrono>
 #include <algorithm>
 #include <openssl/rand.h>
