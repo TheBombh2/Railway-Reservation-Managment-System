@@ -39,3 +39,35 @@ std::string SessionTokenInfo::GetData()
     return std::to_string(this->permission) + ' ' + 
     std::to_string(this->subPermission) + ' ' + this->uuid;
 }
+
+void SessionTokenInfo::AddPermission(uint8_t perm)
+{
+    this->permission |= perm;
+}
+
+void SessionTokenInfo::AddSubPermission(uint8_t perm)
+{
+    this->subPermission |= perm;
+}
+
+void SessionTokenInfo::RemoveSubPermission(uint8_t perm)
+{
+    uint8_t mask = ~perm;
+    this->subPermission &= mask;
+}
+
+void SessionTokenInfo::RemovePermission(uint8_t perm)
+{
+    uint8_t mask = ~perm;
+    this->permission &= mask;
+}
+
+bool SessionTokenInfo::HasPermission(uint8_t perm)
+{
+    return this->permission & perm;
+}
+
+bool SessionTokenInfo::HasSubPermission(uint8_t perm)
+{
+    return this->subPermission & perm;
+}

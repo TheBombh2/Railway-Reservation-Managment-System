@@ -11,6 +11,12 @@ class SessionTokenInfo
     uint8_t GetSubPermission();
     std::string GetUUID();
     std::string GetData();
+    void AddPermission(uint8_t perm);
+    void AddSubPermission(uint8_t perm);
+    void RemovePermission(uint8_t perm);
+    void RemoveSubPermission(uint8_t perm);
+    bool HasPermission(uint8_t perm);
+    bool HasSubPermission(uint8_t perm);
 
   private:
     uint8_t permission;

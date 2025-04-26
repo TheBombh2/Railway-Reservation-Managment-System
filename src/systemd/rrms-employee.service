@@ -1,8 +1,7 @@
 [Unit]
-Description=Authentication and Authorization service for RRMS
+Description=Employee Management service for RRMS
 Requires=mariadb.service valkey.service
 After=mariadb.service valkey.service
-
 
 [Service]
 ExecStart=/usr/bin/rrms-authorization

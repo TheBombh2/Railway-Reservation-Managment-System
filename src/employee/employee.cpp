@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <filesystem>
 #include <iostream>
+#include "middleware.h"
 #include "crow/app.h"
 #include "global_variables.h"
 #include "misc_functions.h"
@@ -25,6 +26,7 @@ int main(int argc, char** argv)
   InitializeConnectionStrings();
   InitializeConnectionPool();
   InitializeRedisString();
+  InitializeAuthURL();
   dbRedis = new redis::Redis(redisConnectionOptions, redisPoolOptions);
   YAML::Node root = LoadSecretsFile();
 
@@ -33,7 +35,7 @@ int main(int argc, char** argv)
   AddEmployeePOSTRequests(employeeApp);
   AddEmployeeDELETERequests(employeeApp);
 
-  unsigned short portNum = root["services"]["AUTHORIZATION_PORT_NUMBER"].as<unsigned short>();
+    unsigned short portNum = root["services"]["EMPLOYEE_PORT_NUMBER"].as<unsigned short>();
   employeeApp.multithreaded().port(portNum).run();
   return 0;
 }

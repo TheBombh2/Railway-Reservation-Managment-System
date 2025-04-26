@@ -63,7 +63,7 @@ target_link_libraries(rrms-employee PRIVATE ${COMMON_LIBS} cpr::cpr middleware)
 target_link_libraries(database_connector PRIVATE hiredis misc_functions redis++ pthread)
 target_link_libraries(database_common PRIVATE database_connector)
 
-install(TARGETS rrms-authorization)
+install(TARGETS rrms-authorization rrms-employee)
 
 install(FILES ./src/systemd/rrms-authorization.service
         DESTINATION /etc/systemd/system
