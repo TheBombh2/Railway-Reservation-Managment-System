@@ -36,7 +36,7 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
       return crow::response(201, "customer user created successfully");
    });
 
-    CROW_ROUTE(app, "/login").methods(crow::HTTPMethod::POST)
+    CROW_ROUTE(app, "/login/customer").methods(crow::HTTPMethod::POST)
     ([](const crow::request& req)
      {
         auto body = crow::json::load(req.body);
@@ -58,6 +58,24 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
         dbRedis->set(tokenNum, tokenInfo.GetData());
         return crow::response(201, tokenNum);
      });
+
+    CROW_ROUTE(app, "/login/employee").methods(crow::HTTPMethod::POST)
+        ([](const crow::request& req)
+         {
+         const crow::json::rvalue body = crow::json::load(req.body);
+         std::string email = body["email"].s();
+         std::string passwordHashRequest = body["passwordHash"].s();
+         soci::session db(pool);
+         std::string uuid = GetEmployeeUUID(email);
+         if(uuid.empty())
+            return crow::response(404, "user not found");
+         //Get Employee Permissions from their respective department
+         std::pair<uint8_t, uint8_t> perms = GetEmployeePermissions(uuid);
+         std::string token = GetUUIDv4();
+         std::string tokenInfo = std::to_string(perms.first) + " " + std::to_string(perms.second) + " " + uuid;
+         dbRedis->set(token, tokenInfo);
+         return crow::response(201, token);
+         });
 
    
 }
