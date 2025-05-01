@@ -10,6 +10,11 @@ SessionTokenInfo::SessionTokenInfo(uint8_t permission, uint8_t subPermission, st
   this->subPermission = subPermission;
 }
 
+SessionTokenInfo::SessionTokenInfo()
+{
+    //No-op
+}
+
 SessionTokenInfo::SessionTokenInfo(const std::string& inputString)
 {
     std::istringstream sts(inputString);

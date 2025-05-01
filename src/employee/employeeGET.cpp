@@ -19,7 +19,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             soci::session db(pool);
             db << GET_DEPARTMENTS_QUERY, soci::into(titles), soci::into(descriptions), soci::into(locations);
             returnBody["size"] = titles.size();
-            for(int i = 0; i < titles.size(); i++)
+            for(unsigned int i = 0; i < titles.size(); i++)
             {
                 returnBody["departments"][i]["title"] = titles[i];
                 returnBody["departments"][i]["description"] = descriptions[i];

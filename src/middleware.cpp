@@ -57,7 +57,7 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
     std::string authHeader = req.get_header_value("Authorization");
     if(authHeader.length() < 7)
     {
-        res.code = 404;
+        res.code = 401;
         res.body = "no authorization";
         res.end();
     }
@@ -66,7 +66,7 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
     SessionTokenInfo tokenInfo = GetSessionTokenInfo(token);
     if(tokenInfo.GetUUID() == "0")
     {
-        res.code = 401;
+        res.code = 403;
         res.body = "invalid session token";
         res.end();
     }
