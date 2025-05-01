@@ -10,9 +10,9 @@ const inline std::string GET_EMPLOYEE_UUID_QUERY =
 "SELECT ID FROM EmployeeContactInformation WHERE Email=:Email;";
 
 const inline std::string GET_EMPLOYEE_PERMISSIONS_QUERY =
-"SELECT Permission, SubPermission FROM EmployeeBasicInformation EI"
-"JOIN Department DP ON EI.DepartmentID=DP.DepartmentID"
-"WHERE EmployeeID=:ID;";
+"SELECT Permission, SubPermission FROM EmployeeBasicInformation EI "
+"JOIN Department DP ON EI.DepartmentID=DP.DepartmentID "
+"WHERE EmployeeID=:ID; ";
 
 std::string GetCustomerUUID(const std::string& email);
 std::string GetEmployeeUUID(const std::string& email);

@@ -67,6 +67,7 @@ target_link_libraries(middleware PRIVATE tokens cpr::cpr)
 install(TARGETS rrms-authorization rrms-employee)
 
 install(FILES ./src/systemd/rrms-authorization.service
+        ./src/systemd/rrms-employee.service
         DESTINATION /etc/systemd/system
         COMPONENT systemd_service)
 
