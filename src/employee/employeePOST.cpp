@@ -1,6 +1,7 @@
 #include <ctime>
 #include <exception>
 #include <soci/mysql/soci-mysql.h>
+#include "database_common.h"
 #include "database_connector.h"
 #include "crow/common.h"
 #include "global_variables.h"
@@ -15,9 +16,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
     CROW_ROUTE(app, "/jobs/create").methods(crow::HTTPMethod::POST)
         ([&](const crow::request& req)
          {
-         AUTH_INIT
-         if(tokenInfo.HasPermission(PERMISSIONS::JOBS) && tokenInfo.HasSubPermission(SUB_PERMISSIONS::CREATE_JOB))
-         {
+            AUTH_INIT(PERMISSIONS::JOBS, SUB_PERMISSIONS::CREATE_JOB)
             crow::json::rvalue body = crow::json::load(req.body);
             soci::session db(pool);
             std::string title = body["title"].s();
@@ -35,18 +34,12 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
                 return crow::response(500, "database error");
             }
             return crow::response(201, "job created successfully");
-         }
-
-         else
-         {
-            return crow::response(403, "forbidden");
-         }
          });
 
     CROW_ROUTE(app, "/users/create/employee").methods(crow::HTTPMethod::POST)
         ([&](const crow::request& req)
          {
-         AUTH_INIT
+         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::HIRE_EMPLOYEE)
          crow::json::rvalue jsonBody = crow::json::load(req.body);
          std::string firstName = jsonBody["firstName"].s();
          std::string middleName = jsonBody["middleName"].s();
@@ -73,5 +66,31 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          soci::use(managerID, managerID.size() ? NULL_INDICATOR : OK_INDICATOR),
          soci::use(managerHireDate, managerID.size() ? NULL_INDICATOR : OK_INDICATOR);
          return crow::response(201, "user successfully created");
+         });
+
+    CROW_ROUTE(app, "/departments/create").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::ADD_DEPARTMENT)
+         crow::json::rvalue body = crow::json::load(req.body);
+         std::string departmentID = GetUUIDv7();
+         std::string title = body["title"].s();
+         std::string description = body["title"].s();
+         std::string location = body["location"].s();
+         uint8_t permission = body["permission"].i();
+         uint8_t subPermission = body["subPermission"].i(); 
+         std::string managerID = body["managerID"].s();
+         std::string tempManagerHireDate = body["managerHireDate"].s();
+         std::tm managerHireDate;
+         if(!strptime(tempManagerHireDate.c_str(), TIME_FORMAT_STRING, &managerHireDate))
+            return crow::response(400, "invalid manager hire date");
+            
+         soci::session db(pool);
+         db << CREATE_DEPARTMENT_QUERY, soci::use(departmentID), soci::use(title),
+         soci::use(CHECK_NULLABILITY(description)), soci::use(location),
+         soci::use(permission), soci::use(subPermission),
+         soci::use(CHECK_NULLABILITY(managerID)),
+         soci::use(managerHireDate, managerID.size() ? NULL_INDICATOR : OK_INDICATOR );
+         return crow::response(201, "department successfully created");
          });
 }

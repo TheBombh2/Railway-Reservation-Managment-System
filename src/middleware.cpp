@@ -62,7 +62,6 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
         res.body = "no authorization";
         res.end();
     }
-    std::cout << "Authorization Header Length: " << authHeader.length() << '\n';
     std::string token = authHeader.substr(7);
     SessionTokenInfo tokenInfo = GetSessionTokenInfo(token);
     if(tokenInfo.GetUUID() == "0")

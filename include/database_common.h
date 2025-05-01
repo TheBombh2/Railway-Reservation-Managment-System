@@ -3,6 +3,8 @@
 #include <utility>
 #include <string>
 
+#define CHECK_NULLABILITY(stringVar) stringVar, stringVar.size() ? OK_INDICATOR : NULL_INDICATOR 
+
 const inline std::string GET_CUSTOMER_UUID_QUERY =
 "SELECT ID FROM CustomerContactInformation WHERE Email=:Email;";
 

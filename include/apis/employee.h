@@ -18,6 +18,12 @@ const inline std::string CREATE_EMPLOYEE_QUERY =
 "VALUES (:ID, :FirstName, :MiddleName, :LastName, :Gender, :Salary"
 ":DeptID, :JobID, :ManagerID, :ManagerDate)";
 
+const inline std::string CREATE_DEPARTMENT_QUERY = 
+"INSERT INTO Department "
+"(DepartmentID, Title, Description, Location, Permission, SubPermission, "
+"ManagerID, ManagerHiringDate) "
+"VALUES (:ID, :Title, :Description, :Location, :Perm, :SubPerm, :ManagerID, :ManagerHireDate); ";
+
 //To-Do: Add manager ID and name!
 const inline std::string GET_DEPARTMENTS_QUERY =
 "SELECT Title, Description, Location FROM Department";
