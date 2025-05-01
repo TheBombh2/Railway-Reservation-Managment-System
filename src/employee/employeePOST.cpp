@@ -1,4 +1,6 @@
 #include <ctime>
+#include <exception>
+#include <soci/mysql/soci-mysql.h>
 #include "database_connector.h"
 #include "crow/common.h"
 #include "global_variables.h"
@@ -10,7 +12,7 @@
 
 void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
-    CROW_ROUTE(app, "/jobs/create").methods(crow::HTTPMethod::GET)
+    CROW_ROUTE(app, "/jobs/create").methods(crow::HTTPMethod::POST)
         ([&](const crow::request& req)
          {
          AUTH_INIT
@@ -22,7 +24,16 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::string description = body["description"].s();
             if(title.empty() || description.empty())
                 return crow::response(400, "invalid request");
-            db << CREATE_JOB_QUERY, soci::use(GetUUIDv7()), soci::use(title), soci::use(description);
+            try
+            {
+            std::string uuid = GetUUIDv7();
+            db << CREATE_JOB_QUERY, soci::use(uuid), soci::use(title), soci::use(description);
+            }
+            catch(const soci::mysql_soci_error& e)
+            {
+                std::cerr << "DATABASE ERROR: " << e.what() << '\n';
+                return crow::response(500, "database error");
+            }
             return crow::response(201, "job created successfully");
          }
 

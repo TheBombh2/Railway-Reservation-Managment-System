@@ -44,9 +44,10 @@ SessionTokenInfo GetSessionTokenInfo(const std::string& token)
         return SessionTokenInfo(static_cast<uint8_t>(body["permission"].i())
                                 , static_cast<uint8_t>(body["subPermission"].i())
                                 , body["uuid"].s());
-    }
+        }
     else
     {
+        std::cerr << "auth service returned code: " << r.status_code << '\n';
         return SessionTokenInfo(0,0,"0");
     }
 }
@@ -61,13 +62,14 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
         res.body = "no authorization";
         res.end();
     }
-
+    std::cout << "Authorization Header Length: " << authHeader.length() << '\n';
     std::string token = authHeader.substr(7);
     SessionTokenInfo tokenInfo = GetSessionTokenInfo(token);
     if(tokenInfo.GetUUID() == "0")
     {
         res.code = 403;
         res.body = "invalid session token";
+        std::cerr << "Session token UUID: " << tokenInfo.GetUUID() << '\n';
         res.end();
     }
     ctx.token = token;

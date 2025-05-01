@@ -3,6 +3,8 @@
 #include <iostream>
 #include <soci/mysql/soci-mysql.h>
 #include <soci/session.h>
+#include <sw/redis++/errors.h>
+#include <sw/redis++/utils.h>
 #include "global_variables.h"
 #include "misc_functions.h"
 #include "database_connector.h"
@@ -63,12 +65,15 @@ void InitializeRedisString()
   redisConnectionOptions.host = redisIP;
   redisConnectionOptions.password = redisPassword;
   redisConnectionOptions.port = redisPort;
-  redisConnectionOptions.socket_timeout = std::chrono::milliseconds(200);
-  redisConnectionOptions.connect_timeout = std::chrono::milliseconds(200);
+  redisConnectionOptions.socket_timeout = std::chrono::milliseconds(600);
+  redisConnectionOptions.connect_timeout = std::chrono::milliseconds(600);
   redisConnectionOptions.db = 0;
   redisPoolOptions.size = THREADS_NUMBER;
+  redisPoolOptions.wait_timeout = std::chrono::milliseconds(600);
+  redisPoolOptions.connection_lifetime = std::chrono::minutes(10);
   std::cout << "Size of redis object: " << sizeof(redis::Redis) << '\n';
-    std::cout << "HOST: " << redisIP << '\n';
+  std::cout << "HOST: " << redisIP << '\n';
+  std::cout << "Redis Pool size: " << redisPoolOptions.size << '\n';
 }
 
 void InitializeConnectionPool()
@@ -78,4 +83,23 @@ void InitializeConnectionPool()
     soci::session& temp = pool.at(i);
     temp.open(soci::mysql, connectionString);
   }
+}
+
+redis::OptionalString RedisGetValue(const std::string& key)
+{
+    redis::OptionalString result;
+    while(true)
+    {
+        try
+        {
+            result = dbRedis->get(key);
+            break;
+        }
+        catch(const redis::TimeoutError& te)
+        {
+            std::cerr << "REDIS TIMEOUT ERROR: Due to unknown black magic reasons, the connection has timed out. We will try again until it succeeds. In the meantime, please check your network!\n";
+            continue;
+        }
+    }
+    return result;
 }

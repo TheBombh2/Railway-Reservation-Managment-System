@@ -1,4 +1,5 @@
 #include <strstream>
+#include <sw/redis++/utils.h>
 #include "crow/app.h"
 #include "database_connector.h"
 #include "authorization.h"
@@ -20,12 +21,11 @@ void AddAuthorizationGETRequests(crow::SimpleApp &app)
     CROW_ROUTE(app, "/users/token-info").methods(crow::HTTPMethod::GET)
          ([](const crow::request& req)
           {
-            std::cout << "tf?\n";
             auto authorizationHeader = req.get_header_value("Authorization");
             if(authorizationHeader.empty())
                 return crow::response(403, "no session token");
             std::string sessionToken = authorizationHeader.substr(7);
-            auto tokenInfo = dbRedis->get(sessionToken);
+            redis::OptionalString tokenInfo = RedisGetValue(sessionToken);
             if(tokenInfo)
             {
                 std::istrstream iss(tokenInfo->c_str());
