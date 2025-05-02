@@ -4,6 +4,7 @@
 #include <string>
 
 #define CHECK_NULLABILITY(stringVar) stringVar, stringVar.size() ? OK_INDICATOR : NULL_INDICATOR 
+#define CHECK_NULLABILITY_DOUBLE(doubleVar) doubleVar, doubleVar != 0.0 ? OK_INDICATOR : NULL_INDICATOR
 
 const inline std::string GET_CUSTOMER_UUID_QUERY =
 "SELECT ID FROM CustomerContactInformation WHERE Email=:Email;";
@@ -16,7 +17,11 @@ const inline std::string GET_EMPLOYEE_PERMISSIONS_QUERY =
 "JOIN Department DP ON EI.DepartmentID=DP.DepartmentID "
 "WHERE EmployeeID=:ID; ";
 
+const inline std::string GET_EMPLOYEE_MANAGER_UUID_QUERY =
+"SELECT ManagerID FROM EmployeeBasicInformation WHERE EmployeeID=:ID";
+
 std::string GetCustomerUUID(const std::string& email);
 std::string GetEmployeeUUID(const std::string& email);
+std::string GetEmployeeManagerUUID(const std::string& uuid);
 std::pair<uint8_t, uint8_t> GetEmployeePermissions(const std::string& uuid);
 

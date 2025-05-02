@@ -20,6 +20,18 @@ std::string GetEmployeeUUID(const std::string &email)
     return uuid;
 }
 
+std::string GetEmployeeManagerUUID(const std::string& uuid)
+{
+    //"0" means null UUID
+    soci::session db(pool);
+    soci::indicator ind;
+    std::string result;
+    db << GET_EMPLOYEE_MANAGER_UUID_QUERY, soci::use(uuid, ind), soci::into(result);
+    if(ind != soci::indicator::i_ok)
+        return "0";
+    return result;
+}
+
 std::pair<uint8_t, uint8_t> GetEmployeePermissions(const std::string& uuid)
 {
     soci::session db(pool);

@@ -61,6 +61,7 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
         res.code = 401;
         res.body = "no authorization";
         res.end();
+        return;
     }
     std::string token = authHeader.substr(7);
     SessionTokenInfo tokenInfo = GetSessionTokenInfo(token);
@@ -70,6 +71,7 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
         res.body = "invalid session token";
         std::cerr << "Session token UUID: " << tokenInfo.GetUUID() << '\n';
         res.end();
+        return;
     }
     ctx.token = token;
     ctx.tokenInfo = tokenInfo;

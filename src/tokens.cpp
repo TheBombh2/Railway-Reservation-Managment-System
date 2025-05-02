@@ -1,6 +1,7 @@
 #include <cstdint>
 #include <sstream>
 #include "tokens.h"
+#include "permissions.h"
 
 SessionTokenInfo::SessionTokenInfo(uint8_t permission, uint8_t subPermission, std::string uuid)
 {
@@ -69,10 +70,12 @@ void SessionTokenInfo::RemovePermission(uint8_t perm)
 
 bool SessionTokenInfo::HasPermission(uint8_t perm)
 {
+    if(perm == PERMISSIONS::NONE_PERM) return true;
     return this->permission & perm;
 }
 
 bool SessionTokenInfo::HasSubPermission(uint8_t perm)
 {
+    if(subPermission == SUB_PERMISSIONS::NONE_SUBPERM) return true;
     return this->subPermission & perm;
 }

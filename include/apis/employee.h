@@ -24,6 +24,18 @@ const inline std::string CREATE_DEPARTMENT_QUERY =
 "ManagerID, ManagerHiringDate) "
 "VALUES (:ID, :Title, :Description, :Location, :Perm, :SubPerm, :ManagerID, :ManagerHireDate); ";
 
+const inline std::string CREATE_APPRAISAL_QUERY = 
+"INSERT INTO EmployeeAppraisal "
+"(Title, Description, SalaryImprovement, "
+"AssignedEmployee, CreatedEmployee) "
+"VALUES (:Title, :Description, :SalaryImprovement, :AssignedEmployee, :CreatedEmployee);";
+
 //To-Do: Add manager ID and name!
 const inline std::string GET_DEPARTMENTS_QUERY =
 "SELECT Title, Description, Location FROM Department";
+
+const inline std::string GET_JOB_INFO_QUERY = 
+"SELECT Title, Description FROM Job WHERE JobID=:ID;";
+
+const inline std::string GET_EMPLOYEE_SALT_QUERY =
+"SELECT PasswordSalt FROM EmployeeSecurityInformation WHERE ID=:ID;";
