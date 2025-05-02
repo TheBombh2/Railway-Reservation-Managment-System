@@ -22,23 +22,19 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          crow::json::rvalue body = crow::json::load(req.body);
          std::string title, description, givenTo, tempDate;
          double salaryEffect;
-         std::tm dateGiven;
          try
          {
             title = body["title"].s();
             description = body["description"].s();
             givenTo = body["givenTo"].s();
             salaryEffect = body["salaryEffect"].d();
-            tempDate = body["date"].s();
-            if(!strptime(tempDate.c_str(), TIME_FORMAT_STRING, &dateGiven))
-                return crow::response(400, "invalid appraisal issue date");
          }
          catch(const std::exception& e)
          {
             return crow::response(400, "bad request");
          }
          std::string employeeUUID = tokenInfo.GetUUID();
-         std::string managerUUID = GetEmployeeManagerUUID(employeeUUID);
+         std::string managerUUID = GetEmployeeManagerUUID(givenTo);
          if(managerUUID != employeeUUID)
             return crow::response(403, "forbidden");
          try
@@ -56,7 +52,6 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          });
 
-
     CROW_ROUTE(app, "/users/citations/create").methods(crow::HTTPMethod::POST)
         ([&](const crow::request& req)
          {
@@ -64,29 +59,25 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          crow::json::rvalue body = crow::json::load(req.body);
          std::string title, description, givenTo, tempDate;
          double salaryEffect;
-         std::tm dateGiven;
          try
          {
             title = body["title"].s();
             description = body["description"].s();
             givenTo = body["givenTo"].s();
             salaryEffect = body["salaryEffect"].d();
-            tempDate = body["date"].s();
-            if(!strptime(tempDate.c_str(), TIME_FORMAT_STRING, &dateGiven))
-                return crow::response(400, "invalid citation issue date");
          }
          catch(const std::exception& e)
          {
             return crow::response(400, "bad request");
          }
          std::string employeeUUID = tokenInfo.GetUUID();
-         std::string managerUUID = GetEmployeeManagerUUID(employeeUUID);
+         std::string managerUUID = GetEmployeeManagerUUID(givenTo);
          if(managerUUID != employeeUUID)
             return crow::response(403, "forbidden");
          try
          {
             soci::session db(pool);
-            db << CREATE_APPRAISAL_QUERY, soci::use(title), soci::use(description),
+            db << CREATE_CITATION_QUERY, soci::use(title), soci::use(description),
             soci::use(CHECK_NULLABILITY_DOUBLE(salaryEffect)),
             soci::use(givenTo), soci::use(managerUUID);
             return crow::response(201, "citation successfully created");
@@ -97,7 +88,6 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(500, "database error");
          }
          });
-
 
     CROW_ROUTE(app, "/jobs/create").methods(crow::HTTPMethod::POST)
         ([&](const crow::request& req)
@@ -114,7 +104,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::string uuid = GetUUIDv7();
             db << CREATE_JOB_QUERY, soci::use(uuid), soci::use(title), soci::use(description);
             }
-            catch(const soci::mysql_soci_error& e)
+            catch(const std::exception& e)
             {
                 std::cerr << "DATABASE ERROR: " << e.what() << '\n';
                 return crow::response(500, "database error");

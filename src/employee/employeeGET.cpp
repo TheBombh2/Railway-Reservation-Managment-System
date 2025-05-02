@@ -1,3 +1,4 @@
+#include <soci/mysql/soci-mysql.h>
 #include <soci/session.h>
 #include <soci/soci-backend.h>
 #include <vector>
@@ -12,10 +13,8 @@
 void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
     CROW_ROUTE(app, "/users/<string>/appraisals").methods(crow::HTTPMethod::GET)
-        ([&](const crow::request& req, const std::string& uuid)
+        ([&](const crow::request& req, const std::string& uuidRequest)
          {
-         //Apparently, the database is set up such that if the salaryImprovement is null, then it
-         //defaults to zero. This means we do not need soci::indicators for salary
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
          std::vector<std::string> titles(MAX_APPRAISALS_RETURNED);
          std::vector<std::string> descriptions(MAX_APPRAISALS_RETURNED);
@@ -23,12 +22,16 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<double> salaryImprovement(MAX_APPRAISALS_RETURNED);
          std::vector<std::string> managerFirstName(MAX_APPRAISALS_RETURNED);
          std::vector<std::string> managerLastName(MAX_APPRAISALS_RETURNED);
-         
+         std::vector<soci::indicator> salaryInds(MAX_APPRAISALS_RETURNED);
+         std::string uuidToken = tokenInfo.GetUUID();
+         if(uuidToken != uuidRequest)
+            return crow::response(403, "forbidden");
          try
          {
             soci::session db(pool);
             db << GET_APPRAISALS_QUERY, soci::into(titles), soci::into(descriptions), soci::into(issueDate),
-            soci::into(salaryImprovement), soci::into(managerFirstName), soci::into(managerLastName);
+            soci::into(salaryImprovement, salaryInds), soci::into(managerFirstName),
+            soci::into(managerLastName), soci::use(uuidToken);
          }
          catch(const std::exception& e)
          {
@@ -41,10 +44,56 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
             result["appraisals"][i]["title"] = titles[i];
             result["appraisals"][i]["description"] = descriptions[i];
-            result["appraisals"][i]["salaryImprovement"] = salaryImprovement[i];
             result["appraisals"][i]["managerFirstName"] = managerFirstName[i];
-            result["apprailsals"][i]["managerLastName"] = managerLastName[i];
+            result["appraisals"][i]["managerLastName"] = managerLastName[i];
             result["appraisals"][i]["issueDate"] = FormatTimeToString(issueDate[i]);
+            if(salaryInds[i] == soci::indicator::i_ok) 
+                result["appraisals"][i]["salaryImprovement"] = salaryImprovement[i];
+            else 
+                result["appraisals"][i]["salaryImprovement"] = 0.0;
+         }
+         return crow::response(200, result);
+         });
+
+    CROW_ROUTE(app, "/users/<string>/citations").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req, const std::string& uuidRequest)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         std::vector<std::string> titles(MAX_APPRAISALS_RETURNED);
+         std::vector<std::string> descriptions(MAX_APPRAISALS_RETURNED);
+         std::vector<std::tm> issueDate(MAX_APPRAISALS_RETURNED);
+         std::vector<double> salaryDeduction(MAX_APPRAISALS_RETURNED);
+         std::vector<soci::indicator> salaryInds;
+         std::vector<std::string> managerFirstName(MAX_APPRAISALS_RETURNED);
+         std::vector<std::string> managerLastName(MAX_APPRAISALS_RETURNED);
+         std::string uuidToken = tokenInfo.GetUUID();
+         if(uuidToken != uuidRequest)
+            return crow::response(403, "forbidden");
+         try
+         {
+            soci::session db(pool);
+            db << GET_CITATIONS_QUERY, soci::into(titles), soci::into(descriptions), soci::into(issueDate),
+            soci::into(salaryDeduction, salaryInds), soci::into(managerFirstName),
+            soci::into(managerLastName), soci::use(uuidToken);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR(/users/<string>/citations): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         crow::json::wvalue result;
+         result["size"] = titles.size();
+         for(unsigned int i = 0; i < titles.size(); i++)
+         {
+            result["citations"][i]["title"] = titles[i];
+            result["citations"][i]["description"] = descriptions[i];
+            result["citations"][i]["managerFirstName"] = managerFirstName[i];
+            result["citations"][i]["managerLastName"] = managerLastName[i];
+            result["citations"][i]["issueDate"] = FormatTimeToString(issueDate[i]);
+            if(salaryInds[i] == soci::indicator::i_ok) 
+                result["citations"][i]["salaryDeduction"] = salaryDeduction[i];
+            else 
+                result["citations"][i]["salaryDeduction"] = 0.0;
          }
          return crow::response(200, result);
          });
