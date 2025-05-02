@@ -46,7 +46,8 @@ class TrainsListItem extends StatelessWidget {
       ),
       trailing: FloatingActionButton.small(
         onPressed: () {
-          context.go('/home/ticket_reserve');
+          
+          context.go('/home/trains/ticket_reserve');
           
         },
         backgroundColor: Colors.white,

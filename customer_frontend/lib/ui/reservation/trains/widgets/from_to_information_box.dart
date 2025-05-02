@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
+import 'package:go_router/go_router.dart';
 
 class FromToInformationBox extends StatelessWidget {
   const FromToInformationBox({
@@ -39,12 +40,17 @@ class FromToInformationBox extends StatelessWidget {
                 
                 Expanded(
                   flex: 2,
-                  child: Text(
-                    fromCity,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Color.fromRGBO(0, 0, 0, 0.6),
+                  child: GestureDetector(
+                    onTap: () {
+                      context.go("/home/trains/station_selection_screen");
+                    },
+                    child: Text(
+                      fromCity,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromRGBO(0, 0, 0, 0.6),
+                      ),
                     ),
                   ),
                 )
@@ -85,8 +91,10 @@ class FromToInformationBox extends StatelessWidget {
                 
                 Expanded(
                   flex: 2,
-                  child: Align(
-                    alignment:Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: (){
+                      context.go("/home/trains/station_selection_screen");
+                    },
                     child: Text(
                       toCity,
                       textAlign: TextAlign.start,

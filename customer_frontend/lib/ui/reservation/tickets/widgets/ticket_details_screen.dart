@@ -1,6 +1,5 @@
 import 'package:customer_frontend/ui/reservation/tickets/widgets/trip_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class TicketDetailsScreen extends StatelessWidget {
   const TicketDetailsScreen({super.key});
