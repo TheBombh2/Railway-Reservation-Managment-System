@@ -85,3 +85,14 @@ YAML::Node LoadSecretsFile()
   }
   return root;
 }
+
+std::string FormatTimeToString(const std::tm& time)
+{
+    //A good C developer always allocates a lot more memory than is actually needed just in case ;)
+    //That was meant to be a joke but I don't have enough time to think about the theoretical
+    //maximum needed
+    //Thus, 128 is more than enough!
+    char buffer[128];
+    strftime(buffer, sizeof(buffer), TIME_FORMAT_STRING, &time);
+    return std::string(buffer);
+}

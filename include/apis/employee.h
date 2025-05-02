@@ -7,6 +7,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE>& app);
 void AddEmployeeDELETERequests(crow::App<AUTH_MIDDLEWARE>& app);
 
 const inline unsigned short MAX_DEPARTMENTS_RETURNED = 255;
+const inline unsigned short MAX_APPRAISALS_RETURNED = 255;
 
 const inline std::string CREATE_JOB_QUERY =
 "INSERT INTO Job (JobID, Title, Description) VALUES (:ID, :Title, :Description);";
@@ -39,3 +40,9 @@ const inline std::string GET_JOB_INFO_QUERY =
 
 const inline std::string GET_EMPLOYEE_SALT_QUERY =
 "SELECT PasswordSalt FROM EmployeeSecurityInformation WHERE ID=:ID;";
+
+const inline std::string GET_APPRAISALS_QUERY = 
+"SELECT Title, Description, IssueDate, SalaryImprovement, EBI.`FirstName` AS ManagerFirstName, EBI.`LastName` AS ManagerLastName FROM `EmployeeAppraisal` EA "
+"JOIN `EmployeeBasicInformation` EBI ON EBI.`EmployeeID` = EA.`CreatedEmployee` "
+"WHERE EA.`AssignedEmployee` = ':ID'; ";
+

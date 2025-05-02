@@ -2,13 +2,53 @@
 #include <soci/soci-backend.h>
 #include <vector>
 #include "crow/common.h"
+#include "crow/http_response.h"
 #include "database_connector.h"
 #include "employee.h"
 #include "middleware.h"
+#include "misc_functions.h"
 #include "permissions.h"
 
 void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
+    CROW_ROUTE(app, "/users/<string>/appraisals").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req, const std::string& uuid)
+         {
+         //Apparently, the database is set up such that if the salaryImprovement is null, then it
+         //defaults to zero. This means we do not need soci::indicators for salary
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         std::vector<std::string> titles(MAX_APPRAISALS_RETURNED);
+         std::vector<std::string> descriptions(MAX_APPRAISALS_RETURNED);
+         std::vector<std::tm> issueDate(MAX_APPRAISALS_RETURNED);
+         std::vector<double> salaryImprovement(MAX_APPRAISALS_RETURNED);
+         std::vector<std::string> managerFirstName(MAX_APPRAISALS_RETURNED);
+         std::vector<std::string> managerLastName(MAX_APPRAISALS_RETURNED);
+         
+         try
+         {
+            soci::session db(pool);
+            db << GET_APPRAISALS_QUERY, soci::into(titles), soci::into(descriptions), soci::into(issueDate),
+            soci::into(salaryImprovement), soci::into(managerFirstName), soci::into(managerLastName);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR(/users/<string>/appraisals): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         crow::json::wvalue result;
+         result["size"] = titles.size();
+         for(unsigned int i = 0; i < titles.size(); i++)
+         {
+            result["appraisals"][i]["title"] = titles[i];
+            result["appraisals"][i]["description"] = descriptions[i];
+            result["appraisals"][i]["salaryImprovement"] = salaryImprovement[i];
+            result["appraisals"][i]["managerFirstName"] = managerFirstName[i];
+            result["apprailsals"][i]["managerLastName"] = managerLastName[i];
+            result["appraisals"][i]["issueDate"] = FormatTimeToString(issueDate[i]);
+         }
+         return crow::response(200, result);
+         });
+
     CROW_ROUTE(app, "/users/<string>/employee/salt").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req, const std::string& uuidInput)
          {
