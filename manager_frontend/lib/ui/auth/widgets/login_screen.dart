@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:manager_frontend/ui/core/share_widgets/blue_button.dart';
+import 'package:manager_frontend/ui/core/share_widgets/blue_text_field.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -20,7 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 100,horizontal: 80),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 100,
+                  horizontal: 80,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: primaryWhite,
@@ -42,22 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: darkerBlue,
                           ),
                         ),
-                        TextField(decoration: InputDecoration(hintText: "Email",focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: darkBlue)))),
-                        TextField(
-                          decoration: InputDecoration(hintText: "Password",focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: darkBlue))),
-                          obscureText: true,
-                        ),
-                        FilledButton(
-                          onPressed: () {},
-                          style: FilledButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            backgroundColor: darkBlue,
-                            elevation: 2
-                          ),
-                          child: Text("Login",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
-                        ),
+                        BlueTextField(label: "Email"),
+                        BlueTextField(label: "Password", isPassword: true),
+                        BlueButton(label: "Login", onTap: () {}),
                       ],
                     ),
                   ),
@@ -65,7 +57,17 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          Column(children: [Expanded(child: Image.asset('assets/images/home_screen.jpg',fit: BoxFit.cover,width: 600,))]),
+          Column(
+            children: [
+              Expanded(
+                child: Image.asset(
+                  'assets/images/home_screen.jpg',
+                  fit: BoxFit.cover,
+                  width: 600,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
