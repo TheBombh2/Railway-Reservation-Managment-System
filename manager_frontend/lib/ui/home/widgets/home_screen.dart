@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
-import 'package:manager_frontend/ui/home/admin_navigation_drawer.dart';
+import 'package:manager_frontend/ui/departments/widgets/departments_fragment.dart';
+import 'package:manager_frontend/ui/home/widgets/admin_navigation_drawer.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_fragment.dart';
 import 'package:manager_frontend/ui/profile/widgets/profile_fragment.dart';
@@ -20,8 +20,12 @@ class _HomeScreenState extends State<HomeScreen> {
       switch (path) {
         case '/employees':
           currentFragment = EmployeesFragment();
+          break;
+        case '/departments':
+          currentFragment = DepartmentsFragment();
+          break;
         case _:
-          currentFragment =  ProfileFragment();
+          currentFragment = ProfileFragment();
       }
     });
   }
