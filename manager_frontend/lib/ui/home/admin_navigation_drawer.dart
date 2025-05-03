@@ -4,8 +4,8 @@ import 'package:manager_frontend/ui/core/share_widgets/navigation_item.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 
 class AdminNavigationDrawer extends StatelessWidget {
-  const AdminNavigationDrawer({super.key});
-
+  AdminNavigationDrawer({required this.fragmentOnTap, super.key});
+  void Function(String) fragmentOnTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,13 +34,13 @@ class AdminNavigationDrawer extends StatelessWidget {
           NavigationItem(
             title: 'My Info',
             onTap: () {
-              context.go('/profile');
+              fragmentOnTap('/profile');
             },
           ),
           NavigationItem(
             title: 'All Employees',
             onTap: () {
-              context.go('/employees');
+              fragmentOnTap('/employees');
             },
           ),
           NavigationItem(title: 'All Departments', onTap: () {}),

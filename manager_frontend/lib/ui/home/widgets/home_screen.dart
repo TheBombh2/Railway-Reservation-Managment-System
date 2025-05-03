@@ -1,0 +1,62 @@
+
+import 'package:flutter/material.dart';
+import 'package:manager_frontend/ui/home/admin_navigation_drawer.dart';
+import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/employees/widgets/employees_fragment.dart';
+import 'package:manager_frontend/ui/profile/widgets/profile_fragment.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Widget currentFragment = ProfileFragment();
+
+  void generateFragment(String path) {
+    setState(() {
+      switch (path) {
+        case '/employees':
+          currentFragment = EmployeesFragment();
+        case _:
+          currentFragment =  ProfileFragment();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: primaryWhite,
+      body: Row(
+        children: [
+          AdminNavigationDrawer(fragmentOnTap: generateFragment),
+          Expanded(
+            child: Column(
+              children: [
+                // Header section
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(color: darkBlue),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 32, 0, 26.6),
+                    child: Text(
+                      "Welcome, Belal!",
+                      style: TextStyle(color: primaryWhite, fontSize: 32),
+                    ),
+                  ),
+                ),
+                // Scrollable content section
+                //EmployeesScreen()
+                //ProfileFragment()
+                currentFragment,
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

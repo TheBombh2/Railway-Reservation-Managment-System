@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         BlueTextField(label: "Email"),
                         BlueTextField(label: "Password", isPassword: true),
-                        BlueButton(label: "Login", onTap: () {context.go('/profile');}),
+                        BlueButton(label: "Login", onTap: () {context.go('/home');}),
                       ],
                     ),
                   ),
