@@ -9,6 +9,7 @@ void AddEmployeeDELETERequests(crow::App<AUTH_MIDDLEWARE>& app);
 const inline unsigned short MAX_DEPARTMENTS_RETURNED = 255;
 const inline unsigned short MAX_APPRAISALS_RETURNED = 255;
 const inline unsigned short MAX_CITATIONS_RETURNED = 255;
+const inline unsigned short MAX_TASKS_RETURNED = 64;
 
 const inline std::string CREATE_JOB_QUERY =
 "INSERT INTO Job (JobID, Title, Description) VALUES (:ID, :Title, :Description);";
@@ -38,6 +39,11 @@ const inline std::string CREATE_CITATION_QUERY =
 "AssignedEmployee, CreatedEmployee) "
 "VALUES (:Title, :Description, :SalaryDeduction, :AssignedEmployee, :CreatedEmployee);";
 
+const inline std::string CREATE_TASK_QUERY = 
+"INSERT INTO Task "
+"(Title, Description, Deadline, AssignedEmployee, CreatorEmployee) "
+"VALUES (:Title, :Desc, :Deadline, :AssignedEmp, :CreatorEmp); ";
+
 //To-Do: Add manager ID and name!
 const inline std::string GET_DEPARTMENTS_QUERY =
 "SELECT Title, Description, Location FROM Department";
@@ -57,3 +63,9 @@ const inline std::string GET_CITATIONS_QUERY =
 "SELECT Title, Description, IssueDate, SalaryDeduction, EBI.FirstName AS ManagerFirstName, EBI.LastName AS ManagerLastName FROM EmployeeCitation EA "
 "JOIN EmployeeBasicInformation EBI ON EBI.EmployeeID = EA.CreatedEmployee "
 "WHERE EA.AssignedEmployee = :ID; ";
+
+const inline std::string GET_TASKS_QUERY = 
+"SELECT Title, Description, Deadline, CompletionDate, EBI.FirstName AS CreatorFirstName, EB"
+"I.LastName AS CreatorLastname FROM `Task` T "
+"JOIN `EmployeeBasicInformation` EBI ON EBI.`EmployeeID` = T.`CreatorEmployee` "
+"WHERE T.`AssignedEmployee` = :ID;";

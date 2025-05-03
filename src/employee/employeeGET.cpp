@@ -59,13 +59,13 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         ([&](const crow::request& req, const std::string& uuidRequest)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
-         std::vector<std::string> titles(MAX_APPRAISALS_RETURNED);
-         std::vector<std::string> descriptions(MAX_APPRAISALS_RETURNED);
-         std::vector<std::tm> issueDate(MAX_APPRAISALS_RETURNED);
-         std::vector<double> salaryDeduction(MAX_APPRAISALS_RETURNED);
+         std::vector<std::string> titles(MAX_CITATIONS_RETURNED);
+         std::vector<std::string> descriptions(MAX_CITATIONS_RETURNED);
+         std::vector<std::tm> issueDate(MAX_CITATIONS_RETURNED);
+         std::vector<double> salaryDeduction(MAX_CITATIONS_RETURNED);
          std::vector<soci::indicator> salaryInds;
-         std::vector<std::string> managerFirstName(MAX_APPRAISALS_RETURNED);
-         std::vector<std::string> managerLastName(MAX_APPRAISALS_RETURNED);
+         std::vector<std::string> managerFirstName(MAX_CITATIONS_RETURNED);
+         std::vector<std::string> managerLastName(MAX_CITATIONS_RETURNED);
          std::string uuidToken = tokenInfo.GetUUID();
          if(uuidToken != uuidRequest)
             return crow::response(403, "forbidden");
@@ -148,6 +148,38 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          crow::json::wvalue result;
          result["title"] = title;
          result["description"] = description;
+         return crow::response(200, result);
+         });
+
+    CROW_ROUTE(app, "/users/tasks").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         std::string uuid = tokenInfo.GetUUID();
+         std::vector<std::string> titles(MAX_TASKS_RETURNED);
+         std::vector<std::string> descriptions(MAX_TASKS_RETURNED);
+         std::vector<std::string> creatorEmployees(MAX_TASKS_RETURNED);
+         std::vector<std::tm> completionDates(MAX_TASKS_RETURNED);
+         std::vector<soci::indicator> completionDateIndicators(MAX_TASKS_RETURNED);
+         std::vector<std::tm> deadlines(MAX_TASKS_RETURNED);
+         std::vector<std::string> managerFirstNames(MAX_TASKS_RETURNED);
+         std::vector<std::string> managerLastNames(MAX_TASKS_RETURNED);
+         soci::session db(pool);
+         db << GET_TASKS_QUERY, soci::use(uuid), soci::into(titles), soci::into(descriptions),
+         soci::into(deadlines), soci::into(completionDates, completionDateIndicators),
+         soci::into(managerFirstNames), soci::into(managerLastNames);
+         crow::json::wvalue result;
+         result["size"] = titles.size();
+         for(unsigned int i = 0; i < titles.size(); i++)
+         {
+            result["tasks"][i]["title"] = titles[i];
+            result["tasks"][i]["description"] = descriptions[i];
+            result["tasks"][i]["managerFirstName"] = managerFirstNames[i];
+            result["tasks"][i]["managerLastName"] = managerLastNames[i];
+            result["tasks"][i]["deadline"] = FormatTimeToString(deadlines[i]);
+            result["tasks"][i]["completionDate"] = 
+             completionDateIndicators[i] == soci::indicator::i_ok ? FormatTimeToString(completionDates[i]) : "N/A";
+         }
          return crow::response(200, result);
          });
 }

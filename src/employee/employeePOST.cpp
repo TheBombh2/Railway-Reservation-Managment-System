@@ -187,4 +187,40 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(400, "bad request or database error");
          }
          });
+
+    CROW_ROUTE(app, "/users/tasks/create").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         std::string creatorUUID = tokenInfo.GetUUID();
+         std::string title, description, tempDeadline, assignedEmployee;
+         std::tm deadline;
+         try
+         {
+            const crow::json::rvalue body = crow::json::load(req.body);
+            title = body["title"].s();
+            description = body["description"].s();
+            tempDeadline = body["deadline"].s();
+            assignedEmployee = body["assignedEmployee"].s();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "BAD REQUEST(/user/tasks/create): " << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
+         //Make sure the employee is authorized (is manager of employee) to give tasks to assignedEmployee
+         std::cout << "CREATOR UUID: "<<  creatorUUID << '\n';
+         std::cout << "MANAGER UUID: " << GetEmployeeManagerUUID(assignedEmployee) << '\n'; 
+         std::cout << "ASSIGNED EMPLOYEE: " << assignedEmployee << '\n';
+         if(creatorUUID != GetEmployeeManagerUUID(assignedEmployee))
+            return crow::response(403, "forbidden");
+
+         if(!strptime(tempDeadline.c_str(), TIME_FORMAT_STRING, &deadline))
+            return crow::response(400, "invalid deadline");
+         
+         soci::session db(pool);
+         db << CREATE_TASK_QUERY, soci::use(title), soci::use(description), soci::use(deadline),
+         soci::use(assignedEmployee), soci::use(creatorUUID);
+         return crow::response(200, "task created successfully");
+         });
 }

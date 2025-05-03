@@ -26,7 +26,7 @@ std::string GetEmployeeManagerUUID(const std::string& uuid)
     soci::session db(pool);
     soci::indicator ind;
     std::string result;
-    db << GET_EMPLOYEE_MANAGER_UUID_QUERY, soci::use(uuid, ind), soci::into(result);
+    db << GET_EMPLOYEE_MANAGER_UUID_QUERY, soci::use(uuid), soci::into(result, ind);
     if(ind != soci::indicator::i_ok)
         return "0";
     return result;
