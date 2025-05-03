@@ -194,29 +194,15 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::string departmentID, jobID, managerID;
          std::tm managerHireDate;
          std::string jobTitle, jobDescription;
-         std::string managerFirstName, managerMiddleName, managerLastName, managerGender,
-         managerJobTitle, managerJobDescription;
-         std::tm depManagerHiringDate;
-         std::string depTitle, depDescription, depLocation, depManagerFirstName, depManagerMiddleName,
-         depManagerLastName, depManagerGender;
          soci::session db(pool); 
          try
          {
-            //Info to get:
-            //Job, Manager, Department
             db << GET_ALL_IDS_QUERY, soci::use(employeeID), soci::into(departmentID), soci::into(jobID),
             soci::into(managerID), soci::into(managerHireDate);
             //I am not sure what will happen if jobID is null. However, I think it will just not
             //return anything. I will not test it now
             db << GET_JOB_INFO_QUERY, soci::into(jobTitle), soci::into(jobDescription)
             , soci::use(CHECK_NULLABILITY(jobID));
-            db << GET_MANAGER_INFORMATION_QUERY, soci::into(managerFirstName), soci::into(managerMiddleName),
-            soci::into(managerLastName), soci::into(managerGender), soci::into(managerJobTitle),
-            soci::into(managerJobDescription), soci::use(managerID);
-            db << GET_DEPARTMENT_INFORMATION_QUERY, soci::into(depTitle), soci::into(depDescription),
-            soci::into(depLocation), soci::into(depManagerHiringDate), soci::into(depManagerFirstName),
-            soci::into(depManagerMiddleName), soci::into(depManagerLastName), soci::into(depManagerGender),
-            soci::use(departmentID);
          }
          catch(const std::exception& e)
          {
