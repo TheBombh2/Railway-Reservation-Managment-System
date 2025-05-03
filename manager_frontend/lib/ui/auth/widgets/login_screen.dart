@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:manager_frontend/ui/core/share_widgets/blue_button.dart';
 import 'package:manager_frontend/ui/core/share_widgets/blue_text_field.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
@@ -49,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         BlueTextField(label: "Email"),
                         BlueTextField(label: "Password", isPassword: true),
-                        BlueButton(label: "Login", onTap: () {}),
+                        BlueButton(label: "Login", onTap: () {context.go('/profile');}),
                       ],
                     ),
                   ),

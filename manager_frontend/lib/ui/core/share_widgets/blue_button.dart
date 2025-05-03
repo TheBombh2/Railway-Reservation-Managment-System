@@ -7,16 +7,19 @@ class BlueButton extends StatelessWidget {
   final void Function() onTap;
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: onTap,
-      style: FilledButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-        backgroundColor: darkBlue,
-        elevation: 2,
-      ),
-      child: Text(
-        label,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return SizedBox(
+      width: double.infinity,
+      child: FilledButton(
+        onPressed: onTap,
+        style: FilledButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+          backgroundColor: darkBlue,
+          elevation: 2,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
       ),
     );
   }
