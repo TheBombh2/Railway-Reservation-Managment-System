@@ -1,4 +1,6 @@
 import 'package:customer_frontend/ui/auth/widgets/login_screen.dart';
+import 'package:customer_frontend/ui/auth/widgets/register_screen.dart';
+import 'package:customer_frontend/ui/auth/widgets/reset_password_screen.dart';
 import 'package:customer_frontend/ui/home/widgets/home_screen.dart';
 import 'package:customer_frontend/ui/profile/widgets/profile_screen.dart';
 import 'package:customer_frontend/ui/reservation/stations/widgets/station_selection_screen.dart';
@@ -11,7 +13,10 @@ import 'package:go_router/go_router.dart';
 final router = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(path: '/', builder: (ctx, state) => LoginScreen()),
+    GoRoute(path: '/', builder: (ctx, state) => LoginScreen(), routes: [
+      GoRoute(path: '/register',builder: (context, state) => RegisterScreen(),),
+      GoRoute(path: '/reset_password',builder: (context, state) => ResetPasswordScreen(),)
+    ]),
     GoRoute(
       path: '/home',
       pageBuilder: (ctx, state) {

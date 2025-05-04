@@ -53,7 +53,9 @@ class LoginScreen extends StatelessWidget {
                   height: 29,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.go('/reset_password');
+                  },
                   child: Text(
                     'Forgot Password?',
                     style: TextStyle(
@@ -88,6 +90,20 @@ class LoginScreen extends StatelessWidget {
                           fontSize: 22,
                         ),
                       ),
+                    ),
+                  ),
+                ),
+                 TextButton(
+                  onPressed: () {
+                    context.go('/register');
+                  },
+                  child: Text(
+                    'Sign up!',
+                    style: TextStyle(
+                      color: Color(0xFF0076CB),
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                      decoration: TextDecoration.underline
                     ),
                   ),
                 ),
