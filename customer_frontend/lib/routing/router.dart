@@ -1,4 +1,6 @@
 import 'package:customer_frontend/ui/auth/widgets/login_screen.dart';
+import 'package:customer_frontend/ui/auth/widgets/onboarding/onboarding1.dart';
+import 'package:customer_frontend/ui/auth/widgets/onboarding/onboarding2.dart';
 import 'package:customer_frontend/ui/auth/widgets/register_screen.dart';
 import 'package:customer_frontend/ui/auth/widgets/reset_password_screen.dart';
 import 'package:customer_frontend/ui/home/widgets/home_screen.dart';
@@ -11,11 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/onboarding1',
   routes: [
     GoRoute(path: '/', builder: (ctx, state) => LoginScreen(), routes: [
       GoRoute(path: '/register',builder: (context, state) => RegisterScreen(),),
-      GoRoute(path: '/reset_password',builder: (context, state) => ResetPasswordScreen(),)
+      GoRoute(path: '/reset_password',builder: (context, state) => ResetPasswordScreen(),),
+      GoRoute(path: '/onboarding1',builder: (context, state) => Onboarding1(),),
+      GoRoute(path: '/onboarding2',builder: (context, state) => Onboarding2(),)
     ]),
     GoRoute(
       path: '/home',
