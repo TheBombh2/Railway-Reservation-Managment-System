@@ -1,3 +1,4 @@
+import 'package:employee_frontend/ui/conductor/verfity_tickets/widgets/qr_scanner_screen.dart';
 import 'package:employee_frontend/ui/conductor/verfity_tickets/widgets/verfiy_ticket_screen.dart';
 import 'package:employee_frontend/ui/maintenance/maintenance_jobs/widgets/maintenance_jobs_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:employee_frontend/ui/home/widgets/home_screen.dart';
 import 'package:employee_frontend/ui/shared_features/profile/widgets/profile_screen.dart';
 import 'package:employee_frontend/ui/shared_features/tasks/widgets/tasks_screen.dart';
 import 'package:employee_frontend/ui/train_driver/train_tracking/widgets/train_tracking_screen.dart';
+
 final router = GoRouter(
   initialLocation: '/',
   routes: [
@@ -37,14 +39,32 @@ final router = GoRouter(
           );
         },
         routes: [
-          GoRoute(path: 'profile', builder: (ctx, state) => const ProfileScreen()),
+          GoRoute(
+              path: 'profile', builder: (ctx, state) => const ProfileScreen()),
           GoRoute(path: 'tasks', builder: (ctx, state) => const TasksScreen()),
-          GoRoute(path: 'appraisals', builder: (ctx, state) => const AppraisalsScreen()),
-          GoRoute(path: 'citations', builder: (ctx, state) => const CitationsScreen()),
-          GoRoute(path: 'assigned_trains', builder: (ctx, state) => const AssignedTrainsScreen()),
-          GoRoute(path: 'train_tracking', builder: (ctx, state) => const TrainTrackingScreen()),
-          GoRoute(path: 'maintenance_jobs', builder: (ctx, state) => const MaintenanceJobsScreen()),
-          GoRoute(path: 'verify_ticket', builder: (ctx, state) => const VerfiyTicketScreen()),
+          GoRoute(
+              path: 'appraisals',
+              builder: (ctx, state) => const AppraisalsScreen()),
+          GoRoute(
+              path: 'citations',
+              builder: (ctx, state) => const CitationsScreen()),
+          GoRoute(
+              path: 'assigned_trains',
+              builder: (ctx, state) => const AssignedTrainsScreen()),
+          GoRoute(
+              path: 'train_tracking',
+              builder: (ctx, state) => const TrainTrackingScreen()),
+          GoRoute(
+              path: 'maintenance_jobs',
+              builder: (ctx, state) => const MaintenanceJobsScreen()),
+          GoRoute(
+              path: 'verify_ticket',
+              builder: (ctx, state) => const VerfiyTicketScreen(),
+              routes: [
+                GoRoute(
+                    path: 'qr_scanner',
+                    builder: (ctx, state) => const QRScannerScreen())
+              ]),
         ]),
   ],
 );
