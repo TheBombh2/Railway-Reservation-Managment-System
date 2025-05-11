@@ -1,7 +1,9 @@
+#include "crow/common.h"
 #include "database_connector.h"
 #include "middleware.h"
 #include "permissions.h"
 #include "reservation.h"
+#include <soci/soci-backend.h>
 
 void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
@@ -34,5 +36,77 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         }
         return crow::response(500, "database error");
      });
+    
+    CROW_ROUTE(app, "/users/customer/all-info").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         std::string uuid = tokenInfo.GetUUID();
+         soci::session db(pool);
+         std::string firstName, middleName, lastName, gender, email, phoneNumber; 
+         soci::indicator middleNameInd;
+         try
+         {
+            db << GET_CUSTOMER_INFORMATION_QUERY, soci::use(uuid), soci::into(firstName),
+            soci::use(middleName, middleNameInd), soci::use(lastName), soci::use(gender),
+            soci::use(email), soci::use(phoneNumber);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR(/users/customer/all-info): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         crow::json::wvalue result;
+         result["firstName"] = firstName;
+         result["middleName"] = middleName;
+         result["lastName"] = lastName;
+         result["gender"] = gender;
+         result["email"] = email;
+         result["phoneNumber"] = phoneNumber;
+         return crow::response(200, result);
+         });
+
+    //Train station endpoints go here
+    CROW_ROUTE(app, "/stations/all-stations").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         soci::session db(pool);
+         std::vector<std::string> ids(MAX_STATION_CONNECTIONS),titles(MAX_STATIONS_RETURNED),
+         descriptions(MAX_STATIONS_RETURNED),
+         locations(MAX_STATIONS_RETURNED), longitudes(MAX_STATIONS_RETURNED), latitudes(MAX_STATIONS_RETURNED);
+         std::vector<std::vector<std::string>> connectionNames(ids.size(),std::vector<std::string>(MAX_STATION_CONNECTIONS));
+         std::vector<std::vector<double>> connectionDistances(ids.size(), std::vector<double>(MAX_STATION_CONNECTIONS));
+         try
+         {
+            db << GET_STATIONS_QUERY, soci::into(ids), soci::into(titles), soci::into(descriptions),
+            soci::into(locations), soci::into(longitudes), soci::into(latitudes);
+            for(int i = 0; i < ids.size(); i++)
+            {
+                db << GET_STATION_CONNECTIONS_QUERY, soci::use(ids[i]), soci::into(connectionNames[i]),
+                soci::into(connectionDistances[i]);
+            }
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR(/stations/all-stations): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         crow::json::wvalue result;
+         for(int i = 0; i < ids.size(); i++)
+         {
+            result["stations"][i]["name"] = titles[i];
+            result["stations"][i]["description"] = descriptions[i];
+            result["stations"][i]["location"] = locations[i];
+            result["stations"][i]["latitude"] = latitudes[i];
+            result["stations"][i]["longitudes"] = longitudes[i];
+            for(int j = 0; j < connectionNames[i].size(); j++)
+            {
+                result["stations"]["connections"][j]["name"] = connectionNames[j];
+                result["stations"]["connections"][j]["distance"] = connectionNames[j];
+            }
+         }
+         return crow::response(200, result);
+         });
 
 }
