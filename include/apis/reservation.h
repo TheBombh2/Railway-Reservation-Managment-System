@@ -32,6 +32,6 @@ const inline std::string GET_STATIONS_QUERY =
 "SELECT ID, Name, Description, Location, Longitude, Latitude FROM `TrainStation`; ";
 
 const inline std::string GET_STATION_CONNECTIONS_QUERY = 
-"SELECT TS.Name, tscs.Distance FROM TrainStationConnectedStations TSCS "
+"SELECT TS.Name, TSCS.Distance FROM TrainStationConnectedStations TSCS "
 "JOIN TrainStation TS ON TSCS.Destination = TS.ID "
 "WHERE TSCS.Source = :ID; ";

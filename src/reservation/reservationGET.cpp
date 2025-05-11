@@ -72,7 +72,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
          soci::session db(pool);
-         std::vector<std::string> ids(MAX_STATION_CONNECTIONS),titles(MAX_STATIONS_RETURNED),
+         std::vector<std::string> ids(MAX_STATIONS_RETURNED),titles(MAX_STATIONS_RETURNED),
          descriptions(MAX_STATIONS_RETURNED),
          locations(MAX_STATIONS_RETURNED), longitudes(MAX_STATIONS_RETURNED), latitudes(MAX_STATIONS_RETURNED);
          std::vector<std::vector<std::string>> connectionNames(ids.size(),std::vector<std::string>(MAX_STATION_CONNECTIONS));
@@ -81,7 +81,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
             db << GET_STATIONS_QUERY, soci::into(ids), soci::into(titles), soci::into(descriptions),
             soci::into(locations), soci::into(longitudes), soci::into(latitudes);
-            for(int i = 0; i < ids.size(); i++)
+            for(unsigned int i = 0; i < ids.size(); i++)
             {
                 db << GET_STATION_CONNECTIONS_QUERY, soci::use(ids[i]), soci::into(connectionNames[i]),
                 soci::into(connectionDistances[i]);
@@ -93,17 +93,17 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(500, "database error");
          }
          crow::json::wvalue result;
-         for(int i = 0; i < ids.size(); i++)
+         for(unsigned int i = 0; i < ids.size(); i++)
          {
             result["stations"][i]["name"] = titles[i];
             result["stations"][i]["description"] = descriptions[i];
             result["stations"][i]["location"] = locations[i];
             result["stations"][i]["latitude"] = latitudes[i];
-            result["stations"][i]["longitudes"] = longitudes[i];
-            for(int j = 0; j < connectionNames[i].size(); j++)
+            result["stations"][i]["longitude"] = longitudes[i];
+            for(unsigned int j = 0; j < connectionNames[i].size(); j++)
             {
-                result["stations"]["connections"][j]["name"] = connectionNames[j];
-                result["stations"]["connections"][j]["distance"] = connectionNames[j];
+                result["stations"][i]["connections"][j]["name"] = connectionNames[i][j];
+                result["stations"][i]["connections"][j]["distance"] = connectionDistances[i][j];
             }
          }
          return crow::response(200, result);
