@@ -35,7 +35,7 @@ if ! IsDBInstalled; then
     echo "Neither MariaDB or MySQL are installed. The script will not install MariaDB with default settings"
     echo "Note: It is recommended to read the arch wiki to improve its security or change its data location"
     sudo pacman -Sy --needed --noconfirm mariadb
-    sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+    sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
     sudo systemctl enable --now mariadb.service
 
 echo "NOTE:"

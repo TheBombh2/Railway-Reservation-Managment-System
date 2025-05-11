@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <soci/mysql/soci-mysql.h>
 #include <soci/session.h>
 #include <soci/soci-backend.h>
@@ -188,41 +189,104 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         ([&](const crow::request& req)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
-         crow::json::wvalue body = crow::json::load(req.body);
-         //Be prepareed little session, we are going to need you a lot
          std::string employeeID = tokenInfo.GetUUID();
+         std::string employeeFirstName, employeeMiddleName, employeeLastName, 
+         employeeGender, employeePhoneNumber, employeeEmail;
+         double employeeSalary = 0.0;
          std::string departmentID, jobID, managerID;
-         std::tm managerHireDate;
+         std::tm managerHireDate = GetEmptyTMObject();
          std::string jobTitle, jobDescription;
          std::string managerFirstName, managerMiddleName, managerLastName, managerGender,
          managerJobTitle, managerJobDescription;
-         std::tm depManagerHiringDate;
+         std::tm depManagerHiringDate = GetEmptyTMObject();
          std::string depTitle, depDescription, depLocation, depManagerFirstName, depManagerMiddleName,
          depManagerLastName, depManagerGender;
+         //Be prepared little session, we are going to need you a lot
          soci::session db(pool); 
          try
          {
             //Info to get:
             //Job, Manager, Department
-            db << GET_ALL_IDS_QUERY, soci::use(employeeID), soci::into(departmentID), soci::into(jobID),
-            soci::into(managerID), soci::into(managerHireDate);
-            //I am not sure what will happen if jobID is null. However, I think it will just not
-            //return anything. I will not test it now
-            db << GET_JOB_INFO_QUERY, soci::into(jobTitle), soci::into(jobDescription)
-            , soci::use(CHECK_NULLABILITY(jobID));
-            db << GET_MANAGER_INFORMATION_QUERY, soci::into(managerFirstName), soci::into(managerMiddleName),
-            soci::into(managerLastName), soci::into(managerGender), soci::into(managerJobTitle),
-            soci::into(managerJobDescription), soci::use(managerID);
-            db << GET_DEPARTMENT_INFORMATION_QUERY, soci::into(depTitle), soci::into(depDescription),
-            soci::into(depLocation), soci::into(depManagerHiringDate), soci::into(depManagerFirstName),
-            soci::into(depManagerMiddleName), soci::into(depManagerLastName), soci::into(depManagerGender),
-            soci::use(departmentID);
+            soci::indicator jobIDInd, managerIDInd, departmentIDInd;
+            db << GET_ALL_IDS_QUERY, soci::use(employeeID), soci::into(departmentID, departmentIDInd),
+            soci::into(jobID, jobIDInd), soci::into(managerID, managerIDInd), soci::into(managerHireDate);
+
+            //Info to get:
+            //Job title, job description
+            if(jobIDInd != NULL_INDICATOR)
+            {
+                db << GET_JOB_INFO_QUERY, soci::into(jobTitle), soci::into(jobDescription)
+                , soci::use(CHECK_NULLABILITY(jobID));
+            }
+
+            //Info to get:
+            //Manager First Name, Manager Middle name, Manager Last Name
+            //Manager Job Title, Manager Job Description
+            if(managerIDInd != NULL_INDICATOR)
+            {
+                soci::indicator managerMiddleNameInd;
+                db << GET_MANAGER_INFORMATION_QUERY, soci::into(managerFirstName),
+                soci::into(managerMiddleName, managerMiddleNameInd),
+                soci::into(managerLastName), soci::into(managerGender), soci::into(managerJobTitle),
+                soci::into(managerJobDescription), soci::use(managerID);
+            }
+            
+            //Info to get:
+            //Department title, department description, department location,
+            //Department manager hiring date, department manager first name,
+            //department manager middle name, department manager last name,
+            //department manager gender
+            if(departmentIDInd != NULL_INDICATOR)
+            {
+                db << GET_DEPARTMENT_INFORMATION_QUERY, soci::into(depTitle), soci::into(depDescription),
+                soci::into(depLocation), soci::into(depManagerHiringDate), soci::into(depManagerFirstName),
+                soci::into(depManagerMiddleName), soci::into(depManagerLastName), soci::into(depManagerGender),
+                soci::use(departmentID);
+            }
+
+            //Info to get:
+            //Employee firstName, employee middle name, employee last name, employee gender,
+            //employee salary, employee email, employee phone number
+            soci::indicator employeeMiddleNameInd;
+            db << GET_EMPLOYEE_INFORMATION_QUERY, soci::use(employeeID),
+            soci::into(employeeFirstName), soci::into(employeeMiddleName, employeeMiddleNameInd),
+            soci::into(employeeLastName),
+            soci::into(employeeGender), soci::into(employeeSalary), soci::into(employeePhoneNumber),
+            soci::into(employeeEmail);
          }
          catch(const std::exception& e)
          {
             std::cerr << "DATABASE ERROR (/users/employee/all-info): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
+         //Now, we will very carefully an painfully construct a response taking into account
+         //optional parameters.
+         crow::json::wvalue result;
+         result["basic-info"]["firstName"] = employeeFirstName;
+         result["basic-info"]["middleName"] = employeeMiddleName;
+         result["basic-info"]["lastName"] = employeeLastName;
+         result["basic-info"]["salary"] = employeeSalary;
+         result["basic-info"]["gender"] = employeeGender;
 
+         result["job-info"]["jobTitle"] = jobTitle;
+         result["job-info"]["jobDescription"] = jobDescription;
+
+         result["department-info"]["title"] = depTitle;
+         result["department-info"]["description"] = depDescription;
+         result["department-info"]["location"] = depLocation;
+         result["department-info"]["manager-info"]["managerHireDate"] = VERIFY_TIME(depManagerHiringDate);
+         result["department-info"]["manager-info"]["firstName"] = depManagerFirstName;
+         result["department-info"]["manager-info"]["middleName"] = depManagerMiddleName;
+         result["department-info"]["manager-info"]["lastName"] = depManagerLastName;
+         result["department-info"]["manager-info"]["gender"] = depManagerGender;
+
+         result["manager-info"]["firstName"] = managerFirstName;
+         result["manager-info"]["middleName"] = managerMiddleName;
+         result["manager-info"]["lastName"] = managerLastName;
+         result["manager-info"]["gender"] = managerGender;
+         result["manager-info"]["job-info"]["jobTitle"] = managerJobTitle;
+         result["manager-info"]["job-info"]["jobDescription"] = managerJobDescription;
+
+         return crow::response(200, result);
          });
 }

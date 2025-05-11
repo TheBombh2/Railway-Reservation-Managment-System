@@ -96,3 +96,10 @@ std::string FormatTimeToString(const std::tm& time)
     strftime(buffer, sizeof(buffer), TIME_FORMAT_STRING, &time);
     return std::string(buffer);
 }
+
+std::tm GetEmptyTMObject()
+{
+    std::tm result;
+    result.tm_year = 9999;
+    return result;
+}

@@ -3,8 +3,11 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 
+#define VERIFY_TIME(tmObject) tmObject.tm_year != 9999 ? FormatTimeToString(tmObject) : ""
+
 std::string GetExecutableDirectory(char* argvInput);
 std::string ConcatenatePaths(std::initializer_list<std::string> input);
 std::string FormatTimeToString(const std::tm& time);
 void WriteInitialSecretsFile();
 YAML::Node LoadSecretsFile();
+std::tm GetEmptyTMObject();

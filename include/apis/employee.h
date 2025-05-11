@@ -72,7 +72,7 @@ const inline std::string GET_TASKS_QUERY =
 
 const inline std::string GET_ALL_IDS_QUERY =
 "SELECT DepartmentID, JobID, ManagerID, ManagerAppointmentDate FROM `EmployeeBasicInformation` "
-"WHERE :EmployeeID = :ID; ";
+"WHERE EmployeeID = :ID; ";
 
 const inline std::string GET_MANAGER_INFORMATION_QUERY =
 "SELECT FirstName, MiddleName, LastName, Gender, J.`Title`, J.`Description` FROM `EmployeeBasicInformation` EBI "
@@ -83,3 +83,9 @@ const inline std::string GET_DEPARTMENT_INFORMATION_QUERY =
 "SELECT Title, Description, Location, ManagerHiringDate,EBI.FirstName, EBI.MiddleName ,EBI.LastName, EBI.Gender FROM `Department` DP "
 "JOIN `EmployeeBasicInformation` EBI ON EBI.`EmployeeID` = DP.`ManagerID` "
 "WHERE DP.DepartmentID = :ID; ";
+
+const inline std::string GET_EMPLOYEE_INFORMATION_QUERY = 
+"SELECT FirstName, MiddleName, LastName, Gender, Salary, PhoneNumber, Email "
+"FROM `EmployeeBasicInformation` EBI "
+"JOIN `EmployeeContactInformation` ECI ON EBI.`EmployeeID` = ECI.`ID` "
+"WHERE EBI.EmployeeID = :ID; ";
