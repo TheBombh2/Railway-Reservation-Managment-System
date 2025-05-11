@@ -1,0 +1,13 @@
+[Unit]
+Description=Reservation and Customers service for RRMS
+Requires=mariadb.service valkey.service
+After=mariadb.service valkey.service
+
+[Service]
+ExecStart=/usr/bin/rrms-reservation
+User=rrms
+Group=rrms
+
+[Install]
+WantedBy=multi-user.target
+

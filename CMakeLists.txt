@@ -55,19 +55,23 @@ add_executable(rrms-authorization ./src/authorization/authorization.cpp
 ./src/authorization/authorizationDELETE.cpp)
 add_executable(rrms-employee ./src/employee/employee.cpp ./src/employee/employeeGET.cpp
 ./src/employee/employeePOST.cpp ./src/employee/employeeDELETE.cpp)
+add_executable(rrms-reservation ./src/reservation/reservation.cpp ./src/reservation/reservationGET.cpp
+./src/reservation/reservationPOST.cpp ./src/reservation/reservationDELETE.cpp)
 
 # Linking goes here
 target_link_libraries(crypto PRIVATE OpenSSL::Crypto)
 target_link_libraries(rrms-authorization PRIVATE ${COMMON_LIBS} crypto tokens)
 target_link_libraries(rrms-employee PRIVATE ${COMMON_LIBS} cpr::cpr middleware crypto)
+target_link_libraries(rrms-reservation PRIVATE ${COMMON_LIBS} cpr::cpr middleware crypto)
 target_link_libraries(database_connector PRIVATE hiredis misc_functions redis++ pthread)
 target_link_libraries(database_common PRIVATE database_connector)
 target_link_libraries(middleware PRIVATE tokens cpr::cpr)
 
-install(TARGETS rrms-authorization rrms-employee)
+install(TARGETS rrms-authorization rrms-employee rrms-reservation)
 
 install(FILES ./src/systemd/rrms-authorization.service
         ./src/systemd/rrms-employee.service
+        ./src/systemd/rrms-reservation.service
         DESTINATION /etc/systemd/system
         COMPONENT systemd_service)
 
