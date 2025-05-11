@@ -3,12 +3,40 @@
 #include "tokens.h"
 #include "permissions.h"
 
-SessionTokenInfo::SessionTokenInfo(uint8_t permission, uint8_t subPermission, std::string uuid)
+int GetSubPermissionIndex(uint8_t permission)
+{
+    if(permission == 0)
+        return -1;
+
+    switch(permission)
+    {
+        case PERMISSIONS::HUMAN_RESOURCES:
+            return DEP_HUMAN_RESOURCES;
+        case PERMISSIONS::INFORMATION_TECHNOLOGY:
+            return DEPARTMENT_IDS::DEP_INFORMATION_TECHNOLOGY;
+        case PERMISSIONS::ASSET_MANAGEMENT:
+            return DEPARTMENT_IDS::DEP_ASSET_MANAGEMENT;
+        case PERMISSIONS::TRAIN_MANAGEMENT:
+            return DEPARTMENT_IDS::DEP_TRAIN_MANAGEMENT;
+        case PERMISSIONS::MAINTENANCE:
+            return DEPARTMENT_IDS::DEP_MAINTENANCE;
+        case PERMISSIONS::TICKETING:
+            return DEPARTMENT_IDS::DEP_TICKETING;
+        case PERMISSIONS::MANAGEMENT:
+            return DEPARTMENT_IDS::DEP_MANAGEMENT;
+        case PERMISSIONS::JOBS:
+            return DEPARTMENT_IDS::DEP_JOBS;
+    }
+    return -1;
+}
+SessionTokenInfo::SessionTokenInfo(uint8_t permission, std::string subPermissionsString, std::string uuid)
 {
   this->uuid.reserve(36);
   this->uuid = uuid;
   this->permission = permission;
-  this->subPermission = subPermission;
+  std::istringstream sts(subPermissionsString);
+  sts >> this->subPermissions[0] >> this->subPermissions[1] >> this->subPermissions[2] >> this->subPermissions[3] >>
+  this->subPermissions[4] >> this->subPermissions[5] >> this->subPermissions[6] >> this->subPermissions[7];
 }
 
 SessionTokenInfo::SessionTokenInfo()
@@ -20,9 +48,11 @@ SessionTokenInfo::SessionTokenInfo(const std::string& inputString)
 {
     std::istringstream sts(inputString);
     this->uuid.reserve(36);
-    uint8_t permission, subPermission;
-    std::string uuid;
-    sts >> permission >> subPermission >> uuid;
+    //YES, THIS IS UGLY.
+    //YES, IT IS ALSO EASY TO IMEPLEMENT
+    sts >> this->permission >> this->subPermissions[0] >> this->subPermissions[1] >> this->subPermissions[2] >>
+    this->subPermissions[3] >> this->subPermissions[4] >> this->subPermissions[5] >> this->subPermissions[6] >>
+    this->subPermissions[7] >> this->uuid;
 }
 
 uint8_t SessionTokenInfo::GetPermission()
@@ -30,9 +60,9 @@ uint8_t SessionTokenInfo::GetPermission()
   return this->permission;
 }
 
-uint8_t SessionTokenInfo::GetSubPermission()
+std::array<uint8_t, 8> SessionTokenInfo::GetSubPermissions()
 {
-  return this->subPermission;
+  return this->subPermissions;
 }
 
 std::string SessionTokenInfo::GetUUID()
@@ -42,8 +72,12 @@ std::string SessionTokenInfo::GetUUID()
 
 std::string SessionTokenInfo::GetData()
 {
-    return std::to_string(this->permission) + ' ' + 
-    std::to_string(this->subPermission) + ' ' + this->uuid;
+    std::string result;
+    result += std::to_string(this->permission) + ' ';
+    for(int i = 0; i < 8; i++)
+        result += std::to_string(this->subPermissions[i]) + ' ';
+    result += this->uuid;
+    return result;
 }
 
 void SessionTokenInfo::AddPermission(uint8_t perm)
@@ -51,15 +85,17 @@ void SessionTokenInfo::AddPermission(uint8_t perm)
     this->permission |= perm;
 }
 
-void SessionTokenInfo::AddSubPermission(uint8_t perm)
+void SessionTokenInfo::AddSubPermission(uint8_t perm, uint8_t subPerm)
 {
-    this->subPermission |= perm;
+    int idx = GetSubPermissionIndex(perm);
+    this->subPermissions[idx] |= subPerm;
 }
 
-void SessionTokenInfo::RemoveSubPermission(uint8_t perm)
+void SessionTokenInfo::RemoveSubPermission(uint8_t perm, uint8_t subPerm)
 {
+    int idx = GetSubPermissionIndex(perm);
     uint8_t mask = ~perm;
-    this->subPermission &= mask;
+    this->subPermissions[idx] &= mask;
 }
 
 void SessionTokenInfo::RemovePermission(uint8_t perm)
@@ -74,8 +110,9 @@ bool SessionTokenInfo::HasPermission(uint8_t perm)
     return this->permission & perm;
 }
 
-bool SessionTokenInfo::HasSubPermission(uint8_t perm)
+bool SessionTokenInfo::HasSubPermission(uint8_t perm, uint8_t subPerm)
 {
-    if(subPermission == SUB_PERMISSIONS::NONE_SUBPERM) return true;
-    return this->subPermission & perm;
+    int idx = GetSubPermissionIndex(perm);
+    if(idx == -1) return true;
+    return this->subPermissions[idx] & perm;
 }

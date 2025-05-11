@@ -54,7 +54,7 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
             return crow::response(404, "authentication failure");
 
         std::string tokenNum = GetUUIDv4();
-        SessionTokenInfo tokenInfo = SessionTokenInfo(0, 0, uuid);
+        SessionTokenInfo tokenInfo = SessionTokenInfo(0, "0 0 0 0 0 0 0 0", uuid);
         dbRedis->set(tokenNum, tokenInfo.GetData());
         return crow::response(201, tokenNum);
      });
@@ -69,10 +69,16 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
          std::string uuid = GetEmployeeUUID(email);
          if(uuid.empty())
             return crow::response(404, "user not found");
+
          //Get Employee Permissions from their respective department
-         std::pair<uint8_t, uint8_t> perms = GetEmployeePermissions(uuid);
+         std::pair<uint8_t, unsigned long long> perms = GetEmployeePermissions(uuid);
          std::string token = GetUUIDv4();
-         std::string tokenInfo = std::to_string(perms.first) + " " + std::to_string(perms.second) + " " + uuid;
+         std::string tokenInfo;
+         tokenInfo += std::to_string(perms.first) + ' ';
+         uint8_t* permsPointer = reinterpret_cast<uint8_t*>(&perms.second);
+         for(int i = 0; i < 8; i++)
+            tokenInfo += std::to_string(permsPointer[i]) + ' ';
+         tokenInfo += uuid;
          dbRedis->set(token, tokenInfo);
          return crow::response(201, token);
          });

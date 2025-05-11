@@ -4,8 +4,9 @@
 #include <sw/redis++/redis.h>
 #include "crow/app.h"
 #include "database_connector.h"
+#include "middleware.h"
 
-void AddAuthorizationGETRequests(crow::App<>& app);
+void AddAuthorizationGETRequests(crow::SimpleApp& app);
 void AddAuthorizationPOSTRequests(crow::SimpleApp& app);
 void AddAuthorizationDELETERequests(crow::SimpleApp& app);
 
@@ -42,9 +43,6 @@ const inline std::string DELETE_CUSTOMER_SEAT_RESERVATION =
 
 const inline std::string DELETE_CUSTOMER_PREVIOUS_PASSWORDS = 
 "DELETE FROM CustomerPreviousPasswords WHERE ID=:ID;";
-
-const inline std::string SELECT_CUSTOMER_PASSWORD_SALT_QUERY = 
-"SELECT PasswordSalt FROM CustomerSecurityInformation WHERE ID=:ID;";
 
 const inline std::string GET_CUSTOMER_PASSWORD_HASH =
 "SELECT PasswordHash FROM CustomerSecurityInformation WHERE ID=:ID";

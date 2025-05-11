@@ -23,5 +23,5 @@ const inline std::string GET_EMPLOYEE_MANAGER_UUID_QUERY =
 std::string GetCustomerUUID(const std::string& email);
 std::string GetEmployeeUUID(const std::string& email);
 std::string GetEmployeeManagerUUID(const std::string& uuid);
-std::pair<uint8_t, uint8_t> GetEmployeePermissions(const std::string& uuid);
+std::pair<uint8_t, unsigned long long> GetEmployeePermissions(const std::string& uuid);
 

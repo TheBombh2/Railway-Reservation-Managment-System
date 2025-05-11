@@ -158,6 +158,8 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
          std::string uuid = tokenInfo.GetUUID();
+         std::cout << "UUID IS: " << uuid << '\n';
+         std::cout << tokenInfo.GetData() << '\n';
          std::vector<std::string> titles(MAX_TASKS_RETURNED);
          std::vector<std::string> descriptions(MAX_TASKS_RETURNED);
          std::vector<std::string> creatorEmployees(MAX_TASKS_RETURNED);

@@ -32,11 +32,11 @@ std::string GetEmployeeManagerUUID(const std::string& uuid)
     return result;
 }
 
-std::pair<uint8_t, uint8_t> GetEmployeePermissions(const std::string& uuid)
+std::pair<uint8_t, unsigned long long> GetEmployeePermissions(const std::string& uuid)
 {
     soci::session db(pool);
     uint8_t perm;
-    uint8_t subPerm;
+    unsigned long long subPerm;
     soci::indicator permInd; 
     soci::indicator subPermInd;
     //No permissions can be returned if there is an error with the UUID or if the employee does not

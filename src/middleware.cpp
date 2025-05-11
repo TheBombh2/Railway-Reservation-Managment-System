@@ -42,7 +42,7 @@ SessionTokenInfo GetSessionTokenInfo(const std::string& token)
     {
         crow::json::rvalue body = crow::json::load(r.text); 
         return SessionTokenInfo(static_cast<uint8_t>(body["permission"].i())
-                                , static_cast<uint8_t>(body["subPermission"].i())
+                                , body["subPermission"].s()
                                 , body["uuid"].s());
         }
     else
