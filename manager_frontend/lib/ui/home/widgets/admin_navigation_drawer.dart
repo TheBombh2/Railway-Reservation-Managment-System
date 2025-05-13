@@ -44,9 +44,10 @@ class AdminNavigationDrawer extends StatelessWidget {
             },
           ),
           NavigationItem(title: 'Departments Managment', onTap: () {fragmentOnTap('/departments');}),
-          NavigationItem(title: 'Trains Managment', onTap: () {fragmentOnTap('/trains');}),
           NavigationItem(title: 'Stations Managment', onTap: () {fragmentOnTap('/stations');}),
           NavigationItem(title: 'Routes Managment', onTap: () {fragmentOnTap('/routes');}),
+          NavigationItem(title: 'Trains Managment', onTap: () {fragmentOnTap('/trains');}),
+
           NavigationItem(
             title: 'Log out',
             onTap: () {

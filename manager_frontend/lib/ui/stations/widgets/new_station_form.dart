@@ -16,213 +16,114 @@ class NewStationForm extends StatefulWidget {
 
 class _NewStationFormState extends State<NewStationForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _middleNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _jobTitleController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
-  String? _selectedGender;
-  String? _selectedDepartment;
-  String? _selectedSupervisor;
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
+
+  final TextEditingController _locationController = TextEditingController();
+
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _middleNameController.dispose();
-    _lastNameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _jobTitleController.dispose();
-    _passwordController.dispose();
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
+    _locationController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add New Employee'),
+      title: const Text('Add Station'),
       content: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: 500,
-          maxWidth: 1000
-        ),
+        constraints: BoxConstraints(minWidth: 500, maxWidth: 500),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Name*'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
+                ),
+
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    labelText: 'Description*',
+                    alignLabelWithHint: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _locationController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Location Description*'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
                       child: TextFormField(
-                        controller: _firstNameController,
+                        controller: _latitudeController,
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
-                          labelText: 'First Name*',
+                          labelText: 'Latitude*',
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
+                          if (value == null ||
+                              value.isEmpty ||
+                              (double.tryParse(value) == null ? true : false)) {
+                            return 'Please enter Latitude in numbers';
                           }
                           return null;
                         },
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 20),
                     Expanded(
                       child: TextFormField(
-                        controller: _middleNameController,
+                        controller: _longitudeController,
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
-                          labelText: 'Middle Name*',
-                        ),
-                        validator:(value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
-                          }
-                          return null;
-                        }, 
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-        
-                    Expanded(
-                      child: TextFormField(
-                        controller: _lastNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Last Name*',
+                          labelText: 'Longitude*',
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
+                          if (value == null ||
+                              value.isEmpty ||
+                              (double.tryParse(value) == null ? true : false)) {
+                            return 'Please enter Longitude in numbers';
                           }
                           return null;
                         },
                       ),
                     ),
                   ],
-                ),
-        
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: _selectedGender,
-                  decoration: const InputDecoration(labelText: 'Gender*'),
-                  items: const [
-                    DropdownMenuItem(value: 'Male', child: Text('Male')),
-                    DropdownMenuItem(value: 'Female', child: Text('Female')),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select gender';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email*'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
-                      return 'Enter valid email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: const InputDecoration(labelText: 'Phone Number*'),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _jobTitleController,
-                  decoration: const InputDecoration(labelText: 'Job Title*'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password*'),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    if (value.length < 6) {
-                      return 'Minimum 6 characters';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: _selectedDepartment,
-                  decoration: const InputDecoration(labelText: 'Department*'),
-                  items:
-                      widget.departments
-                          .map(
-                            (department) => DropdownMenuItem(
-                              value: department,
-                              child: Text(department),
-                            ),
-                          )
-                          .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedDepartment = value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select department';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: _selectedSupervisor,
-                  decoration: const InputDecoration(labelText: 'Supervisor'),
-                  items:
-                      widget.supervisors
-                          .map(
-                            (supervisor) => DropdownMenuItem(
-                              value: supervisor,
-                              child: Text(supervisor),
-                            ),
-                          )
-                          .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedSupervisor = value;
-                    });
-                  },
                 ),
               ],
             ),
@@ -239,16 +140,8 @@ class _NewStationFormState extends State<NewStationForm> {
             if (_formKey.currentState!.validate()) {
               // Return the employee data when form is valid
               Navigator.pop(context, {
-                'firstName': _firstNameController.text,
-                'middleName': _middleNameController.text,
-                'lastName': _lastNameController.text,
-                'gender': _selectedGender,
-                'email': _emailController.text,
-                'phone': _phoneController.text,
-                'jobTitle': _jobTitleController.text,
-                'password': _passwordController.text,
-                'department': _selectedDepartment,
-                'supervisor': _selectedSupervisor,
+                'firstName': _nameController.text,
+                'middleName': _descriptionController.text,
               });
             }
           },

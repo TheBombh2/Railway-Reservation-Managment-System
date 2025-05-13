@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/stations/widgets/new_connection_form.dart';
 import 'package:manager_frontend/ui/stations/widgets/new_station_form.dart';
 import 'package:manager_frontend/ui/stations/widgets/stations_list.dart';
-
 
 class StationsFragment extends StatelessWidget {
   const StationsFragment({super.key});
@@ -29,7 +29,7 @@ class StationsFragment extends StatelessWidget {
                       foregroundColor: darkerBlue,
                       surfaceTintColor: darkerBlue,
                     ),
-                    icon: Icon(Icons.person_add_alt_outlined, color: darkBlue),
+                    icon: Icon(Icons.other_houses_outlined, color: darkBlue),
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -55,7 +55,41 @@ class StationsFragment extends StatelessWidget {
                       });
                     },
                     label: Text(
-                      'Add an Employee',
+                      'Add Station',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: darkBlue,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20,),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: darkerBlue,
+                      surfaceTintColor: darkerBlue,
+                    ),
+                    icon: Icon(Icons.add_link_rounded, color: darkBlue),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (ctx) => NewConnectionForm(
+                              stations: [
+                                'First station',
+                                'Second Station',
+                                'Third station'
+                              ],
+                             
+                            ),
+                      ).then((employeeData) {
+                        if (employeeData != null) {
+                          // Handle the submitted employee data
+                          print(employeeData);
+                        }
+                      });
+                    },
+                    label: Text(
+                      'Create Connection',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: darkBlue,
