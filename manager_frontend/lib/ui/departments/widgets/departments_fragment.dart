@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_list.dart';
+import 'package:manager_frontend/ui/departments/widgets/new_department_form.dart';
 
 class DepartmentsFragment extends StatelessWidget {
   const DepartmentsFragment({super.key});
@@ -28,7 +29,17 @@ class DepartmentsFragment extends StatelessWidget {
                       surfaceTintColor: darkerBlue,
                     ),
                     icon: Icon(Icons.person_add_alt_outlined, color: darkBlue),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => const NewDepartmentForm(),
+                      ).then((departmentData) {
+                        if (departmentData != null) {
+                          // Handle the submitted department data
+                          print(departmentData);
+                        }
+                      });
+                    },
                     label: Text(
                       'Create a New Department',
                       style: TextStyle(

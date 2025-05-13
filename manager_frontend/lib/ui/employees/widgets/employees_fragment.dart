@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_list.dart';
+import 'package:manager_frontend/ui/employees/widgets/new_employee_form.dart';
 
 class EmployeesFragment extends StatelessWidget {
   const EmployeesFragment({super.key});
@@ -28,7 +29,30 @@ class EmployeesFragment extends StatelessWidget {
                       surfaceTintColor: darkerBlue,
                     ),
                     icon: Icon(Icons.person_add_alt_outlined, color: darkBlue),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (ctx) => NewEmployeeForm(
+                              departments: [
+                                'RnD',
+                                'HR',
+                                'Finance',
+                                'Operations',
+                              ],
+                              supervisors: [
+                                'John Doe',
+                                'Jane Smith',
+                                'Mike Johnson',
+                              ],
+                            ),
+                      ).then((employeeData) {
+                        if (employeeData != null) {
+                          // Handle the submitted employee data
+                          print(employeeData);
+                        }
+                      });
+                    },
                     label: Text(
                       'Add an Employee',
                       style: TextStyle(

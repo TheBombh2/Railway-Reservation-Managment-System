@@ -33,7 +33,7 @@ class ProfilePanel extends StatelessWidget {
                 _infoRow("Email ID", "elgamed@test.com"),
                 _infoRow("Contact No.", "+015 01106719"),
                 SizedBox(height: 12),
-                TextButton(
+                /*TextButton(
                   onPressed: () {},
                   child: Row(
                     children: [
@@ -42,7 +42,7 @@ class ProfilePanel extends StatelessWidget {
                       Text("Edit Information"),
                     ],
                   ),
-                ),
+                ),*/
                 SizedBox(height: 8),
 
               ],
