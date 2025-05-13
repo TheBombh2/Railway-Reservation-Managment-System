@@ -29,7 +29,7 @@ class StationsFragment extends StatelessWidget {
                       foregroundColor: darkerBlue,
                       surfaceTintColor: darkerBlue,
                     ),
-                    icon: Icon(Icons.other_houses_outlined, color: darkBlue),
+                    icon: Icon(Icons.add_home_work_outlined, color: darkBlue),
                     onPressed: () {
                       showDialog(
                         context: context,

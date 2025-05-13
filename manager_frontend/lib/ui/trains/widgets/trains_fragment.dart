@@ -29,7 +29,7 @@ class TrainsFragment extends StatelessWidget {
                       foregroundColor: darkerBlue,
                       surfaceTintColor: darkerBlue,
                     ),
-                    icon: Icon(Icons.person_add_alt_outlined, color: darkBlue),
+                    icon: Icon(Icons.train_outlined, color: darkBlue),
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -55,7 +55,7 @@ class TrainsFragment extends StatelessWidget {
                       });
                     },
                     label: Text(
-                      'Add an Employee',
+                      'Add a Train',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: darkBlue,

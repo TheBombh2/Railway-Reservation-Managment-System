@@ -28,7 +28,7 @@ class DepartmentsFragment extends StatelessWidget {
                       foregroundColor: darkerBlue,
                       surfaceTintColor: darkerBlue,
                     ),
-                    icon: Icon(Icons.person_add_alt_outlined, color: darkBlue),
+                    icon: Icon(Icons.domain_add_outlined, color: darkBlue),
                     onPressed: () {
                       showDialog(
                         context: context,
