@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_list.dart';
 import 'package:manager_frontend/ui/employees/widgets/new_employee_form.dart';
+import 'package:manager_frontend/ui/employees/widgets/new_job_form.dart';
 
 class EmployeesFragment extends StatelessWidget {
   const EmployeesFragment({super.key});
@@ -55,6 +56,27 @@ class EmployeesFragment extends StatelessWidget {
                     },
                     label: Text(
                       'Add an Employee',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: darkBlue,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: darkerBlue,
+                      surfaceTintColor: darkerBlue,
+                    ),
+                    icon: Icon(Icons.badge_outlined, color: darkBlue),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => NewJobForm(),
+                      );
+                    },
+                    label: Text(
+                      'Create Job',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: darkBlue,
