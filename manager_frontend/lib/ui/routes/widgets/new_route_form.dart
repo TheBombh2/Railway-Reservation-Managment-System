@@ -12,6 +12,11 @@ class NewRouteForm extends StatefulWidget {
 
 class _NewRouteFormState extends State<NewRouteForm> {
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+
   Station? _selectedStartStation;
   Station? _selectedIntermediateStation;
   List<Station> intermediateStations = [];
@@ -45,22 +50,28 @@ class _NewRouteFormState extends State<NewRouteForm> {
     });
   }
 
- void _addStation(Station station) {
-  if (station != _selectedStartStation &&
-      !intermediateStations.contains(station)) {
-    setState(() {
-      intermediateStations.add(station);
-      _selectedIntermediateStation = null;
-      _refreshAvailableStations();
-    });
+  void _addStation(Station station) {
+    if (station != _selectedStartStation &&
+        !intermediateStations.contains(station)) {
+      setState(() {
+        intermediateStations.add(station);
+        _selectedIntermediateStation = null;
+        _refreshAvailableStations();
+      });
+    }
   }
-}
-
 
   void _removeStation(int index) {
     setState(() {
       intermediateStations.removeAt(index);
     });
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -75,6 +86,34 @@ class _NewRouteFormState extends State<NewRouteForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Name*'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                    labelText: 'Description*',
+                    alignLabelWithHint: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+
                 // Start Station Dropdown
                 DropdownButtonFormField<Station>(
                   value: _selectedStartStation,
@@ -99,7 +138,7 @@ class _NewRouteFormState extends State<NewRouteForm> {
                           value == null ? 'Please select start station' : null,
                 ),
                 const SizedBox(height: 16),
-          
+
                 // Add Intermediate Station
                 DropdownButtonFormField<Station>(
                   key: ValueKey(
@@ -122,9 +161,9 @@ class _NewRouteFormState extends State<NewRouteForm> {
                     }
                   },
                 ),
-          
+
                 const SizedBox(height: 16),
-          
+
                 // Route Preview
                 Text(
                   'Route Preview:',
@@ -139,9 +178,9 @@ class _NewRouteFormState extends State<NewRouteForm> {
                         return Chip(label: Text(station.name));
                       }).toList(),
                 ),
-          
+
                 const SizedBox(height: 16),
-          
+
                 // Intermediate Station List
                 if (intermediateStations.isNotEmpty)
                   SizedBox(
