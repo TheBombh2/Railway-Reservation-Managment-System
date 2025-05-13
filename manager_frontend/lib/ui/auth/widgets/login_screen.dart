@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:manager_frontend/ui/core/share_widgets/blue_button.dart';
-import 'package:manager_frontend/ui/core/share_widgets/blue_text_field.dart';
+import 'package:manager_frontend/ui/core/shared_widgets/blue_button.dart';
+import 'package:manager_frontend/ui/core/shared_widgets/blue_text_field.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 
 class LoginScreen extends StatefulWidget {

@@ -4,6 +4,9 @@ import 'package:manager_frontend/ui/home/widgets/admin_navigation_drawer.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_fragment.dart';
 import 'package:manager_frontend/ui/profile/widgets/profile_fragment.dart';
+import 'package:manager_frontend/ui/routes/widgets/routes_fragment.dart';
+import 'package:manager_frontend/ui/stations/widgets/stations_fragment.dart';
+import 'package:manager_frontend/ui/trains/widgets/trains_fragment.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
           break;
         case '/departments':
           currentFragment = DepartmentsFragment();
+          break;
+        case '/trains':
+          currentFragment = TrainsFragment();
+          break;
+        case '/stations':
+          currentFragment = StationsFragment();
+          break;
+        case '/routes':
+          currentFragment = RoutesFragment();
           break;
         case _:
           currentFragment = ProfileFragment();

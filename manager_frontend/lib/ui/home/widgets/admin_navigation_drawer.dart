@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:manager_frontend/ui/core/share_widgets/navigation_item.dart';
+import 'package:manager_frontend/ui/core/shared_widgets/navigation_item.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 
 class AdminNavigationDrawer extends StatelessWidget {
@@ -44,9 +44,9 @@ class AdminNavigationDrawer extends StatelessWidget {
             },
           ),
           NavigationItem(title: 'Departments Managment', onTap: () {fragmentOnTap('/departments');}),
-          //NavigationItem(title: 'Finanical Reports', onTap: () {}),
-          //NavigationItem(title: 'Performance Statistics', onTap: () {}),
-          //NavigationItem(title: 'Change Password', onTap: () {}),
+          NavigationItem(title: 'Trains Managment', onTap: () {fragmentOnTap('/trains');}),
+          NavigationItem(title: 'Stations Managment', onTap: () {fragmentOnTap('/stations');}),
+          NavigationItem(title: 'Routes Managment', onTap: () {fragmentOnTap('/routes');}),
           NavigationItem(
             title: 'Log out',
             onTap: () {
