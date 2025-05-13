@@ -58,6 +58,7 @@ class _NewStationFormState extends State<NewStationForm> {
                     return null;
                   },
                 ),
+                SizedBox(height: 20),
 
                 TextFormField(
                   controller: _descriptionController,
