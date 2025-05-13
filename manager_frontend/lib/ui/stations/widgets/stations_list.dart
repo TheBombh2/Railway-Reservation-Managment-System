@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
-import 'package:manager_frontend/ui/employees/widgets/employee_appraisal_form.dart';
 
 class StationsList extends StatelessWidget {
   const StationsList({super.key});
