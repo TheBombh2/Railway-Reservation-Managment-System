@@ -61,7 +61,10 @@ class StationsList extends StatelessWidget {
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 130),
                     child: Row(
-                      children: [
+                      children: [ IconButton(
+                          icon: Icon(Icons.remove_red_eye_outlined, color: darkerBlue),
+                          onPressed: () {}, //TODO: View connections to that station
+                        ),
                         IconButton(
                           icon: Icon(Icons.delete_outline, color: darkerBlue),
                           onPressed: () {}, // TODO:Remove employee from db
