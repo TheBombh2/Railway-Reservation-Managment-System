@@ -77,7 +77,7 @@ class StationsFragment extends StatelessWidget {
                               stations: [
                                 'First station',
                                 'Second Station',
-                                'Third station'
+                                'Third'
                               ],
                              
                             ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:manager_frontend/data/model/station.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/routes/widgets/new_route_form.dart';
 import 'package:manager_frontend/ui/routes/widgets/routes_list.dart';
-
 
 class RoutesFragment extends StatelessWidget {
   const RoutesFragment({super.key});
@@ -29,33 +29,27 @@ class RoutesFragment extends StatelessWidget {
                       foregroundColor: darkerBlue,
                       surfaceTintColor: darkerBlue,
                     ),
-                    icon: Icon(Icons.person_add_alt_outlined, color: darkBlue),
+                    icon: Icon(Icons.route_outlined, color: darkBlue),
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder:
                             (ctx) => NewRouteForm(
-                              departments: [
-                                'RnD',
-                                'HR',
-                                'Finance',
-                                'Operations',
-                              ],
-                              supervisors: [
-                                'John Doe',
-                                'Jane Smith',
-                                'Mike Johnson',
+                              allStations: [
+                                Station(id: 1, name: 'RnD'),
+                                Station(id: 2, name: 'HR'),
+                                Station(id: 3, name: 'Finance'),
+                                Station(id: 4, name: 'Operations'),
                               ],
                             ),
-                      ).then((employeeData) {
-                        if (employeeData != null) {
-                          // Handle the submitted employee data
-                          print(employeeData);
+                      ).then((routeIds) {
+                        if (routeIds != null) {
+                          print('Saved route with station IDs: $routeIds');
                         }
                       });
                     },
                     label: Text(
-                      'Add an Employee',
+                      'Create Ro=ute',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: darkBlue,
