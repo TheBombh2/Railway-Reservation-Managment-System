@@ -1,7 +1,123 @@
+#include "crypto.h"
+#include "database_connector.h"
+#include "crow/common.h"
 #include "middleware.h"
+#include "permissions.h"
 #include "reservation.h"
+
+std::pair<std::string, std::string> GetStationIDs(const std::pair<std::string, std::string>& stationNames)
+{
+    soci::session db(pool);
+    std::string id1, id2;
+    db << GET_STATION_ID_QUERY, soci::into(id1), soci::use(stationNames.first);
+    db << GET_STATION_ID_QUERY, soci::into(id2), soci::use(stationNames.second);
+    return std::make_pair(id1, id2);
+}
 
 void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
+  CROW_ROUTE(app, "/users/create/customer").methods(crow::HTTPMethod::POST)
+  ([&](const crow::request& req)
+   {
+      const auto body = crow::json::load(req.body);
+      std::string firstName = body["firstName"].s();
+      std::string middleName = body["middleName"].s();
+      std::string lastName = body["lastName"].s();
+      std::string gender = body["gender"].s();
 
+      std::string phoneNumber = body["phoneNumber"].s();
+      std::string email = body["email"].s();
+      
+      std::string passwordHash = body["passwordHash"].s();
+      std::string passwordSalt = body["passwordSalt"].s();
+      std::string ID = GetUUIDv7();
+      
+      soci::session db(pool);
+      soci::transaction trans(db);
+      db << CREATE_CUSTOMER_QUERY_BASIC_INFO, soci::use(ID), soci::use(firstName), soci::use(middleName), 
+      soci::use(lastName), soci::use(gender);
+      db << CREATE_CUSTOMER_QUERY_CONTACT_INFO, soci::use(ID, "ID"), soci::use(email, "Email")
+      ,soci::use(phoneNumber, "PhoneNumber");
+      db << CREATE_CUSTOMER_QUERY_SECURITY_INFO, soci::use(ID, "ID"), soci::use(passwordHash, "PasswordHash"),
+      soci::use(passwordSalt, "PasswordSalt");
+      trans.commit();
+
+      return crow::response(201, "customer user created successfully");
+   });
+
+    
+    CROW_ROUTE(app, "/stations/create-station").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_STATION)
+         const crow::json::rvalue body = crow::json::load(req.body);
+         std::string name, description, location;
+         double latitude, longitude;
+         try
+         {
+            name = body["name"].s();
+            description = body["description"].s();
+            location = body["location"].s();
+            latitude = body["latitude"].d();
+            longitude = body["longitude"].d();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "ERROR (/stations/create-station): bad request " << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
+         try
+         {
+            soci::session db(pool); 
+            std::string uuid = GetUUIDv7();
+            db << CREATE_STATION_QUERY, soci::use(uuid), soci::use(name), soci::use(description),
+            soci::use(location), soci::use(longitude), soci::use(latitude);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR(/stations/create-station): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(200, "station successfully created");
+         });
+
+    CROW_ROUTE(app, "/stations/add-connection").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_STATION)
+         const crow::json::rvalue body = crow::json::load(req.body);
+         std::string sourceName, destinationName;
+         double distance;
+         try
+         {
+            sourceName = body["source"].s();
+            destinationName = body["destination"].s();
+            distance = body["distance"].d();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "ERROR (/stations/add-connection): " << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
+         //We will now need the stations IDs for insertion
+         std::pair<std::string, std::string> temp;
+         temp = GetStationIDs(std::make_pair(sourceName, destinationName));
+         if(temp.first.empty() || temp.second.empty())
+         {
+            std::cerr << "ERROR(/stations/add-connection): failed to get ID of station\n";
+            std::cerr << temp.first << ' ' << temp.second << '\n';
+            return crow::response(400, "bad request");
+         }
+         try
+         {
+            soci::session db(pool);
+            db << ADD_STATION_CONNECTION_QUERY, soci::use(temp.first), soci::use(temp.second), soci::use(distance);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR(/stations/add-connection): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(200, "station connection successfully created");
+         });
 }

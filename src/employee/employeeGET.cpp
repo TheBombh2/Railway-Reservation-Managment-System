@@ -119,7 +119,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
     CROW_ROUTE(app, "/departments/info").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req)
          {
-         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::VIEW_JOB)
+         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::VIEW_DEPARTMENT)
          crow::json::wvalue returnBody;
          std::vector<std::string> titles(MAX_DEPARTMENTS_RETURNED);
          std::vector<std::string> descriptions(MAX_DEPARTMENTS_RETURNED);

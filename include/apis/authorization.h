@@ -10,23 +10,6 @@ void AddAuthorizationGETRequests(crow::SimpleApp& app);
 void AddAuthorizationPOSTRequests(crow::SimpleApp& app);
 void AddAuthorizationDELETERequests(crow::SimpleApp& app);
 
-const inline std::string CREATE_CUSTOMER_QUERY_BASIC_INFO = 
-"INSERT INTO CustomerBasicInformation "
-"(ID, FirstName, MiddleName, LastName, Gender) "
-"VALUES " 
-"(:ID, :FirstName, :MiddleName, :LastName, :Gender);";
-
-const inline std::string CREATE_CUSTOMER_QUERY_SECURITY_INFO = 
-"INSERT INTO CustomerSecurityInformation "
-"(ID, PasswordSalt, PasswordHash) "
-"VALUES "
-"(:ID, :PasswordSalt, :PasswordHash);";
-
-const inline std::string CREATE_CUSTOMER_QUERY_CONTACT_INFO =
-"INSERT INTO CustomerContactInformation "
-"(ID, Email, PhoneNumber) "
-"VALUES "
-"(:ID, :Email, :PhoneNumber);";
 
 const inline std::string DELETE_CUSTOMER_QUERY_BASIC_INFO = 
 "DELETE FROM CustomerBasicInformation WHERE ID=:ID;";

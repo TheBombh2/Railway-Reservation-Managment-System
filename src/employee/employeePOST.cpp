@@ -209,9 +209,9 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(400, "bad request");
          }
          //Make sure the employee is authorized (is manager of employee) to give tasks to assignedEmployee
-         std::cout << "CREATOR UUID: "<<  creatorUUID << '\n';
+         /*std::cout << "CREATOR UUID: "<<  creatorUUID << '\n';
          std::cout << "MANAGER UUID: " << GetEmployeeManagerUUID(assignedEmployee) << '\n'; 
-         std::cout << "ASSIGNED EMPLOYEE: " << assignedEmployee << '\n';
+         std::cout << "ASSIGNED EMPLOYEE: " << assignedEmployee << '\n';*/
          if(creatorUUID != GetEmployeeManagerUUID(assignedEmployee))
             return crow::response(403, "forbidden");
 
