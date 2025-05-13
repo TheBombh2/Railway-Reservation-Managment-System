@@ -13,8 +13,7 @@ class NewJobForm extends StatefulWidget {
 class _NewJobFormState extends State<NewJobForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _jobTitleController = TextEditingController();
-  final TextEditingController _jobDescriptionController =
-      TextEditingController();
+  final TextEditingController _jobDescriptionController =TextEditingController();
 
   @override
   void dispose() {
