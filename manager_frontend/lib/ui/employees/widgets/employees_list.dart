@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employee_appraisal_form.dart';
+import 'package:manager_frontend/ui/employees/widgets/employee_citation_form.dart';
+import 'package:manager_frontend/ui/employees/widgets/employee_task_form.dart';
 
 class EmployeesList extends StatelessWidget {
   const EmployeesList({super.key});
@@ -61,9 +63,30 @@ class EmployeesList extends StatelessWidget {
                 ),
                 DataCell(
                   ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 130),
+                    constraints: const BoxConstraints(maxWidth: 200),
                     child: Row(
                       children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.assignment_add,
+                            color: darkBlue,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => const EmployeeTaskForm(),
+                            ).then((appraisalData) {
+                              if (appraisalData != null) {
+                                // Handle the submitted appraisal data
+                                print('Title: ${appraisalData['title']}');
+                                print(
+                                  'Description: ${appraisalData['description']}',
+                                );
+                                print('Date: ${appraisalData['date']}');
+                              }
+                            });
+                          }, // Create a new appraisal
+                        ),
                         IconButton(
                           icon: Icon(
                             Icons.star_border_rounded,
@@ -84,7 +107,7 @@ class EmployeesList extends StatelessWidget {
                                 print('Amount: \$${appraisalData['amount']}');
                               }
                             });
-                          }, // Create a new appraisal
+                          }, // Create a new citation
                         ),
                         IconButton(
                           icon: const Icon(
@@ -94,7 +117,7 @@ class EmployeesList extends StatelessWidget {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (ctx) => const EmployeeAppraisalForm(),
+                              builder: (ctx) => const EmployeeCitationForm(),
                             ).then((appraisalData) {
                               if (appraisalData != null) {
                                 // Handle the submitted appraisal data
@@ -106,7 +129,7 @@ class EmployeesList extends StatelessWidget {
                                 print('Amount: \$${appraisalData['amount']}');
                               }
                             });
-                          }, // Create a new citation
+                          }, 
                         ),
                         IconButton(
                           icon: Icon(Icons.delete_outline, color: darkerBlue),

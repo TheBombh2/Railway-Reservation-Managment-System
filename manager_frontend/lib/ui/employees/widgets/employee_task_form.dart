@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For date formatting
 
-class EmployeeCitationForm extends StatefulWidget {
-  const EmployeeCitationForm({super.key});
+class EmployeeTaskForm extends StatefulWidget {
+  const EmployeeTaskForm({super.key});
 
   @override
-  State<EmployeeCitationForm> createState() => _EmployeeCitationFormState();
+  State<EmployeeTaskForm> createState() => _EmployeeTaskFormmState();
 }
 
-class _EmployeeCitationFormState extends State<EmployeeCitationForm> {
+class _EmployeeTaskFormmState extends State<EmployeeTaskForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
   DateTime? _selectedDate;
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    _amountController.dispose();
     super.dispose();
   }
 
@@ -40,7 +38,7 @@ class _EmployeeCitationFormState extends State<EmployeeCitationForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Create New Citation'),
+      title: const Text('Assign Task'),
       content: ConstrainedBox(
         constraints: const BoxConstraints(
           minWidth: 500,
@@ -56,7 +54,7 @@ class _EmployeeCitationFormState extends State<EmployeeCitationForm> {
                 TextFormField(
                   controller: _titleController,
                   decoration: const InputDecoration(
-                    labelText: 'Citation Title*',
+                    labelText: 'Task Title*',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -72,7 +70,7 @@ class _EmployeeCitationFormState extends State<EmployeeCitationForm> {
                   controller: _descriptionController,
                   decoration: const InputDecoration(
                     labelText: 'Description',
-                    hintText: 'Enter Citation reason',
+                    hintText: 'Enter task details',
                     alignLabelWithHint: true,
                   ),
                   maxLines: 3,
@@ -85,7 +83,7 @@ class _EmployeeCitationFormState extends State<EmployeeCitationForm> {
                   onTap: () => _selectDate(context),
                   child: InputDecorator(
                     decoration: const InputDecoration(
-                      labelText: 'Citaion Date*',
+                      labelText: 'Task Deadline*',
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,25 +100,7 @@ class _EmployeeCitationFormState extends State<EmployeeCitationForm> {
                 ),
                 const SizedBox(height: 20),
 
-                // Amount Field
-                TextFormField(
-                  controller: _amountController,
-                  decoration: const InputDecoration(
-                    labelText: 'Amount (\$)*',
-                    hintText: 'e.g., 5000',
-                    prefixText: '\$ ',
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an amount';
-                    }
-                    if (double.tryParse(value) == null) {
-                      return 'Please enter a valid number';
-                    }
-                    return null;
-                  },
-                ),
+               
               ],
             ),
           ),
@@ -145,11 +125,10 @@ class _EmployeeCitationFormState extends State<EmployeeCitationForm> {
                 'title': _titleController.text,
                 'description': _descriptionController.text,
                 'date': _selectedDate,
-                'amount': double.parse(_amountController.text),
               });
             }
           },
-          child: const Text('Save Citation'),
+          child: const Text('Assign'),
         ),
       ],
     );
