@@ -28,6 +28,9 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
   String? _selectedDepartment;
   String? _selectedSupervisor;
 
+
+  bool _isPasswordObscure = true;
+
   @override
   void dispose() {
     _firstNameController.dispose();
@@ -45,10 +48,7 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
     return AlertDialog(
       title: const Text('Add New Employee'),
       content: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: 500,
-          maxWidth: 1000
-        ),
+        constraints: BoxConstraints(minWidth: 500, maxWidth: 1000),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -78,16 +78,16 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                         decoration: const InputDecoration(
                           labelText: 'Middle Name*',
                         ),
-                        validator:(value) {
+                        validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';
                           }
                           return null;
-                        }, 
+                        },
                       ),
                     ),
                     const SizedBox(width: 8),
-        
+
                     Expanded(
                       child: TextFormField(
                         controller: _lastNameController,
@@ -104,7 +104,7 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                     ),
                   ],
                 ),
-        
+
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _selectedGender,
@@ -168,8 +168,18 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password*'),
-                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password*',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordObscure = !_isPasswordObscure;
+                        });
+                      },
+                      icon: Icon(_isPasswordObscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    ),
+                  ),
+                  obscureText: _isPasswordObscure,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Required';
