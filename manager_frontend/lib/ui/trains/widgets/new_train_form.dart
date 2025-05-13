@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewTrainForm extends StatefulWidget {
-  final List<String> departments;
-  final List<String> supervisors;
+
 
   const NewTrainForm({
     super.key,
-    required this.departments,
-    required this.supervisors,
+
   });
 
   @override
@@ -16,34 +15,41 @@ class NewTrainForm extends StatefulWidget {
 
 class _NewTrainFormState extends State<NewTrainForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _middleNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _jobTitleController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
-  String? _selectedGender;
-  String? _selectedDepartment;
-  String? _selectedSupervisor;
+
+  String? _selectedTrainType;
+
+
+
+  DateTime? _selectedDate;
+  String? _selectedRoute;
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _middleNameController.dispose();
-    _lastNameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _jobTitleController.dispose();
-    _passwordController.dispose();
+    _nameController.dispose();
+
     super.dispose();
+  }
+
+    Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add New Employee'),
+      title: const Text('Add New Train'),
       content: ConstrainedBox(
         constraints: BoxConstraints(
           minWidth: 500,
@@ -55,175 +61,84 @@ class _NewTrainFormState extends State<NewTrainForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _firstNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'First Name*',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _middleNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Middle Name*',
-                        ),
-                        validator:(value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
-                          }
-                          return null;
-                        }, 
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-        
-                    Expanded(
-                      child: TextFormField(
-                        controller: _lastNameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Last Name*',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Train Name*',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
                 ),
+               
         
-                const SizedBox(height: 16),
+                 const SizedBox(height: 20),
+
+                // Date Field
+                InkWell(
+                  onTap: () => _selectDate(context),
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Train Purchase Date*',
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedDate == null
+                              ? 'Select date'
+                              : DateFormat('yyyy-MM-dd').format(_selectedDate!),
+                        ),
+                        const Icon(Icons.calendar_today),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
-                  value: _selectedGender,
-                  decoration: const InputDecoration(labelText: 'Gender*'),
+                  value: _selectedTrainType,
+                  decoration: const InputDecoration(labelText: 'Train Type*'),
                   items: const [
-                    DropdownMenuItem(value: 'Male', child: Text('Male')),
-                    DropdownMenuItem(value: 'Female', child: Text('Female')),
+                    DropdownMenuItem(value: 'Commerical', child: Text('Commerical')),
+                    DropdownMenuItem(value: 'Business', child: Text('Business')),
                   ],
                   onChanged: (value) {
                     setState(() {
-                      _selectedGender = value;
+                      _selectedTrainType = value;
                     });
                   },
                   validator: (value) {
                     if (value == null) {
-                      return 'Please select gender';
+                      return 'Please select Type';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email*'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
-                      return 'Enter valid email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: const InputDecoration(labelText: 'Phone Number*'),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _jobTitleController,
-                  decoration: const InputDecoration(labelText: 'Job Title*'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password*'),
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    if (value.length < 6) {
-                      return 'Minimum 6 characters';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+
                 DropdownButtonFormField<String>(
-                  value: _selectedDepartment,
-                  decoration: const InputDecoration(labelText: 'Department*'),
-                  items:
-                      widget.departments
-                          .map(
-                            (department) => DropdownMenuItem(
-                              value: department,
-                              child: Text(department),
-                            ),
-                          )
-                          .toList(),
+                  value: _selectedRoute,
+                  decoration: const InputDecoration(labelText: 'Assigned Route*'),
+                  items: const [
+                    DropdownMenuItem(value: 'Route 1', child: Text('Route 1')),
+                    DropdownMenuItem(value: 'Route 2', child: Text('Route 2')),
+                  ],
                   onChanged: (value) {
                     setState(() {
-                      _selectedDepartment = value;
+                      _selectedRoute = value;
                     });
                   },
                   validator: (value) {
                     if (value == null) {
-                      return 'Please select department';
+                      return 'Please select Type';
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: _selectedSupervisor,
-                  decoration: const InputDecoration(labelText: 'Supervisor'),
-                  items:
-                      widget.supervisors
-                          .map(
-                            (supervisor) => DropdownMenuItem(
-                              value: supervisor,
-                              child: Text(supervisor),
-                            ),
-                          )
-                          .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedSupervisor = value;
-                    });
-                  },
-                ),
+               
               ],
             ),
           ),
@@ -238,18 +153,7 @@ class _NewTrainFormState extends State<NewTrainForm> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               // Return the employee data when form is valid
-              Navigator.pop(context, {
-                'firstName': _firstNameController.text,
-                'middleName': _middleNameController.text,
-                'lastName': _lastNameController.text,
-                'gender': _selectedGender,
-                'email': _emailController.text,
-                'phone': _phoneController.text,
-                'jobTitle': _jobTitleController.text,
-                'password': _passwordController.text,
-                'department': _selectedDepartment,
-                'supervisor': _selectedSupervisor,
-              });
+              Navigator.pop(context);
             }
           },
           child: const Text('Save'),

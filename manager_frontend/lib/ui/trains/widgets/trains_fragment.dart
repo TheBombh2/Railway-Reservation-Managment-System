@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/trains/widgets/new_train_form.dart';
+import 'package:manager_frontend/ui/trains/widgets/new_train_type_form.dart';
 import 'package:manager_frontend/ui/trains/widgets/trains_list.dart';
-
 
 class TrainsFragment extends StatelessWidget {
   const TrainsFragment({super.key});
@@ -33,26 +33,8 @@ class TrainsFragment extends StatelessWidget {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder:
-                            (ctx) => NewTrainForm(
-                              departments: [
-                                'RnD',
-                                'HR',
-                                'Finance',
-                                'Operations',
-                              ],
-                              supervisors: [
-                                'John Doe',
-                                'Jane Smith',
-                                'Mike Johnson',
-                              ],
-                            ),
-                      ).then((employeeData) {
-                        if (employeeData != null) {
-                          // Handle the submitted employee data
-                          print(employeeData);
-                        }
-                      });
+                        builder: (ctx) => NewTrainForm(),
+                      );
                     },
                     label: Text(
                       'Add a Train',
@@ -62,6 +44,28 @@ class TrainsFragment extends StatelessWidget {
                       ),
                     ),
                   ),
+                 SizedBox(width: 20,),
+                 OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: darkerBlue,
+                      surfaceTintColor: darkerBlue,
+                    ),
+                    icon: Icon(Icons.create_outlined, color: darkBlue),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => NewTrainTypeForm(),
+                      );
+                    },
+                    label: Text(
+                      'Create Train Type',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: darkBlue,
+                      ),
+                    ),
+                  ),
+                
                 ],
               ),
 
