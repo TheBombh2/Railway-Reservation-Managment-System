@@ -100,6 +100,8 @@ const inline std::string GET_ALL_EMPLOYEES_INFORMATION_QUERY =
 "JOIN `EmployeeBasicInformation` EBI2 ON EBI.`ManagerID` = EBI2.`EmployeeID` "
 "JOIN `Job` J ON J.`JobID` = EBI.`JobID`; ";
 
+const inline std::string GET_EMPLOYEE_NAME = 
+"SELECT FirstName FROM EmployeeBasicInformation WHERE EmployeeID = :ID; ";
 
 const inline std::string DELETE_EMPLOYEE_BASIC_INFORMATION = 
 "DELETE FROM EmployeeBasicInformation WHERE ID = :ID; ";
@@ -115,7 +117,7 @@ const inline std::string DELETE_EMPLOYEE_PREVIOUS_PASSWORDS =
 
 //Warning: O(N) query
 const inline std::string SET_EMPLOYEE_MANAGERS_TO_NULL = 
-"UPDATE EmployeeBasicInformation SET ManagerID = NULL, ManagerHiringDate = NULL "
+"UPDATE EmployeeBasicInformation SET ManagerID = NULL, ManagerAppointmentDate = NULL "
 "WHERE ManagerID = :ID; ";
 
 //Warning: O(N) query

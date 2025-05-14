@@ -13,6 +13,10 @@ void AddEmployeeDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          try
          {
             soci::session db(pool);
+            std::string employeeName;
+            db << GET_EMPLOYEE_NAME, soci::use(employeeUUID), soci::into(employeeName);
+            if(employeeName.empty())
+                return crow::response(404, "not found");
             soci::transaction trans(db);
             db << DELETE_EMPLOYEE_SECURITY_INFORMATION, soci::use(employeeUUID);
             db << DELETE_EMPLOYEE_PREVIOUS_PASSWORDS, soci::use(employeeUUID);
