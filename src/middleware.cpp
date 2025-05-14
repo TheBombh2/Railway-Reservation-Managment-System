@@ -48,7 +48,7 @@ SessionTokenInfo GetSessionTokenInfo(const std::string& token)
     else
     {
         std::cerr << "auth service returned code: " << r.status_code << '\n';
-        return SessionTokenInfo(0,0,"0");
+        return SessionTokenInfo(0,"0 0 0 0 0 0 0 0","0");
     }
 }
 
@@ -65,6 +65,7 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
     }
     std::string token = authHeader.substr(7);
     SessionTokenInfo tokenInfo = GetSessionTokenInfo(token);
+    std::cout << "RETURNED UUID: " << tokenInfo.GetUUID() << '\n';
     if(tokenInfo.GetUUID() == "0")
     {
         res.code = 403;

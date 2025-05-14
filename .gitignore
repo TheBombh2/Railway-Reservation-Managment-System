@@ -6,3 +6,4 @@ misc/
 secrets.yaml
 employee_frontend
 customer_frontend
+manager_frontend

@@ -22,10 +22,12 @@ int main(int argc, char **argv) {
     WriteInitialSecretsFile();
     return -2;
   }
+  std::cout << "WE INITIALIZED\n";
   InitializeConnectionStrings();
   InitializeConnectionPool();
   InitializeRedisString();
   dbRedis = new redis::Redis(redisConnectionOptions, redisPoolOptions);
+  std::cout << "WE ARE POST REDIS\n";
   YAML::Node root = LoadSecretsFile();
 
   crow::SimpleApp authorizationApp;

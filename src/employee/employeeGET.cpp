@@ -291,4 +291,49 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 
          return crow::response(200, result);
          });
+
+    CROW_ROUTE(app, "/users/employees/all-info").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::VIEW_EMPLOYEE)
+         soci::session db(pool);
+         std::vector<soci::indicator> employeeMiddleNameInds(MAX_EMPLOYEES_RETURNED);
+         std::vector<soci::indicator> managerMiddleNameInds(MAX_EMPLOYEES_RETURNED);
+         std::vector<std::string> employeeFirstNames(MAX_EMPLOYEES_RETURNED), employeeMiddleNames(MAX_EMPLOYEES_RETURNED),
+         employeeLastNames(MAX_EMPLOYEES_RETURNED), employeeGenders(MAX_EMPLOYEES_RETURNED),
+         employeeIDs(MAX_EMPLOYEES_RETURNED), managerFirstNames(MAX_EMPLOYEES_RETURNED),
+         managerMiddleNames(MAX_EMPLOYEES_RETURNED), managerLastNames(MAX_EMPLOYEES_RETURNED),
+         employeeJobTitles(MAX_EMPLOYEES_RETURNED);
+
+         try
+         {
+            soci::session db(pool);
+            db << GET_ALL_EMPLOYEES_INFORMATION_QUERY, soci::into(employeeFirstNames),
+            soci::into(employeeMiddleNames, employeeMiddleNameInds), soci::into(employeeLastNames),
+            soci::into(employeeGenders), soci::into(employeeIDs), soci::into(managerFirstNames),
+            soci::into(managerMiddleNames, managerMiddleNameInds), soci::into(managerLastNames),
+            soci::into(employeeJobTitles);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR(/users/employees/all-info): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         crow::json::wvalue result;
+         result["size"] = employeeIDs.size();
+         std::cout << "EMPLOYEE SIZE: " << '\n';
+         for(unsigned int i = 0; i < employeeIDs.size(); i++)
+         {
+            result["employees"][i]["employeeFirstName"] = employeeFirstNames[i];
+            result["employees"][i]["employeeMiddleName"] = employeeMiddleNames[i];
+            result["employees"][i]["employeeLastName"] = employeeLastNames[i];
+            result["employees"][i]["employeeGender"] = employeeGenders[i];
+            result["employees"][i]["employeeID"] = employeeIDs[i];
+            result["employees"][i]["managerFirstName"] = managerFirstNames[i];
+            result["employees"][i]["managerMiddleName"] = managerMiddleNames[i];
+            result["employees"][i]["managerLastName"] = managerLastNames[i];
+            result["employees"][i]["jobTitle"] = employeeJobTitles[i];
+         }
+         return crow::response(200, result);
+         });
 }

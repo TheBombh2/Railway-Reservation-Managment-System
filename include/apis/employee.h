@@ -10,6 +10,7 @@ const inline unsigned short MAX_DEPARTMENTS_RETURNED = 255;
 const inline unsigned short MAX_APPRAISALS_RETURNED = 255;
 const inline unsigned short MAX_CITATIONS_RETURNED = 255;
 const inline unsigned short MAX_TASKS_RETURNED = 64;
+const inline unsigned short MAX_EMPLOYEES_RETURNED = 255;
 
 const inline std::string CREATE_JOB_QUERY =
 "INSERT INTO Job (JobID, Title, Description) VALUES (:ID, :Title, :Description);";
@@ -89,3 +90,35 @@ const inline std::string GET_EMPLOYEE_INFORMATION_QUERY =
 "FROM `EmployeeBasicInformation` EBI "
 "JOIN `EmployeeContactInformation` ECI ON EBI.`EmployeeID` = ECI.`ID` "
 "WHERE EBI.EmployeeID = :ID; ";
+
+const inline std::string GET_ALL_EMPLOYEES_INFORMATION_QUERY =
+"SELECT EBI.`FirstName` AS EmployeeFirstName, EBI.`MiddleName` AS EmployeeMiddleName, EBI.`LastName` AS EmployeeLastName, "
+"EBI.Gender AS EmployeeGender, EBI.EmployeeID, "
+"EBI2.`FirstName` AS ManagerFirstName, EBI2.MiddleName AS ManagerMiddleName, EBI2.LastName AS ManagerLastName, "
+"J.Title as JobTitle "
+"FROM `EmployeeBasicInformation` EBI "
+"JOIN `EmployeeBasicInformation` EBI2 ON EBI.`ManagerID` = EBI2.`EmployeeID` "
+"JOIN `Job` J ON J.`JobID` = EBI.`JobID`; ";
+
+
+const inline std::string DELETE_EMPLOYEE_BASIC_INFORMATION = 
+"DELETE FROM EmployeeBasicInformation WHERE ID = :ID; ";
+
+const inline std::string DELETE_EMPLOYEE_CONTACT_INFORMATION = 
+"DELETE FROM EmployeeContactInformation WHERE ID = :ID";
+
+const inline std::string DELETE_EMPLOYEE_SECURITY_INFORMATION = 
+"DELETE FROM EmployeeSecurityInformation WHERE ID = :ID; ";
+
+const inline std::string DELETE_EMPLOYEE_PREVIOUS_PASSWORDS = 
+"DELETE FROM EmployeePreviousPasswords WHERE ID = :ID; ";
+
+//Warning: O(N) query
+const inline std::string SET_EMPLOYEE_MANAGERS_TO_NULL = 
+"UPDATE EmployeeBasicInformation SET ManagerID = NULL, ManagerHiringDate = NULL "
+"WHERE ManagerID = :ID; ";
+
+//Warning: O(N) query
+const inline std::string SET_DEPARTMENT_MANGERS_TO_NULL =
+"UPDATE Department SET ManagerID = NULL, ManagerHiringDate = NULL "
+"WHERE ManagerID = :ID; ";
