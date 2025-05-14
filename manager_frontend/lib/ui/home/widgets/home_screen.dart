@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_fragment.dart';
 import 'package:manager_frontend/ui/home/widgets/admin_navigation_drawer.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
@@ -59,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16, 32, 0, 26.6),
                     child: Text(
-                      "Welcome, Belal!",
+                      "Welcome, ${context.select((AuthenticationBloc bloc)=> bloc.state.manager.firstName)}!",
                       style: TextStyle(color: primaryWhite, fontSize: 32),
                     ),
                   ),
