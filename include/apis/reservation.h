@@ -63,3 +63,5 @@ const inline std::string ADD_STATION_CONNECTION_QUERY =
 "(Source, Destination, Distance) "
 "VALUES (:Source, :Destination, :Distance); ";
 
+const inline std::string CREATE_TRAIN_QUERY = 
+"INSERT INTO `Train` (ID, Name, Speed) VALUES (:ID, :Name, :Speed); ";

@@ -78,7 +78,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::cerr << "DATABASE ERROR(/stations/create-station): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
-         return crow::response(200, "station successfully created");
+         return crow::response(201, "station successfully created");
          });
 
     CROW_ROUTE(app, "/stations/add-connection").methods(crow::HTTPMethod::POST)
@@ -118,6 +118,38 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::cerr << "DATABASE ERROR(/stations/add-connection): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
-         return crow::response(200, "station connection successfully created");
+         return crow::response(201, "station connection successfully created");
+         });
+
+    CROW_ROUTE(app, "/trains/create").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_TRAIN)
+         const crow::json::rvalue body = crow::json::load(req.body);
+         std::string name;
+         double speed;
+         try
+         {
+            name = body["name"].s();
+            speed = body["speed"].d();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "JSON ERROR (/trains/crate): " << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
+
+         try
+         {
+            soci::session db(pool);
+            std::string uuid = GetUUIDv7();
+            db << CREATE_TRAIN_QUERY, soci::use(uuid), soci::use(name), soci::use(speed);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR: (/trains/create) " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(201, "train successfully created");
          });
 }
