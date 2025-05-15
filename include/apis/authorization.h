@@ -29,3 +29,6 @@ const inline std::string DELETE_CUSTOMER_PREVIOUS_PASSWORDS =
 
 const inline std::string GET_CUSTOMER_PASSWORD_HASH =
 "SELECT PasswordHash FROM CustomerSecurityInformation WHERE ID=:ID";
+
+const inline std::string GET_EMPLOYEE_PASSWORD_HASH =
+"SELECT PasswordHash FROM EmployeeSecurityInformation WHERE ID = :ID; ";

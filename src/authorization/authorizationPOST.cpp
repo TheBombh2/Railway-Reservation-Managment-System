@@ -66,8 +66,13 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
          }
          soci::session db(pool);
          std::string uuid = GetEmployeeUUID(email);
+         std::string hashDatabase;
          if(uuid.empty())
             return crow::response(404, "user not found");
+         db << GET_EMPLOYEE_PASSWORD_HASH, soci::use(uuid), soci::into(hashDatabase);
+         
+         if(hashDatabase != passwordHashRequest)
+            return crow::response(401, "authentication failure");
 
          //Get Employee Permissions from their respective department
          std::pair<uint8_t, unsigned long long> perms = GetEmployeePermissions(uuid);
