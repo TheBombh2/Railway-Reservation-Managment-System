@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
 import 'package:manager_frontend/data/services/authentication_service.dart';
+import 'package:manager_frontend/data/services/employee_service.dart';
 import 'package:manager_frontend/routing/router.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 
@@ -19,12 +20,15 @@ class App extends StatelessWidget {
         RepositoryProvider(create: (context) => Dio()),
         RepositoryProvider(
           create: (context) => AuthenticationService(context.read<Dio>()),
-          
+        ),
+        RepositoryProvider(
+          create: (context) => EmployeeService(context.read<Dio>()),
         ),
         RepositoryProvider(
           create:
               (context) => AuthenticationRepositroy(
                 authenticationService: context.read<AuthenticationService>(),
+                employeeService: context.read<EmployeeService>(),
               ),
           dispose: (repository) => repository.dispose(),
         ),
@@ -54,7 +58,7 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-       router.refresh();
+        router.refresh();
       },
       child: MaterialApp.router(
         routerConfig: router,

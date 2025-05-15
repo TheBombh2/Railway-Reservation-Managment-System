@@ -1,16 +1,20 @@
 import 'dart:async';
 
+import 'package:manager_frontend/data/model/manager.dart';
 import 'package:manager_frontend/data/services/authentication_service.dart';
-import 'package:manager_frontend/domain/models/manager.dart';
+import 'package:manager_frontend/data/services/employee_service.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class AuthenticationRepositroy {
   AuthenticationRepositroy({
     required AuthenticationService authenticationService,
-  }) : _authenticationService = authenticationService;
+    required EmployeeService employeeService,
+  }) : _authenticationService = authenticationService,
+       _employeeService = employeeService;
 
   final AuthenticationService _authenticationService;
+  final EmployeeService _employeeService;
   final _controller = StreamController<AuthenticationStatus>();
   Manager? _manager;
 
@@ -28,7 +32,11 @@ class AuthenticationRepositroy {
         email,
         passwordHash,
       );
-      _manager = Manager(sessionToken);
+
+      final managerData = await _employeeService.getAllEmployeeInfo(
+        sessionToken,
+      );
+      _manager = Manager.fromJson(managerData);
       //Here we should get manager info using session token but for now we will use a placeholder manager
       _controller.add(AuthenticationStatus.authenticated);
     } catch (e) {

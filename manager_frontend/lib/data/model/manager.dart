@@ -1,39 +1,55 @@
-class ManagerApi {
+class Manager {
   BasicInfo? basicInfo;
   DepartmentInfo? departmentInfo;
   JobInfo? jobInfo;
   ManagerInfo? managerInfo;
 
-  ManagerApi(
-      {this.basicInfo, this.departmentInfo, this.jobInfo, this.managerInfo});
+  Manager({
+    this.basicInfo,
+    this.departmentInfo,
+    this.jobInfo,
+    this.managerInfo,
+  });
 
-  ManagerApi.fromJson(Map<String, dynamic> json) {
-    basicInfo = json['basicInfo'] != null
-        ? new BasicInfo.fromJson(json['basicInfo'])
-        : null;
-    departmentInfo = json['departmentInfo'] != null
-        ? new DepartmentInfo.fromJson(json['departmentInfo'])
-        : null;
+
+  Manager.empty(){
+    basicInfo = null;
+    departmentInfo = null;
+    jobInfo = null;
+    managerInfo = null;
+  }
+ 
+
+  Manager.fromJson(Map<String, dynamic> json) {
+    basicInfo =
+        json['basic-info'] != null
+            ? new BasicInfo.fromJson(json['basic-info'])
+            : null;
+    departmentInfo =
+        json['department-info'] != null
+            ? new DepartmentInfo.fromJson(json['department-info'])
+            : null;
     jobInfo =
-        json['jobInfo'] != null ? new JobInfo.fromJson(json['jobInfo']) : null;
-    managerInfo = json['managerInfo'] != null
-        ? new ManagerInfo.fromJson(json['managerInfo'])
-        : null;
+        json['job-info'] != null ? new JobInfo.fromJson(json['job-info']) : null;
+    managerInfo =
+        json['manager-info'] != null
+            ? new ManagerInfo.fromJson(json['manager-info'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.basicInfo != null) {
-      data['basicInfo'] = this.basicInfo!.toJson();
+      data['basic-info'] = this.basicInfo!.toJson();
     }
     if (this.departmentInfo != null) {
-      data['departmentInfo'] = this.departmentInfo!.toJson();
+      data['department-info'] = this.departmentInfo!.toJson();
     }
     if (this.jobInfo != null) {
-      data['jobInfo'] = this.jobInfo!.toJson();
+      data['job-info'] = this.jobInfo!.toJson();
     }
     if (this.managerInfo != null) {
-      data['managerInfo'] = this.managerInfo!.toJson();
+      data['manager-info'] = this.managerInfo!.toJson();
     }
     return data;
   }
@@ -46,12 +62,21 @@ class BasicInfo {
   String? middleName;
   int? salary;
 
-  BasicInfo(
-      {this.firstName,
-      this.gender,
-      this.lastName,
-      this.middleName,
-      this.salary});
+  BasicInfo({
+    this.firstName,
+    this.gender,
+    this.lastName,
+    this.middleName,
+    this.salary,
+  });
+
+  BasicInfo.empty(){
+    firstName ="";
+    gender ="";
+    lastName ="";
+    middleName ="";
+    salary = 0;
+  }
 
   BasicInfo.fromJson(Map<String, dynamic> json) {
     firstName = json['firstName'];
@@ -78,15 +103,25 @@ class DepartmentInfo {
   DepartmentManagerInfo? managerInfo;
   String? title;
 
-  DepartmentInfo(
-      {this.description, this.location, this.managerInfo, this.title});
-
+  DepartmentInfo({
+    this.description,
+    this.location,
+    this.managerInfo,
+    this.title,
+  });
+  DepartmentInfo.empty(){
+    description = "";
+    location = "";
+    managerInfo = DepartmentManagerInfo.empty();
+    title="";
+  }
   DepartmentInfo.fromJson(Map<String, dynamic> json) {
     description = json['description'];
     location = json['location'];
-    managerInfo = json['managerInfo'] != null
-        ? new DepartmentManagerInfo.fromJson(json['managerInfo'])
-        : null;
+    managerInfo =
+        json['manager-info'] != null
+            ? new DepartmentManagerInfo.fromJson(json['manager-info'])
+            : null;
     title = json['title'];
   }
 
@@ -95,7 +130,7 @@ class DepartmentInfo {
     data['description'] = this.description;
     data['location'] = this.location;
     if (this.managerInfo != null) {
-      data['managerInfo'] = this.managerInfo!.toJson();
+      data['manager-info'] = this.managerInfo!.toJson();
     }
     data['title'] = this.title;
     return data;
@@ -109,12 +144,21 @@ class DepartmentManagerInfo {
   String? lastName;
   String? middleName;
 
-  DepartmentManagerInfo(
-      {this.firstName,
-      this.gender,
-      this.hireDate,
-      this.lastName,
-      this.middleName});
+  DepartmentManagerInfo({
+    this.firstName,
+    this.gender,
+    this.hireDate,
+    this.lastName,
+    this.middleName,
+  });
+
+  DepartmentManagerInfo.empty(){
+    firstName ="";
+    gender ="";
+    hireDate = "";
+    lastName ="";
+    middleName = "";
+  }
 
   DepartmentManagerInfo.fromJson(Map<String, dynamic> json) {
     firstName = json['firstName'];
@@ -141,6 +185,11 @@ class JobInfo {
 
   JobInfo({this.jobDescription, this.jobTitle});
 
+  JobInfo.empty(){
+    jobDescription = "";
+    jobTitle ="";
+  }
+
   JobInfo.fromJson(Map<String, dynamic> json) {
     jobDescription = json['jobDescription'];
     jobTitle = json['jobTitle'];
@@ -161,12 +210,22 @@ class ManagerInfo {
   String? lastName;
   String? middleName;
 
-  ManagerInfo(
-      {this.firstName,
-      this.gender,
-      this.jobInfo,
-      this.lastName,
-      this.middleName});
+  ManagerInfo({
+    this.firstName,
+    this.gender,
+    this.jobInfo,
+    this.lastName,
+    this.middleName,
+  });
+
+
+  ManagerInfo.empty(){
+    firstName = "";
+    gender ="";
+    jobInfo =JobInfo.empty();
+    lastName ="";
+    middleName = "";
+  }
 
   ManagerInfo.fromJson(Map<String, dynamic> json) {
     firstName = json['firstName'];

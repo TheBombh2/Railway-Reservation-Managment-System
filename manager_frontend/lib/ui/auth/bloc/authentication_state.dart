@@ -3,16 +3,19 @@ part of 'authentication_bloc.dart';
 class AuthenticationState {
   const AuthenticationState._({
     this.status = AuthenticationStatus.unknown,
-    this.manager = Manager.empty,
+    required this.manager,
   });
 
-  const AuthenticationState.unknown() : this._();
+  AuthenticationState.unknown() : this._(manager: Manager.empty());
 
   const AuthenticationState.authenticated(Manager manager)
     : this._(status: AuthenticationStatus.authenticated, manager: manager);
 
-  const AuthenticationState.unauthenticated()
-    : this._(status: AuthenticationStatus.unauthenticated);
+  AuthenticationState.unauthenticated()
+    : this._(
+        status: AuthenticationStatus.unauthenticated,
+        manager: Manager.empty(),
+      );
 
   final AuthenticationStatus status;
   final Manager manager;

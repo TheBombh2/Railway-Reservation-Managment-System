@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16, 32, 0, 26.6),
                     child: Text(
-                      "Welcome, ${context.select((AuthenticationBloc bloc)=> bloc.state.manager.firstName)}!",
+                      "Welcome, ${context.select((AuthenticationBloc bloc)=> bloc.state.manager.basicInfo!.firstName)}!",
                       style: TextStyle(color: primaryWhite, fontSize: 32),
                     ),
                   ),

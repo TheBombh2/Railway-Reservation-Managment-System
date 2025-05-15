@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:manager_frontend/domain/models/manager.dart';
+import 'package:manager_frontend/data/model/manager.dart';
 import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
 
 part 'authentication_event.dart';
@@ -10,7 +10,7 @@ class AuthenticationBloc
   AuthenticationBloc({
     required AuthenticationRepositroy authenticationRepositroy,
   }) : _authenticationRepositroy = authenticationRepositroy,
-       super(const AuthenticationState.unknown()) {
+       super(AuthenticationState.unknown()) {
     on<AuthenticationSubscriptionRequest>(_onSubscriptionRequested);
     on<AuthenticationLogoutPressed>(_onLogoutPressed);
   }
@@ -26,16 +26,16 @@ class AuthenticationBloc
       onData: (status) async {
         switch (status) {
           case AuthenticationStatus.unauthenticated:
-            return emit(const AuthenticationState.unauthenticated());
+            return emit(AuthenticationState.unauthenticated());
           case AuthenticationStatus.authenticated:
             final manager = await _authenticationRepositroy.getManager();
             return emit(
               manager != null
                   ? AuthenticationState.authenticated(manager)
-                  : const AuthenticationState.unauthenticated(),
+                  :  AuthenticationState.unauthenticated(),
             );
           case AuthenticationStatus.unknown:
-            return emit(const AuthenticationState.unknown());
+            return emit( AuthenticationState.unknown());
         }
       },
       onError: addError
