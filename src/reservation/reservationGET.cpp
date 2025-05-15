@@ -1,4 +1,5 @@
 #include "crow/common.h"
+#include "database_common.h"
 #include "database_connector.h"
 #include "middleware.h"
 #include "permissions.h"
@@ -108,5 +109,16 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          return crow::response(200, result);
          });
-
+    
+    CROW_ROUTE(app, "/users/<string>/customer/uuid").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req, const std::string& email)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         std::string customerUUID = GetCustomerUUID(email);
+         if(customerUUID.empty())
+            return crow::response(404, "not found");
+         if(tokenInfo.GetUUID() != customerUUID)
+            return crow::response(403, "forbidden");
+         return crow::response(200, customerUUID);
+         });
 }

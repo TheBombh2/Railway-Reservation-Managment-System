@@ -157,7 +157,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          try
          {
             std::string title = body["title"].s();
-            std::string description = body["title"].s();
+            std::string description = body["description"].s();
             std::string location = body["location"].s();
             uint8_t permission = body["permission"].i();
             unsigned long long subPermission = body["subPermission"].i(); 

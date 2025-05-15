@@ -32,4 +32,26 @@ void AddEmployeeDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          return crow::response(204, "employee successfully deleted");
          });
+
+    CROW_ROUTE(app, "/departments/<string>/delete").methods(crow::HTTPMethod::DELETE)
+        ([&](const crow::request& req, const std::string departmentUUID)
+         {
+         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::DELETE_DEPARTMENT)
+         soci::session db(pool);
+         std::string departmentTitle;
+         try
+         {
+            db << GET_DEPARTMENT_TITLE_QUERY, soci::use(departmentUUID), soci::into(departmentTitle);
+            if(departmentTitle.empty())
+                return crow::response(404, "not found");
+            db << DELETE_DEPARTMENT_QUERY, soci::use(departmentUUID);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/departments/<string>/delete): " << e.what() << '\n';
+            std::cerr << "<string> value: " << departmentUUID << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(204, "department successfully deleted");
+         });
 }

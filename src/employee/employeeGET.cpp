@@ -120,14 +120,17 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<std::string> titles(MAX_DEPARTMENTS_RETURNED);
          std::vector<std::string> descriptions(MAX_DEPARTMENTS_RETURNED);
          std::vector<std::string> locations(MAX_DEPARTMENTS_RETURNED);
+         std::vector<std::string> ids(MAX_DEPARTMENTS_RETURNED);
          soci::session db(pool);
-         db << GET_DEPARTMENTS_QUERY, soci::into(titles), soci::into(descriptions), soci::into(locations);
+         db << GET_DEPARTMENTS_QUERY, soci::into(titles), soci::into(descriptions), soci::into(locations),
+         soci::into(ids);
          returnBody["size"] = titles.size();
          for(unsigned int i = 0; i < titles.size(); i++)
          {
              returnBody["departments"][i]["title"] = titles[i];
              returnBody["departments"][i]["description"] = descriptions[i];
              returnBody["departments"][i]["location"] = locations[i];
+             returnBody["departments"][i]["id"] = ids[i];
          }
          return crow::response(200, returnBody);
          }
@@ -331,5 +334,16 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             result["employees"][i]["jobTitle"] = employeeJobTitles[i];
          }
          return crow::response(200, result);
+         });
+
+
+    CROW_ROUTE(app, "/users/<string>/employee/uuid").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req, const std::string& email)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         std::string employeeUUID = GetEmployeeUUID(email);
+         if(employeeUUID.empty())
+            return crow::response(404, "not found");
+         return crow::response(200, employeeUUID);
          });
 }

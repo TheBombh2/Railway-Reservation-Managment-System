@@ -11,16 +11,35 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
     ([](const crow::request& req)
      {
         auto body = crow::json::load(req.body);
-        std::string email = body["email"].s();
-        std::string passwordHashRequest = body["passwordHash"].s();
-        soci::session db(pool);
+        std::string email, passwordHashRequest;
+        try
+        {
+            email = body["email"].s();
+            passwordHashRequest = body["passwordHash"].s();
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "JSON ERROR (/login/customer): " << e.what() << '\n';
+            return crow::response(400, "bad request");
+        } 
+        
         std::string uuid = GetCustomerUUID(email);
         if(uuid.empty())
         {
             return crow::response(404, "user not found");
         }
         std::string passwordHashDB;
-        db << GET_CUSTOMER_PASSWORD_HASH, soci::use(uuid), soci::into(passwordHashDB);
+
+        try
+        {
+            soci::session db(pool);
+            db << GET_CUSTOMER_PASSWORD_HASH, soci::use(uuid), soci::into(passwordHashDB);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "DATABASE ERROR (/login/customer): " << e.what() << '\n';
+            return crow::response(500, "database error");
+        }
         if(passwordHashRequest != passwordHashDB)
             return crow::response(404, "authentication failure");
 
@@ -34,8 +53,17 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
         ([](const crow::request& req)
          {
          const crow::json::rvalue body = crow::json::load(req.body);
-         std::string email = body["email"].s();
-         std::string passwordHashRequest = body["passwordHash"].s();
+         std::string email, passwordHashRequest;
+         try
+         {
+            email = body["email"].s();
+            passwordHashRequest = body["passwordHash"].s();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "JSON ERROR (bad request) (/login/employee):" << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
          soci::session db(pool);
          std::string uuid = GetEmployeeUUID(email);
          if(uuid.empty())

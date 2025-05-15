@@ -1,6 +1,7 @@
 #pragma once
 #include "crow/app.h"
 #include "middleware.h"
+#include "permissions.h"
 
 void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE>& app);
 void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE>& app);
@@ -48,7 +49,10 @@ const inline std::string CREATE_TASK_QUERY =
 
 //To-Do: Add manager ID and name!
 const inline std::string GET_DEPARTMENTS_QUERY =
-"SELECT Title, Description, Location FROM Department";
+"SELECT Title, Description, Location, DepartmentID FROM Department";
+
+const inline std::string GET_DEPARTMENT_TITLE_QUERY =
+"SELECT Title FROM Department WHERE DepartmentID = :ID; ";
 
 const inline std::string GET_JOB_INFO_QUERY = 
 "SELECT Title, Description FROM Job WHERE JobID=:ID;";
@@ -115,6 +119,10 @@ const inline std::string DELETE_EMPLOYEE_SECURITY_INFORMATION =
 
 const inline std::string DELETE_EMPLOYEE_PREVIOUS_PASSWORDS = 
 "DELETE FROM EmployeePreviousPasswords WHERE ID = :ID; ";
+
+//These are queries for department deletion
+const inline std::string DELETE_DEPARTMENT_QUERY =
+"DELETE FROM Department WHERE DepartmentID = :ID; ";
 
 //Warning: O(N) query
 const inline std::string SET_EMPLOYEE_MANAGERS_TO_NULL = 
