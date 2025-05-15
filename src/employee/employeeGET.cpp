@@ -1,7 +1,3 @@
-#include <cstddef>
-#include <soci/mysql/soci-mysql.h>
-#include <soci/session.h>
-#include <soci/soci-backend.h>
 #include <vector>
 #include "crow/common.h"
 #include "crow/http_response.h"

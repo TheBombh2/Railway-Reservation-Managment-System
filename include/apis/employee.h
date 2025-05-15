@@ -5,6 +5,7 @@
 void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE>& app);
 void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE>& app);
 void AddEmployeeDELETERequests(crow::App<AUTH_MIDDLEWARE>& app);
+void AddEmployeePATCHRequests(crow::App<AUTH_MIDDLEWARE>& app);
 
 const inline unsigned short MAX_DEPARTMENTS_RETURNED = 255;
 const inline unsigned short MAX_APPRAISALS_RETURNED = 255;
@@ -124,3 +125,7 @@ const inline std::string SET_EMPLOYEE_MANAGERS_TO_NULL =
 const inline std::string SET_DEPARTMENT_MANGERS_TO_NULL =
 "UPDATE Department SET ManagerID = NULL, ManagerHiringDate = NULL "
 "WHERE ManagerID = :ID; ";
+
+const inline std::string FORCE_UPDATE_PASSWORD_QUERY = 
+"UPDATE `EmployeeSecurityInformation` SET PasswordSalt = :Salt, PasswordHash = :Hash, FirstLogin = 1 "
+"WHERE ID = :ID; ";

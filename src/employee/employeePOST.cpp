@@ -1,7 +1,3 @@
-#include <ctime>
-#include <exception>
-#include <soci/mysql/soci-mysql.h>
-#include <soci/soci-backend.h>
 #include "crow/http_response.h"
 #include "database_common.h"
 #include "database_connector.h"

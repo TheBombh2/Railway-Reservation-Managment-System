@@ -54,7 +54,7 @@ add_executable(rrms-authorization ./src/authorization/authorization.cpp
 ./src/authorization/authorizationGET.cpp ./src/authorization/authorizationPOST.cpp
 ./src/authorization/authorizationDELETE.cpp)
 add_executable(rrms-employee ./src/employee/employee.cpp ./src/employee/employeeGET.cpp
-./src/employee/employeePOST.cpp ./src/employee/employeeDELETE.cpp)
+./src/employee/employeePOST.cpp ./src/employee/employeeDELETE.cpp ./src/employee/employeePATCH.cpp)
 add_executable(rrms-reservation ./src/reservation/reservation.cpp ./src/reservation/reservationGET.cpp
 ./src/reservation/reservationPOST.cpp ./src/reservation/reservationDELETE.cpp)
 

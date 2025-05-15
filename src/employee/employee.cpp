@@ -34,6 +34,7 @@ int main(int argc, char** argv)
   AddEmployeeGETRequests(employeeApp); 
   AddEmployeePOSTRequests(employeeApp);
   AddEmployeeDELETERequests(employeeApp);
+  AddEmployeePATCHRequests(employeeApp);
 
     unsigned short portNum = root["services"]["EMPLOYEE_PORT_NUMBER"].as<unsigned short>();
   employeeApp.multithreaded().port(portNum).run();
