@@ -75,3 +75,9 @@ const inline std::string GET_TRAIN_NAME =
 
 const inline std::string DELETE_TRAIN_QUERY =
 "DELETE FROM Train WHERE ID = :ID; ";
+
+const inline std::string GET_STATION_NAME_QUERY =
+"SELECT Name FROM TrainStation WHERE ID = :ID; ";
+
+const inline std::string DELETE_STATION_QUERY =
+"DELETE FROM TrainStation WHERE ID = :ID; ";
