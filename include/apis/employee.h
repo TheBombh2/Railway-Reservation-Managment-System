@@ -19,10 +19,10 @@ const inline std::string CREATE_JOB_QUERY =
 
 const inline std::string CREATE_EMPLOYEE_QUERY =
 "INSERT INTO EmployeeBasicInformation "
-"(EmployeeID, FirstName, MiddleName, LastName, Gender"
-"Salary, DepartmentID, JobID, ManagerID, ManagerAppointmentDate)"
-"VALUES (:ID, :FirstName, :MiddleName, :LastName, :Gender, :Salary"
-":DeptID, :JobID, :ManagerID, :ManagerDate)";
+"(EmployeeID, FirstName, MiddleName, LastName, Gender, "
+"Salary, DepartmentID, JobID, ManagerID, ManagerAppointmentDate) "
+"VALUES (:ID, :FirstName, :MiddleName, :LastName, :Gender, :Salary, "
+":DeptID, :JobID, :ManagerID, :ManagerDate) ;";
 
 const inline std::string CREATE_DEPARTMENT_QUERY = 
 "INSERT INTO Department "

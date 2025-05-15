@@ -111,8 +111,6 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
     CROW_ROUTE(app, "/users/create/employee").methods(crow::HTTPMethod::POST)
         ([&](const crow::request& req)
          {
-         try
-         {
             AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::HIRE_EMPLOYEE)
             crow::json::rvalue jsonBody = crow::json::load(req.body);
             std::string firstName = jsonBody["firstName"].s();
@@ -128,6 +126,8 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             if(!strptime(tempManagerHireDate.c_str(), TIME_FORMAT_STRING, &managerHireDate))
                 return crow::response(400, "invalid manager hire date");
             std::string id = GetUUIDv7();
+         try
+         {
             soci::session db(pool);
             db << CREATE_EMPLOYEE_QUERY, 
             soci::use(id), soci::use(firstName),
