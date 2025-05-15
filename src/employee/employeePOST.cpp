@@ -144,6 +144,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          catch(std::exception& e)
          {
             //to fix later
+            std::cerr << "ERROR UNKNOWN: " << e.what() << '\n';
             return crow::response(400, "bad request or database error");
          }
          });
