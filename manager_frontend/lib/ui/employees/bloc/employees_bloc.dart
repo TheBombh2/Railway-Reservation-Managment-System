@@ -41,6 +41,7 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     if(state is EmployeesLoaded){
         final currentState = state as EmployeesLoaded;
       try{
+        event.employeeData.managerID = await authenticationRepository.getUuid();
         await employeeRepository.createEmployee(event.employeeData,authenticationRepository.getSessionToken());
         emit(EmployeeOperationSuccess());
         add(LoadEmployees());
@@ -70,4 +71,6 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       }
     }
   }
+
+  
 }

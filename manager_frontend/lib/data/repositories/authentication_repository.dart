@@ -48,6 +48,17 @@ class AuthenticationRepository {
     }
   }
 
+  Future<String> getUuid() async {
+    try {
+      
+      final uuid = await _authenticationService.getUuid(_sessionToken);
+      return uuid;
+      
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Manager?> getManager() async {
     if (_manager != null) return _manager;
   }

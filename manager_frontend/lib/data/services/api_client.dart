@@ -11,7 +11,7 @@ class ApiClient {
   String _buildBaseUrl() => 
     "https://rrms-$_subdomain.furious-shark-hosting.duckdns.org";
 
-  Future<Map<String, dynamic>> getRequest(
+  Future<dynamic> getRequest(
     String endPoint, {
     Map<String, dynamic>? queryParams,
     String? sessionToken,

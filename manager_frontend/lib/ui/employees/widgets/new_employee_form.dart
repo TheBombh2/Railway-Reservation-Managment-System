@@ -199,7 +199,9 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
 
                           onChanged: (value) {
                             setState(() {
-                              _selectedJob = jobs.jobs!.firstWhere((job)=> job.id == value);
+                              _selectedJob = jobs.jobs!.firstWhere(
+                                (job) => job.id == value,
+                              );
                             });
                           },
                           validator: (value) {
@@ -268,7 +270,8 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
 
                           onChanged: (value) {
                             setState(() {
-                              _selectedDepartment = departments.departments!.firstWhere((dep)=>dep.id == value);
+                              _selectedDepartment = departments.departments!
+                                  .firstWhere((dep) => dep.id == value);
                             });
                           },
                           validator: (value) {
@@ -323,7 +326,7 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
                                 DateFormat(
                                   "yyyy-MM-dd HH:mm:ss",
                                 ).format(DateTime.now()).toString(),
-                            managerID: "01967497-a72f-7b24-8d77-2b17fbcf5d9b",
+                                //The manager ID is added in the Login bloc
                             pfpb64: Secrets.samplePfp,
                             phoneNumber: _phoneController.text,
                             salary: int.tryParse(_salaryController.text),

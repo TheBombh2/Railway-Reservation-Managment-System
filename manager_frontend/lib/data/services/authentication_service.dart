@@ -31,6 +31,27 @@ class AuthenticationService {
     
   }
 
+   Future<String> getUuid(String sessionToken) async {
+    // simulate recieving session token
+    //return Secrets.rootSessionToken;
+
+    try {
+      final response = await _apiClient.getRequest(
+        '/users/uuid',
+        sessionToken: sessionToken
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+    
+  }
+
   Future<void> logout() async {
     /*try {
       final response = await _apiClient.postRequest(
