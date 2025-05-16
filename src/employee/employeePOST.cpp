@@ -113,32 +113,50 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
             AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::HIRE_EMPLOYEE)
             crow::json::rvalue jsonBody = crow::json::load(req.body);
-            std::string firstName = jsonBody["firstName"].s();
-            std::string middleName = jsonBody["middleName"].s();
-            std::string lastName = jsonBody["lastName"].s();
-            std::string gender = jsonBody["gender"].s();
-            double salary = jsonBody["salary"].d();
-            std::string departmentID = jsonBody["departmentID"].s();
-            std::string jobID = jsonBody["jobID"].s();
-            std::string managerID = jsonBody["managerID"].s();
-            std::string tempManagerHireDate = jsonBody["managerHireDate"].s();
+            std::string firstName, middleName, lastName, gender, departmentID, jobID,
+            managerID, tempManagerHireDate, email, phoneNumber;
             std::tm managerHireDate;
-            if(!strptime(tempManagerHireDate.c_str(), TIME_FORMAT_STRING, &managerHireDate))
-                return crow::response(400, "invalid manager hire date");
+            double salary;
+            try
+            {
+                firstName = jsonBody["firstName"].s();
+                middleName = jsonBody["middleName"].s();
+                lastName = jsonBody["lastName"].s();
+                gender = jsonBody["gender"].s();
+                salary = jsonBody["salary"].d();
+                departmentID = jsonBody["departmentID"].s();
+                jobID = jsonBody["jobID"].s();
+                managerID = jsonBody["managerID"].s();
+                email = jsonBody["email"].s();
+                phoneNumber = jsonBody["phoneNumber"].s();
+                tempManagerHireDate = jsonBody["managerHireDate"].s();
+                if(!strptime(tempManagerHireDate.c_str(), TIME_FORMAT_STRING, &managerHireDate))
+                    return crow::response(400, "invalid manager hire date");
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << "JSON ERROR (/users/create/employee): " << e.what() << '\n';
+                return crow::response(400, "bad request");
+            }
             std::string id = GetUUIDv7();
          try
          {
             soci::session db(pool);
+            soci::transaction trans(db);
             db << CREATE_EMPLOYEE_QUERY, 
             soci::use(id), soci::use(firstName),
             soci::use(middleName, middleName.empty() ? NULL_INDICATOR : OK_INDICATOR),
             soci::use(lastName),
             soci::use(gender, gender.empty() ? NULL_INDICATOR : OK_INDICATOR),
             soci::use(salary),
-            soci::use(departmentID, departmentID.size() ? NULL_INDICATOR : OK_INDICATOR),
-            soci::use(jobID, jobID.size() ? NULL_INDICATOR : OK_INDICATOR),
-            soci::use(managerID, managerID.size() ? NULL_INDICATOR : OK_INDICATOR),
-            soci::use(managerHireDate, managerID.size() ? NULL_INDICATOR : OK_INDICATOR);
+            soci::use(departmentID, departmentID.empty() ? NULL_INDICATOR : OK_INDICATOR),
+            soci::use(jobID, jobID.empty() ? NULL_INDICATOR : OK_INDICATOR),
+            soci::use(managerID, managerID.empty() ? NULL_INDICATOR : OK_INDICATOR),
+            soci::use(managerHireDate, managerID.empty() ? NULL_INDICATOR : OK_INDICATOR);
+
+            db << CREATE_EMPLOYEE_CONTACT_INFORMATION_QUERY, soci::use(id), soci::use(phoneNumber),
+            soci::use(email);
+            trans.commit();
             return crow::response(201, "user successfully created");
          }
          catch(std::exception& e)

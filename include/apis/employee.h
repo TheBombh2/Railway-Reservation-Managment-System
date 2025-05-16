@@ -28,6 +28,10 @@ const inline std::string CREATE_EMPLOYEE_QUERY =
 "VALUES (:ID, :FirstName, :MiddleName, :LastName, :Gender, :Salary, "
 ":DeptID, :JobID, :ManagerID, :ManagerDate) ;";
 
+const inline std::string CREATE_EMPLOYEE_CONTACT_INFORMATION_QUERY = 
+"INSERT INTO EmployeeContactInformation (ID, PhoneNumber, Email) "
+"VALUES (:ID, :PhoneNumber, :Email); ";
+
 const inline std::string CREATE_DEPARTMENT_QUERY = 
 "INSERT INTO Department "
 "(DepartmentID, Title, Description, Location, Permission, SubPermission, "
