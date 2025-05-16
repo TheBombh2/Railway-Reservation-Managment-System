@@ -49,4 +49,28 @@ void AddReservationDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          return crow::response(204, "successfully deleted station");
          });
+
+    CROW_ROUTE(app, "/routes/<int>/delete").methods(crow::HTTPMethod::DELETE)
+        ([&](const crow::request& req, const int routeID)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::DELETE_STATION)
+         try
+         {
+            soci::session db(pool);
+            int result;
+            soci::indicator idInd;
+            db << VERIFY_ROUTE_QUERY, soci::use(routeID), soci::into(result, idInd);
+            std::cout << "RESULT: " << result << '\n';
+            if(idInd == NULL_INDICATOR)
+                return crow::response(404, "not found");
+            db << DELETE_ROUTE_QUERY, soci::use(routeID);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/routes/<int>/delete-route): " << e.what() << '\n';
+            std::cerr << "<int> value: " << routeID << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(204, "route deleted successfully");
+         });
 }

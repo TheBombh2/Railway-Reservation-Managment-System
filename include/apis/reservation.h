@@ -57,6 +57,9 @@ const inline std::string GET_STATION_CONNECTIONS_QUERY =
 "JOIN TrainStation TS ON TSCS.Destination = TS.ID "
 "WHERE TSCS.Source = :ID; ";
 
+const inline std::string VERIFY_STATION_CONNECTION_QUERY =
+"SELECT Distance FROM TrainStationConnectedStations WHERE Source = :SourceID AND Destination = :Destination; ";
+
 const inline std::string GET_STATION_ID_QUERY = 
 "SELECT ID FROM `TrainStation` WHERE Name = :Name; ";
 
@@ -87,5 +90,16 @@ const inline std::string CREATE_ROUTE_QUERY =
 "INSERT INTO TrainRoute (Title, Description, FirstStation, TotalDistance) "
 "VALUES (:Title, :Description, :FirstStation, 0); ";
 
+const inline std::string CREATE_ROUTE_CONNECTION_QUERY =
+"INSERT INTO TrainRouteStations "
+"(ID, SourceStationID, DestinationStationID, DepartureDelay, TravelTime) "
+"VALUES (:RouteID, :SrcStationID, :DstStationID, :DepartureDelay, :TravelTime); ";
+
 const inline std::string GET_ALL_ROUTES_INFO_QUERY =
 "SELECT ID, Title, Description, FirstStation, TotalDistance FROM TrainRoute; ";
+
+const inline std::string VERIFY_ROUTE_QUERY =
+"SELECT ID FROM TrainRoute WHERE ID = :ID; ";
+
+const inline std::string DELETE_ROUTE_QUERY =
+"DELETE FROM TrainRoute WHERE ID = :ID; ";

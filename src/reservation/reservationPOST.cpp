@@ -4,6 +4,7 @@
 #include "middleware.h"
 #include "permissions.h"
 #include "reservation.h"
+#include <soci/soci-backend.h>
 
 std::pair<std::string, std::string> GetStationIDs(const std::pair<std::string, std::string>& stationNames)
 {
@@ -183,5 +184,54 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(500, "database error");
          }
          return crow::response(201, "successfully created route");
+         });
+    
+    CROW_ROUTE(app, "/routes/add-connection").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_STATION)
+         const crow::json::rvalue body = crow::json::load(req.body);
+         std::string routeID, sourceStationID, destinationStationID;
+         int travelTime, departureDelay;
+
+         try
+         {
+            routeID = body["routeID"].s();
+            sourceStationID = body["sourceStationID"].s();
+            destinationStationID = body["destinationStationID"].s();
+            travelTime = body["travelTime"].i();
+            departureDelay = body["departureDelay"].i();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "JSON ERROR: " << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
+
+         //Now, we need to make sure that those stationqs are actually connected
+         //If they are connected, then add the route connection
+         double distance;
+         soci::indicator distanceInd;
+         try
+         {
+            soci::session db(pool);
+            db << VERIFY_STATION_CONNECTION_QUERY, soci::use(sourceStationID) ,soci::use(destinationStationID),
+            soci::into(distance, distanceInd);
+            
+            if(distanceInd == NULL_INDICATOR)
+            {
+                std::cerr << "ERROR (/routes/add-connection): stations are not connected\n";
+                return crow::response(400);
+            }
+            
+            db << CREATE_ROUTE_CONNECTION_QUERY, soci::use(routeID),soci::use(sourceStationID),
+            soci::use(destinationStationID), soci::use(departureDelay), soci::use(travelTime);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/routes/add-connection): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(201, "route connection added successfully");
          });
 }
