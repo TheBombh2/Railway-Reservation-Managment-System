@@ -69,7 +69,16 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
          std::string hashDatabase;
          if(uuid.empty())
             return crow::response(404, "user not found");
-         db << GET_EMPLOYEE_PASSWORD_HASH, soci::use(uuid), soci::into(hashDatabase);
+
+         try
+         {
+            db << GET_EMPLOYEE_PASSWORD_HASH, soci::use(uuid), soci::into(hashDatabase);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/login/employee): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
          
          if(hashDatabase != passwordHashRequest)
             return crow::response(401, "authentication failure");

@@ -100,10 +100,12 @@ const inline std::string GET_ALL_EMPLOYEES_INFORMATION_QUERY =
 "SELECT EBI.`FirstName` AS EmployeeFirstName, EBI.`MiddleName` AS EmployeeMiddleName, EBI.`LastName` AS EmployeeLastName, "
 "EBI.Gender AS EmployeeGender, EBI.EmployeeID, "
 "EBI2.`FirstName` AS ManagerFirstName, EBI2.MiddleName AS ManagerMiddleName, EBI2.LastName AS ManagerLastName, "
-"J.Title as JobTitle "
+"J.Title as JobTitle, "
+"ECI.PhoneNumber, ECI.Email "
 "FROM `EmployeeBasicInformation` EBI "
 "JOIN `EmployeeBasicInformation` EBI2 ON EBI.`ManagerID` = EBI2.`EmployeeID` "
-"JOIN `Job` J ON J.`JobID` = EBI.`JobID`; ";
+"JOIN `Job` J ON J.`JobID` = EBI.`JobID` "
+"JOIN `EmployeeContactInformation` ECI ON EBI.`EmployeeID` = ECI.`ID`; ";
 
 const inline std::string GET_EMPLOYEE_NAME = 
 "SELECT FirstName FROM EmployeeBasicInformation WHERE EmployeeID = :ID; ";

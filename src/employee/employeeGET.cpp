@@ -302,7 +302,8 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          employeeLastNames(MAX_EMPLOYEES_RETURNED), employeeGenders(MAX_EMPLOYEES_RETURNED),
          employeeIDs(MAX_EMPLOYEES_RETURNED), managerFirstNames(MAX_EMPLOYEES_RETURNED),
          managerMiddleNames(MAX_EMPLOYEES_RETURNED), managerLastNames(MAX_EMPLOYEES_RETURNED),
-         employeeJobTitles(MAX_EMPLOYEES_RETURNED);
+         employeeJobTitles(MAX_EMPLOYEES_RETURNED),
+         employeeEmails(MAX_EMPLOYEES_RETURNED), employeePhoneNumbers(MAX_EMPLOYEES_RETURNED);
 
          try
          {
@@ -311,7 +312,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             soci::into(employeeMiddleNames, employeeMiddleNameInds), soci::into(employeeLastNames),
             soci::into(employeeGenders), soci::into(employeeIDs), soci::into(managerFirstNames),
             soci::into(managerMiddleNames, managerMiddleNameInds), soci::into(managerLastNames),
-            soci::into(employeeJobTitles);
+         soci::into(employeeJobTitles), soci::into(employeePhoneNumbers), soci::into(employeeEmails);
          }
          catch(const std::exception& e)
          {
@@ -332,6 +333,8 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             result["employees"][i]["managerMiddleName"] = managerMiddleNames[i];
             result["employees"][i]["managerLastName"] = managerLastNames[i];
             result["employees"][i]["jobTitle"] = employeeJobTitles[i];
+            result["employees"][i]["phoneNumber"] = employeePhoneNumbers[i];
+            result["employees"][i]["email"] = employeeEmails[i];
          }
          return crow::response(200, result);
          });
