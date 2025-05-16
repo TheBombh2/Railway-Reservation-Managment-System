@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:manager_frontend/data/model/manager.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 
 class ProfilePanel extends StatelessWidget {
-  const ProfilePanel({super.key});
-
+  const ProfilePanel(this.manager,{super.key});
+  final Manager manager;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,11 +28,10 @@ class ProfilePanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _infoRow("Name", "Belal Salem"),
-                _infoRow("Gender", "Male"),
-                _infoRow("Date of Birth", "10 August 2003"),
-                _infoRow("Email ID", "elgamed@test.com"),
-                _infoRow("Contact No.", "+015 01106719"),
+                _infoRow("Name", "${manager.basicInfo!.firstName!} ${manager.basicInfo!.middleName!} ${manager.basicInfo!.lastName!}"),
+                _infoRow("Gender", manager.basicInfo!.gender!),
+                _infoRow("Department", manager.departmentInfo!.title!),
+                _infoRow("Job Title", manager.jobInfo!.jobTitle!),
                 SizedBox(height: 12),
                 /*TextButton(
                   onPressed: () {},

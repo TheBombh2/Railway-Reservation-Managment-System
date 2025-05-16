@@ -18,7 +18,7 @@ class EmployeesList extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: DataTable(
-          columnSpacing: 20,
+          columnSpacing: 14,
           headingTextStyle: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,

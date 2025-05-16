@@ -17,7 +17,16 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => Dio()),
+        RepositoryProvider(
+          create:
+              (context) => Dio(
+                BaseOptions(
+                  connectTimeout: Duration(seconds: 5),
+                  sendTimeout: Duration(seconds: 5),
+                  receiveTimeout: (Duration(seconds: 5)),
+                ),
+              ),
+        ),
         RepositoryProvider(
           create: (context) => AuthenticationService(context.read<Dio>()),
         ),

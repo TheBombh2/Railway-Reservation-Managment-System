@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:manager_frontend/data/model/manager.dart';
 import 'package:manager_frontend/ui/profile/widgets/profile_panel.dart';
 
 class ProfileFragment extends StatelessWidget {
-  const ProfileFragment({super.key});
+  ProfileFragment({required this.manager, super.key});
+  Manager manager;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class ProfileFragment extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          ProfilePanel(),
+          ProfilePanel(manager),
         ],
       ),
     );

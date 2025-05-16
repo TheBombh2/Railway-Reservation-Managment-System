@@ -50,14 +50,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         await _authenticationRepositroy.login(
           email: state.email.value,
-          passwordHash: state.password.value,
+          password: state.password.value,
         );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
-      } catch (_) {
-        emite(state.copyWith(status: FormzSubmissionStatus.failure));
-        emite(state.copyWith(status: FormzSubmissionStatus.canceled));
-
-        
+      } catch (e) {
+        emit(
+          state.copyWith(
+            status: FormzSubmissionStatus.failure,
+            failureReason: e.toString(),
+          ),
+        );
+        emit(state.copyWith(status: FormzSubmissionStatus.canceled));
       }
     }
   }

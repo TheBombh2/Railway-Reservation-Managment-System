@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:manager_frontend/data/model/manager.dart';
 import 'package:manager_frontend/data/services/authentication_service.dart';
 import 'package:manager_frontend/data/services/employee_service.dart';
+import 'package:manager_frontend/secrets.dart';
+import 'package:manager_frontend/utility/hashing_utility.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
@@ -25,9 +27,14 @@ class AuthenticationRepositroy {
 
   Future<void> login({
     required String email,
-    required String passwordHash,
+    required String password,
   }) async {
     try {
+      
+      //Should get salt with specific employee when endpoint is ready
+      final passwordSalt = Secrets.rootManagerPasswordSalt;
+      final passwordHash = HashingUtility.hashWithSHA256(password + passwordSalt);
+      
       final sessionToken = await _authenticationService.login(
         email,
         passwordHash,
@@ -41,13 +48,19 @@ class AuthenticationRepositroy {
       _controller.add(AuthenticationStatus.authenticated);
     } catch (e) {
       _controller.add(AuthenticationStatus.unauthenticated);
-      throw Exception(e.toString());
+      rethrow;
     }
   }
 
   Future<Manager?> getManager() async {
     if (_manager != null) return _manager;
-  }
+    }
+
+    void logOut(){
+
+      _controller.add(AuthenticationStatus.unauthenticated);
+     
+    }
 
   void dispose() => _controller.close();
 }

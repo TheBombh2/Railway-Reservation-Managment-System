@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:manager_frontend/data/services/api_client.dart';
+import 'package:manager_frontend/secrets.dart';
 
 class AuthenticationService {
   final ApiClient _apiClient;
@@ -8,6 +9,9 @@ class AuthenticationService {
     : _apiClient = ApiClient(dio, subdomain: 'authorization');
 
   Future<String> login(String email, String passwordHash) async {
+    // simulate recieving session token
+    return Secrets.rootSessionToken;
+    /*
     try {
       final response = await _apiClient.postRequest(
         '/login/employee',
@@ -19,5 +23,6 @@ class AuthenticationService {
     } catch (e) {
       throw Exception(e.toString());
     }
+    */
   }
 }

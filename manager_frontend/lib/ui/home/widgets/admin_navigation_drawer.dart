@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
+import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/core/shared_widgets/navigation_item.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/home/bloc/home_bloc.dart';
 
 class AdminNavigationDrawer extends StatelessWidget {
-  AdminNavigationDrawer({required this.fragmentOnTap, super.key});
-  void Function(String) fragmentOnTap;
+  const AdminNavigationDrawer({super.key});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,31 +34,62 @@ class AdminNavigationDrawer extends StatelessWidget {
           ),
 
           const SizedBox(height: 40),
-          NavigationItem(
-            title: 'Profile',
-            onTap: () {
-              fragmentOnTap('/profile');
-            },
+          _buildNavigationItem(
+            context,
+            'Profile',
+            FragmentType.profileFragment,
           ),
-          NavigationItem(
-            title: 'Employees Managment',
-            onTap: () {
-              fragmentOnTap('/employees');
-            },
+          _buildNavigationItem(
+            context,
+            'Employees Managment',
+            FragmentType.employeesFragment,
           ),
-          NavigationItem(title: 'Departments Managment', onTap: () {fragmentOnTap('/departments');}),
-          NavigationItem(title: 'Stations Managment', onTap: () {fragmentOnTap('/stations');}),
-          NavigationItem(title: 'Routes Managment', onTap: () {fragmentOnTap('/routes');}),
-          NavigationItem(title: 'Trains Managment', onTap: () {fragmentOnTap('/trains');}),
+          _buildNavigationItem(
+            context,
+            'Departments Managment',
+            FragmentType.departmentsFragment,
+          ),
+          _buildNavigationItem(
+            context,
+            'Stations Managment',
+            FragmentType.stationsFragment,
+          ),
+          _buildNavigationItem(
+            context,
+            'Routes Managment',
+            FragmentType.routesFragment,
+          ),
+          _buildNavigationItem(
+            context,
+            'Trains Managment',
+            FragmentType.trainsFragment,
+          ),
 
           NavigationItem(
             title: 'Log out',
             onTap: () {
-              context.go('/');
+              context.read<AuthenticationBloc>().add(AuthenticationLogoutPressed());
             },
           ),
         ],
       ),
     );
   }
+}
+
+Widget _buildNavigationItem(
+  BuildContext context,
+  String label,
+  FragmentType fragmentType,
+) {
+  return BlocBuilder<HomeBloc, HomeState>(
+    builder: (context, state) {
+      return NavigationItem(
+        title: label,
+        onTap: () {
+          context.read<HomeBloc>().add(SwitchFragment(fragmentType));
+        },
+      );
+    },
+  );
 }

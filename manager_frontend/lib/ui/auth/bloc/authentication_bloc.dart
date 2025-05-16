@@ -45,5 +45,7 @@ class AuthenticationBloc
   void _onLogoutPressed(
     AuthenticationLogoutPressed event,
     Emitter<AuthenticationState> emit,
-  ) {}
+  ) {
+    _authenticationRepositroy.logOut();
+  }
 }

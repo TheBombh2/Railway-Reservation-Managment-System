@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:manager_frontend/data/model/manager.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_fragment.dart';
+import 'package:manager_frontend/ui/home/bloc/home_bloc.dart';
 import 'package:manager_frontend/ui/home/widgets/admin_navigation_drawer.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_fragment.dart';
@@ -18,31 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Widget currentFragment = ProfileFragment();
 
-  void generateFragment(String path) {
-    setState(() {
-      switch (path) {
-        case '/employees':
-          currentFragment = EmployeesFragment();
-          break;
-        case '/departments':
-          currentFragment = DepartmentsFragment();
-          break;
-        case '/trains':
-          currentFragment = TrainsFragment();
-          break;
-        case '/stations':
-          currentFragment = StationsFragment();
-          break;
-        case '/routes':
-          currentFragment = RoutesFragment();
-          break;
-        case _:
-          currentFragment = ProfileFragment();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: primaryWhite,
       body: Row(
         children: [
-          AdminNavigationDrawer(fragmentOnTap: generateFragment),
+          AdminNavigationDrawer(),
           Expanded(
             child: Column(
               children: [
@@ -61,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16, 32, 0, 26.6),
                     child: Text(
-                      "Welcome, ${context.select((AuthenticationBloc bloc)=> bloc.state.manager.basicInfo!.firstName)}!",
+                      "Welcome, ${context.select((AuthenticationBloc bloc)=> bloc.state.manager.basicInfo?.firstName ?? 'User')}!",
                       style: TextStyle(color: primaryWhite, fontSize: 32),
                     ),
                   ),
@@ -69,7 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Scrollable content section
                 //EmployeesScreen()
                 //ProfileFragment()
-                currentFragment,
+                BlocBuilder<HomeBloc,HomeState>(builder: (context,state){
+                  switch(state.currentFragment){
+                    case FragmentType.profileFragment:
+                    return ProfileFragment(manager: context.select((AuthenticationBloc bloc)=> bloc.state.manager));
+                    default :
+                    return Placeholder();
+                  }
+                }),
               ],
             ),
           ),
