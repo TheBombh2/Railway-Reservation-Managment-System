@@ -20,7 +20,7 @@ class ProfilePanel extends StatelessWidget {
             children: [
               Image.asset('assets/images/pfp.png', width: 150),
               const SizedBox(height: 8),
-              const Text("Admin's Picture"),
+              const Text("Profile Picture"),
             ],
           ),
           const SizedBox(width: 24),
@@ -28,11 +28,23 @@ class ProfilePanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _infoRow("Name", "${manager.basicInfo!.firstName!} ${manager.basicInfo!.middleName!} ${manager.basicInfo!.lastName!}"),
-                _infoRow("Gender", manager.basicInfo!.gender!),
-                _infoRow("Department", manager.departmentInfo!.title!),
-                _infoRow("Job Title", manager.jobInfo!.jobTitle!),
+                Text("Personal Information",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+                _infoRow("Name", "${manager.basicInfo.firstName} ${manager.basicInfo.middleName} ${manager.basicInfo.lastName}"),
+                _infoRow("Gender", manager.basicInfo.gender),
                 SizedBox(height: 12),
+                Text("Job Infomration",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+                _infoRow("Job Title", manager.jobInfo.jobTitle),
+                _infoRow("Description", manager.jobInfo.jobDescription),
+                _infoRow("Manager", "${manager.managerInfo.firstName} ${manager.managerInfo.middleName} ${manager.managerInfo.lastName}"),
+
+                SizedBox(height: 12),
+                Text("Department Information",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+                _infoRow("Department", manager.departmentInfo.title),
+                _infoRow("Description", manager.departmentInfo.description),
+                _infoRow("Location", manager.departmentInfo.location),
+                _infoRow("Department Manager", '${manager.departmentInfo.managerInfo.firstName} ${manager.departmentInfo.managerInfo.middleName} ${manager.departmentInfo.managerInfo.lastName}'),
+
+
                 /*TextButton(
                   onPressed: () {},
                   child: Row(

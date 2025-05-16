@@ -110,8 +110,7 @@ class _PasswordInput extends StatelessWidget {
     );
     return TextField(
       key: const Key("login_password_field"),
-      controller:
-          TextEditingController()..text = Secrets.rootManagerPasswordHash,
+      
 
       onChanged: (value) {
         context.read<LoginBloc>().add(LoginPasswordChanged(value));

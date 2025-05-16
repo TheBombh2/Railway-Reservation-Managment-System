@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/core/shared_widgets/navigation_item.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';

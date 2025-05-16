@@ -7,7 +7,7 @@ class EmployeeService {
   EmployeeService(Dio dio) : _apiClient = ApiClient(dio, subdomain: 'employee');
 
   Future<Map<String, dynamic>> getAllEmployeeInfo(String sessionToken) async {
-        await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 5));
     return {
       "basic-info": {
         "firstName": "John",
@@ -43,7 +43,9 @@ class EmployeeService {
         "middleName": "William",
       },
     };
-    /*try {
+    /*
+    
+    try {
       final response = await _apiClient.getRequest(
         '/users/employee/all-info',
         sessionToken: sessionToken,
@@ -57,7 +59,36 @@ class EmployeeService {
   }
 
   Future<Map<String, dynamic>> getAllEmployeesInfo(String sessionToken) async {
-    try {
+    return {
+      "employees": [
+        {
+          "departmentName": "Engineering",
+          "employeeID": "DEV-1001",
+          "firstName": "Alex",
+          "gender": "Male",
+          "jobTitle": "Senior Software Engineer",
+          "lastName": "Johnson",
+          "managerLastName": "Smith",
+          "managerMiddleName": "Q",
+          "managerfirstName": "Sarah",
+          "middleName": "Robert",
+        },
+        {
+          "departmentName": "Marketing",
+          "employeeID": "MKT-2002",
+          "firstName": "Emily",
+          "gender": "Female",
+          "jobTitle": "Digital Marketing Specialist",
+          "lastName": "Chen",
+          "managerLastName": "Williams",
+          "managerMiddleName": "L",
+          "managerfirstName": "Michael",
+          "middleName": "Grace",
+        },
+      ],
+      "size": 2,
+    };
+    /* try {
       final response = await _apiClient.getRequest(
         '/users/employees/all-info',
         sessionToken: sessionToken,
@@ -67,5 +98,6 @@ class EmployeeService {
     } catch (e) {
       throw Exception(e.toString());
     }
+    */
   }
 }

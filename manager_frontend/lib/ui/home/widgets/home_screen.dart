@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manager_frontend/data/model/manager.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_fragment.dart';
+import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart';
 import 'package:manager_frontend/ui/home/bloc/home_bloc.dart';
 import 'package:manager_frontend/ui/home/widgets/admin_navigation_drawer.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
@@ -20,8 +20,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(16, 32, 0, 26.6),
                     child: Text(
-                      "Welcome, ${context.select((AuthenticationBloc bloc)=> bloc.state.manager.basicInfo?.firstName ?? 'User')}!",
+                      "Welcome, ${context.select((AuthenticationBloc bloc) => bloc.state.manager.basicInfo?.firstName ?? 'User')}!",
                       style: TextStyle(color: primaryWhite, fontSize: 32),
                     ),
                   ),
@@ -47,14 +45,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Scrollable content section
                 //EmployeesScreen()
                 //ProfileFragment()
-                BlocBuilder<HomeBloc,HomeState>(builder: (context,state){
-                  switch(state.currentFragment){
-                    case FragmentType.profileFragment:
-                    return ProfileFragment(manager: context.select((AuthenticationBloc bloc)=> bloc.state.manager));
-                    default :
-                    return Placeholder();
-                  }
-                }),
+                BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    switch (state.currentFragment) {
+                      case FragmentType.profileFragment:
+                        return ProfileFragment(
+                          manager: context.select(
+                            (AuthenticationBloc bloc) => bloc.state.manager,
+                          ),
+                        );
+                      case FragmentType.employeesFragment:
+                        return BlocProvider(
+                          create: (context) => EmployeesBloc(),
+                          child: EmployeesFragment(),
+                        );
+                      default:
+                        return Placeholder();
+                    }
+                  },
+                ),
               ],
             ),
           ),
