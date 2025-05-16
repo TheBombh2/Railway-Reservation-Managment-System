@@ -152,6 +152,32 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          return crow::response(200, result);
          });
 
+    CROW_ROUTE(app, "/jobs/all-info").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::JOBS, SUB_PERMISSIONS::VIEW_JOB)
+         std::vector<std::string> ids(MAX_JOBS_RETURNED), titles(MAX_JOBS_RETURNED);
+         try
+         {
+            soci::session db(pool);
+            db << GET_JOB_TITLES_AND_IDS_QUERY, soci::into(ids), soci::into(titles);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/jobs/all-info): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+
+         crow::json::wvalue result;
+         result["size"] = ids.size();
+         for(unsigned int i = 0; i < ids.size(); i++)
+         {
+            result["jobs"][i]["title"] = titles[i];
+            result["jobs"][i]["id"] = ids[i];
+         }
+         return crow::response(200, result);
+         });
+
     CROW_ROUTE(app, "/users/tasks").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req)
          {

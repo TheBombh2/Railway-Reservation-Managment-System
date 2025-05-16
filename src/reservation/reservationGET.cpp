@@ -149,4 +149,37 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          return crow::response(200, result);
          });
+
+    CROW_ROUTE(app, "/routes/all-info").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::VIEW_TRAIN_DATA)
+         std::vector<std::string> ids(MAX_ROUTES_RETURNED), titles(MAX_ROUTES_RETURNED), descriptions(MAX_ROUTES_RETURNED),
+         firstStations(MAX_ROUTES_RETURNED);
+         std::vector<double> totalDistances(MAX_ROUTES_RETURNED);
+         try
+         {
+            soci::session db(pool);
+            db << GET_ALL_ROUTES_INFO_QUERY, soci::into(ids), soci::into(titles), soci::into(descriptions),
+            soci::into(firstStations);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/routes/all-info): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+
+         crow::json::wvalue result;
+         result["size"] = ids.size();
+         for(unsigned int i = 0; i < ids.size(); i++)
+         {
+            result["routes"][i]["id"] = ids[i];
+            result["routes"][i]["title"] = titles[i];
+            result["routes"][i]["description"] = descriptions[i];
+            result["routes"][i]["firstStationID"] = firstStations[i];
+            result["routes"][i]["totalDistance"] = totalDistances[i];
+         }
+         return crow::response(200, result);
+         });
+
 }

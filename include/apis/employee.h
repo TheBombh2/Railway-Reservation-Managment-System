@@ -13,9 +13,13 @@ const inline unsigned short MAX_APPRAISALS_RETURNED = 255;
 const inline unsigned short MAX_CITATIONS_RETURNED = 255;
 const inline unsigned short MAX_TASKS_RETURNED = 64;
 const inline unsigned short MAX_EMPLOYEES_RETURNED = 255;
+const inline unsigned short MAX_JOBS_RETURNED = 128;
 
 const inline std::string CREATE_JOB_QUERY =
 "INSERT INTO Job (JobID, Title, Description) VALUES (:ID, :Title, :Description);";
+
+const inline std::string GET_JOB_TITLES_AND_IDS_QUERY = 
+"SELECT JobID, Title FROM `Job`; ";
 
 const inline std::string CREATE_EMPLOYEE_QUERY =
 "INSERT INTO EmployeeBasicInformation "

@@ -9,6 +9,7 @@ const inline int MAX_STATIONS_RETURNED = 256;
 //This is nothing but an ASSUMPTION
 const inline int MAX_STATION_CONNECTIONS = 16;
 const inline int MAX_TRAINS_RETURNED = 8;
+const inline int MAX_ROUTES_RETURNED = 16;
 
 void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE>& app);
 void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE>& app);
@@ -81,3 +82,10 @@ const inline std::string GET_STATION_NAME_QUERY =
 
 const inline std::string DELETE_STATION_QUERY =
 "DELETE FROM TrainStation WHERE ID = :ID; ";
+
+const inline std::string CREATE_ROUTE_QUERY = 
+"INSERT INTO TrainRoute (Title, Description, FirstStation, TotalDistance) "
+"VALUES (:Title, :Description, :FirstStation, 0); ";
+
+const inline std::string GET_ALL_ROUTES_INFO_QUERY =
+"SELECT ID, Title, Description, FirstStation, TotalDistance FROM TrainRoute; ";

@@ -152,4 +152,36 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          return crow::response(201, "train successfully created");
          });
+
+    CROW_ROUTE(app, "/routes/create").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_STATION)
+         const crow::json::rvalue body = crow::json::load(req.body);
+         std::string name, description, firstStationID;
+         try
+         {
+            name = body["title"].s();
+            description  = body["description"].s();
+            firstStationID = body["firstStationID"].s();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "JSON ERROR (/routes/create): " << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
+         
+         try
+         {
+            soci::session db(pool);
+            db << CREATE_ROUTE_QUERY, soci::use(name), soci::use(description),
+            soci::use(firstStationID);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/routes/create): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(201, "successfully created route");
+         });
 }
