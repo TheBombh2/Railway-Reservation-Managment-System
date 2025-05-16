@@ -5,6 +5,7 @@ import 'package:manager_frontend/data/repositories/authentication_repository.dar
 import 'package:manager_frontend/data/repositories/employee_repository.dart';
 import 'package:manager_frontend/data/services/employee_service.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
+import 'package:manager_frontend/ui/departments/bloc/departments_bloc.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_fragment.dart';
 import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart';
 import 'package:manager_frontend/ui/home/bloc/home_bloc.dart';
@@ -71,6 +72,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                     context.read<AuthenticationRepository>(),
                               )..add(LoadEmployees()),
                           child: EmployeesFragment(),
+                        );
+
+                      case FragmentType.departmentsFragment:
+                        return BlocProvider(
+                          create:
+                              (context) => DepartmentsBloc(
+                                employeeRepository: EmployeeRepository(
+                                  employeeService: EmployeeService(
+                                    context.read<Dio>(),
+                                  ),
+                                ),
+                                authenticationRepository:
+                                    context.read<AuthenticationRepository>(),
+                              )..add(LoadDepartments()),
+                          child: DepartmentsFragment(),
                         );
                       default:
                         return Placeholder();

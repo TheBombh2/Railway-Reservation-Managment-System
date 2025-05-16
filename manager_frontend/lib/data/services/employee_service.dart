@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:manager_frontend/data/model/employee.dart';
 import 'package:manager_frontend/data/services/api_client.dart';
 
 class EmployeeService {
@@ -173,6 +172,72 @@ class EmployeeService {
     }
   }
 
+  Future<void> createNewTask(
+    Map<String, dynamic> taskData,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/users/tasks/create',
+        body: taskData,
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+  Future<void> createNewAppraisal(
+    Map<String, dynamic> appraisalData,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/users/appraisals/create',
+        body: appraisalData,
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+  Future<void> createNewCitation(
+    Map<String, dynamic> citationData,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/users/citations/create',
+        body: citationData,
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
   Future<Map<String, dynamic>> getAllDepartmentsInfo(
     String sessionToken,
   ) async {
@@ -188,10 +253,7 @@ class EmployeeService {
     }
   }
 
-
-  Future<Map<String, dynamic>> getAllJobsInfo(
-    String sessionToken,
-  ) async {
+  Future<Map<String, dynamic>> getAllJobsInfo(String sessionToken) async {
     try {
       final response = await _apiClient.getRequest(
         '/jobs/all-info',

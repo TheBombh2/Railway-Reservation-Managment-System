@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:manager_frontend/data/services/api_client.dart';
-import 'package:manager_frontend/secrets.dart';
 
 class AuthenticationService {
   final ApiClient _apiClient;
