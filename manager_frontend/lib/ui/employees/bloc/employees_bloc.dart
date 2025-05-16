@@ -16,6 +16,8 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     : super(EmployeesInitial()) {
     on<LoadEmployees>(_onLoadEmployees);
     on<CreateEmployee>(_onCreateEmployee);
+    on<CreateJob>(_onCreateJob);
+
   }
 
   Future<void> _onLoadEmployees(
@@ -40,6 +42,24 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
         final currentState = state as EmployeesLoaded;
       try{
         await employeeRepository.createEmployee(event.employeeData,authenticationRepository.getSessionToken());
+        emit(EmployeeOperationSuccess());
+        add(LoadEmployees());
+      }
+      catch(e){
+        emit(EmployeesError(message: e.toString()));
+        emit(currentState);
+
+      }
+    }
+  }
+
+
+
+   Future<void> _onCreateJob(CreateJob event,Emitter<EmployeesState> emit) async{
+    if(state is EmployeesLoaded){
+        final currentState = state as EmployeesLoaded;
+      try{
+        await employeeRepository.createJob(event.jobData,authenticationRepository.getSessionToken());
         emit(EmployeeOperationSuccess());
         add(LoadEmployees());
       }

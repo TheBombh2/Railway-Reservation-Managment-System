@@ -59,9 +59,14 @@ class EmployeesFragment extends StatelessWidget {
                     ),
                     icon: Icon(Icons.badge_outlined, color: darkBlue),
                     onPressed: () {
+                      final employeeBloc = context.read<EmployeesBloc>();
                       showDialog(
                         context: context,
-                        builder: (ctx) => NewJobForm(),
+                        builder:
+                            (context) => BlocProvider.value(
+                              value: employeeBloc,
+                              child: NewJobForm(),
+                            ),
                       );
                     },
                     label: Text(

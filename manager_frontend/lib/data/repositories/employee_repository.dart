@@ -56,4 +56,15 @@ class EmployeeRepository {
       rethrow;
     }
   }
+
+  Future<void> createJob(
+    JobCreate jobData,
+    String sessionToken,
+  ) async {
+    try {
+      await _employeeService.createNewJob(jobData.toJson(), sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

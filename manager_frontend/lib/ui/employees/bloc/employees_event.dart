@@ -11,4 +11,9 @@ class CreateEmployee extends EmployeesEvent {
   CreateEmployee(this.employeeData);
 }
 
+class CreateJob extends EmployeesEvent {
+  final JobCreate jobData;
+  CreateJob(this.jobData);
+}
+
 class AssignTask extends EmployeesEvent {}

@@ -151,6 +151,28 @@ class EmployeeService {
     }
   }
 
+  Future<void> createNewJob(
+    Map<String, dynamic> jobData,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/jobs/create',
+        body: jobData,
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
   Future<Map<String, dynamic>> getAllDepartmentsInfo(
     String sessionToken,
   ) async {
