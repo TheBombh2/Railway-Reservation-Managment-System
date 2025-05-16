@@ -1,5 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:manager_frontend/data/repositories/authentication_repository.dart';
+import 'package:manager_frontend/data/repositories/employee_repository.dart';
+import 'package:manager_frontend/data/services/employee_service.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_fragment.dart';
 import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart';
@@ -56,7 +60,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       case FragmentType.employeesFragment:
                         return BlocProvider(
-                          create: (context) => EmployeesBloc(),
+                          create:
+                              (context) => EmployeesBloc(
+                                employeeRepository: EmployeeRepository(
+                                  employeeService: EmployeeService(
+                                    context.read<Dio>(),
+                                  ),
+                                ),
+                              )..add(LoadEmployees(sessionToken:context.read<AuthenticationRepository>().getSessionToken())),
                           child: EmployeesFragment(),
                         );
                       default:

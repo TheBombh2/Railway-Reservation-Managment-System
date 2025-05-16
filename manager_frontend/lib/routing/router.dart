@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
+import 'package:manager_frontend/data/repositories/authentication_repository.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/home/bloc/home_bloc.dart';
 import 'package:manager_frontend/ui/login/widgets/login_screen.dart';

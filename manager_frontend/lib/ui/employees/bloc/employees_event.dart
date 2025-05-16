@@ -1,4 +1,11 @@
 part of 'employees_bloc.dart';
 
-@immutable
-sealed class EmployeesEvent {}
+
+abstract class EmployeesEvent {}
+
+class LoadEmployees extends EmployeesEvent{
+  final String sessionToken;
+  LoadEmployees({required this.sessionToken});
+}
+class CreateEmployee extends EmployeesEvent{}
+

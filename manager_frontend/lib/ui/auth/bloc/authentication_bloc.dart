@@ -48,4 +48,7 @@ class AuthenticationBloc
   ) {
     _authenticationRepositroy.logOut();
   }
+
+
+  
 }

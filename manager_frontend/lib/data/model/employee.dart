@@ -25,54 +25,58 @@ class EmployeeList {
 }
 
 class Employee {
-  String? departmentName;
-  String? employeeID;
-  String? firstName;
-  String? gender;
+  String? email;
+  String? phoneNumber;
   String? jobTitle;
-  String? lastName;
+  String? employeeID;
   String? managerLastName;
+  String? employeeGender;
   String? managerMiddleName;
-  String? managerfirstName;
-  String? middleName;
+  String? employeeLastName;
+  String? managerFirstName;
+  String? employeeMiddleName;
+  String? employeeFirstName;
 
   Employee(
-      {this.departmentName,
-      this.employeeID,
-      this.firstName,
-      this.gender,
+      {this.email,
+      this.phoneNumber,
       this.jobTitle,
-      this.lastName,
+      this.employeeID,
       this.managerLastName,
+      this.employeeGender,
       this.managerMiddleName,
-      this.managerfirstName,
-      this.middleName});
+      this.employeeLastName,
+      this.managerFirstName,
+      this.employeeMiddleName,
+      this.employeeFirstName});
 
   Employee.fromJson(Map<String, dynamic> json) {
-    departmentName = json['departmentName'];
-    employeeID = json['employeeID'];
-    firstName = json['firstName'];
-    gender = json['gender'];
+    email = json['email'];
+    phoneNumber = json['phoneNumber'];
     jobTitle = json['jobTitle'];
-    lastName = json['lastName'];
+    employeeID = json['employeeID'];
     managerLastName = json['managerLastName'];
+    employeeGender = json['employeeGender'];
     managerMiddleName = json['managerMiddleName'];
-    managerfirstName = json['managerfirstName'];
-    middleName = json['middleName'];
+    employeeLastName = json['employeeLastName'];
+    managerFirstName = json['managerFirstName'];
+    employeeMiddleName = json['employeeMiddleName'];
+    employeeFirstName = json['employeeFirstName'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['departmentName'] = this.departmentName;
-    data['employeeID'] = this.employeeID;
-    data['firstName'] = this.firstName;
-    data['gender'] = this.gender;
+    data['email'] = this.email;
+    data['phoneNumber'] = this.phoneNumber;
     data['jobTitle'] = this.jobTitle;
-    data['lastName'] = this.lastName;
+    data['employeeID'] = this.employeeID;
     data['managerLastName'] = this.managerLastName;
+    data['employeeGender'] = this.employeeGender;
     data['managerMiddleName'] = this.managerMiddleName;
-    data['managerfirstName'] = this.managerfirstName;
-    data['middleName'] = this.middleName;
+    data['employeeLastName'] = this.employeeLastName;
+    data['managerFirstName'] = this.managerFirstName;
+    data['employeeMiddleName'] = this.employeeMiddleName;
+    data['employeeFirstName'] = this.employeeFirstName;
     return data;
   }
 }
