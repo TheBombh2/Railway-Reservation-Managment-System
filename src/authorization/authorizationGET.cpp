@@ -49,5 +49,25 @@ void AddAuthorizationGETRequests(crow::SimpleApp &app)
                 return crow::response(404, "token not found");
             }
           });
+
+    CROW_ROUTE(app, "/users/uuid").methods(crow::HTTPMethod::GET)
+        ([](const crow::request& req)
+         {
+            auto authorizationHeader = req.get_header_value("Authorization");
+            if(authorizationHeader.empty())
+                return crow::response(403, "no session token");
+            std::string sessionToken = authorizationHeader.substr(7);
+            redis::OptionalString tokenInfo = RedisGetValue(sessionToken);
+            if(tokenInfo)
+            {
+                int pos = tokenInfo->find_last_of(' ');
+                std::string uuid = tokenInfo->substr(pos + 1);
+                return crow::response(200, uuid);
+            }
+            else
+            {
+                return crow::response(404, "token not found");
+            }
+         });
 }
 
