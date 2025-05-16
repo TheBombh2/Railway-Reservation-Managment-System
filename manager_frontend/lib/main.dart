@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
+import 'package:manager_frontend/data/repositories/authentication_repository.dart';
 import 'package:manager_frontend/data/services/authentication_service.dart';
 import 'package:manager_frontend/data/services/employee_service.dart';
 import 'package:manager_frontend/routing/router.dart';
@@ -35,7 +35,7 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider(
           create:
-              (context) => AuthenticationRepositroy(
+              (context) => AuthenticationRepository(
                 authenticationService: context.read<AuthenticationService>(),
                 employeeService: context.read<EmployeeService>(),
               ),
@@ -47,7 +47,7 @@ class App extends StatelessWidget {
         create:
             (context) => AuthenticationBloc(
               authenticationRepositroy:
-                  context.read<AuthenticationRepositroy>(),
+                  context.read<AuthenticationRepository>(),
             )..add(AuthenticationSubscriptionRequest()),
         child: AppView(),
       ),

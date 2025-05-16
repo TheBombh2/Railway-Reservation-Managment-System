@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
-import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
+import 'package:manager_frontend/data/repositories/authentication_repository.dart';
 import 'package:manager_frontend/secrets.dart';
 import 'package:manager_frontend/ui/core/shared_widgets/blue_button.dart';
 import 'package:manager_frontend/ui/core/shared_widgets/blue_text_field.dart';
@@ -20,7 +20,7 @@ class LoginScreen extends StatelessWidget {
         create:
             (context) => LoginBloc(
               authenticationRepositroy:
-                  context.read<AuthenticationRepositroy>(),
+                  context.read<AuthenticationRepository>(),
             ),
         child: LoginForm(),
       ),

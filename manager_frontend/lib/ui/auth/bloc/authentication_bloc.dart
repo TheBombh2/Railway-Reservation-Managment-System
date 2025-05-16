@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:manager_frontend/data/model/manager.dart';
-import 'package:manager_frontend/data/repositories/authentication_repositroy.dart';
+import 'package:manager_frontend/data/repositories/authentication_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -8,14 +8,14 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
-    required AuthenticationRepositroy authenticationRepositroy,
+    required AuthenticationRepository authenticationRepositroy,
   }) : _authenticationRepositroy = authenticationRepositroy,
        super(AuthenticationState.unknown()) {
     on<AuthenticationSubscriptionRequest>(_onSubscriptionRequested);
     on<AuthenticationLogoutPressed>(_onLogoutPressed);
   }
 
-  final AuthenticationRepositroy _authenticationRepositroy;
+  final AuthenticationRepository _authenticationRepositroy;
 
   Future<void> _onSubscriptionRequested(
     AuthenticationSubscriptionRequest event,
