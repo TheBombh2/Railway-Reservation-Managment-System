@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:manager_frontend/data/model/employee.dart';
 import 'package:manager_frontend/data/services/api_client.dart';
 
 class EmployeeService {
@@ -7,7 +8,7 @@ class EmployeeService {
   EmployeeService(Dio dio) : _apiClient = ApiClient(dio, subdomain: 'employee');
 
   Future<Map<String, dynamic>> getAllEmployeeInfo(String sessionToken) async {
-    await Future.delayed(Duration(seconds: 5));
+    /*await Future.delayed(Duration(seconds: 5));
     return {
       "basic-info": {
         "firstName": "John",
@@ -43,8 +44,8 @@ class EmployeeService {
         "middleName": "William",
       },
     };
-    /*
-    
+    */
+
     try {
       final response = await _apiClient.getRequest(
         '/users/employee/all-info',
@@ -55,11 +56,10 @@ class EmployeeService {
     } catch (e) {
       throw Exception("Failed to get employee information");
     }
-    */
   }
 
   Future<Map<String, dynamic>> getAllEmployeesInfo(String sessionToken) async {
-    return {
+    /*return {
       "employees": [
         {
           "email": "alyelsharkawwyoct@gmail.com",
@@ -116,7 +116,8 @@ class EmployeeService {
       ],
       "size": 4,
     };
-    /* try {
+    */
+    try {
       final response = await _apiClient.getRequest(
         '/users/employees/all-info',
         sessionToken: sessionToken,
@@ -126,6 +127,58 @@ class EmployeeService {
     } catch (e) {
       throw Exception(e.toString());
     }
-    */
+  }
+
+  Future<void> createNewEmployee(
+    Map<String, dynamic> employeeData,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/users/create/employee',
+        body: employeeData,
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> getAllDepartmentsInfo(
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.getRequest(
+        '/departments/info',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } catch (e) {
+      throw Exception("Failed to get departments information");
+    }
+  }
+
+
+  Future<Map<String, dynamic>> getAllJobsInfo(
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.getRequest(
+        '/jobs/all-info',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } catch (e) {
+      throw Exception("Failed to get jobs information");
+    }
   }
 }

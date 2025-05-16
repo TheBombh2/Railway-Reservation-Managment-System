@@ -80,3 +80,65 @@ class Employee {
     return data;
   }
 }
+
+
+class EmployeeCreate {
+  String? departmentID;
+  String? email;
+  String? firstName;
+  String? gender;
+  String? jobID;
+  String? lastName;
+  String? managerHireDate;
+  String? managerID;
+  String? middleName;
+  String? pfpb64;
+  String? phoneNumber;
+  int? salary;
+
+  EmployeeCreate(
+      {this.departmentID,
+      this.email,
+      this.firstName,
+      this.gender,
+      this.jobID,
+      this.lastName,
+      this.managerHireDate,
+      this.managerID,
+      this.middleName,
+      this.pfpb64,
+      this.phoneNumber,
+      this.salary});
+
+  EmployeeCreate.fromJson(Map<String, dynamic> json) {
+    departmentID = json['departmentID'];
+    email = json['email'];
+    firstName = json['firstName'];
+    gender = json['gender'];
+    jobID = json['jobID'];
+    lastName = json['lastName'];
+    managerHireDate = json['managerHireDate'];
+    managerID = json['managerID'];
+    middleName = json['middleName'];
+    pfpb64 = json['pfpb64'];
+    phoneNumber = json['phoneNumber'];
+    salary = json['salary'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['departmentID'] = this.departmentID;
+    data['email'] = this.email;
+    data['firstName'] = this.firstName;
+    data['gender'] = this.gender;
+    data['jobID'] = this.jobID;
+    data['lastName'] = this.lastName;
+    data['managerHireDate'] = this.managerHireDate;
+    data['managerID'] = this.managerID;
+    data['middleName'] = this.middleName;
+    data['pfpb64'] = this.pfpb64;
+    data['phoneNumber'] = this.phoneNumber;
+    data['salary'] = this.salary;
+    return data;
+  }
+}

@@ -10,8 +10,8 @@ class AuthenticationService {
 
   Future<String> login(String email, String passwordHash) async {
     // simulate recieving session token
-    return Secrets.rootSessionToken;
-/*
+    //return Secrets.rootSessionToken;
+
     try {
       final response = await _apiClient.postRequest(
         '/login/employee',
@@ -28,7 +28,7 @@ class AuthenticationService {
           throw 'Something went wrong.';
       }
     }
-    */
+    
   }
 
   Future<void> logout() async {

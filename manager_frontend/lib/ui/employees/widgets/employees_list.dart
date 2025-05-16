@@ -96,14 +96,14 @@ class EmployeesList extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const DataCell(
+                       DataCell(
                         Text(
-                          'elgamed@test.com',
+                          state.employees.employees![index].email!,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const DataCell(
-                        Text('01501106719', overflow: TextOverflow.ellipsis),
+                       DataCell(
+                        Text(state.employees.employees![index].phoneNumber!, overflow: TextOverflow.ellipsis),
                       ),
                       DataCell(
                         Text(

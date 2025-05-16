@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_list.dart';
 import 'package:manager_frontend/ui/employees/widgets/new_employee_form.dart';
 import 'package:manager_frontend/ui/employees/widgets/new_job_form.dart';
@@ -31,28 +33,15 @@ class EmployeesFragment extends StatelessWidget {
                     ),
                     icon: Icon(Icons.person_add_alt_outlined, color: darkBlue),
                     onPressed: () {
+                      final employeeBloc = context.read<EmployeesBloc>();
                       showDialog(
                         context: context,
                         builder:
-                            (ctx) => NewEmployeeForm(
-                              departments: [
-                                'RnD',
-                                'HR',
-                                'Finance',
-                                'Operations',
-                              ],
-                              supervisors: [
-                                'John Doe',
-                                'Jane Smith',
-                                'Mike Johnson',
-                              ],
+                            (context) => BlocProvider.value(
+                              value: employeeBloc,
+                              child: NewEmployeeForm(),
                             ),
-                      ).then((employeeData) {
-                        if (employeeData != null) {
-                          // Handle the submitted employee data
-                          print(employeeData);
-                        }
-                      });
+                      );
                     },
                     label: Text(
                       'Add an Employee',

@@ -67,7 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     context.read<Dio>(),
                                   ),
                                 ),
-                              )..add(LoadEmployees(sessionToken:context.read<AuthenticationRepository>().getSessionToken())),
+                                authenticationRepository:
+                                    context.read<AuthenticationRepository>(),
+                              )..add(LoadEmployees()),
                           child: EmployeesFragment(),
                         );
                       default:

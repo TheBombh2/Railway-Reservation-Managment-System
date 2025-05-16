@@ -6,8 +6,21 @@ import 'package:manager_frontend/data/services/authentication_service.dart';
 import 'package:manager_frontend/data/services/employee_service.dart';
 import 'package:manager_frontend/routing/router.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
+//import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
+  /*WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  WindowOptions windowOptions = WindowOptions(
+    minimumSize: Size(800, 600),
+    title:"RRMS Manager Application"
+  );
+  await windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setResizable(false);
+    await windowManager.setMinimizable(false);
+    await windowManager.show();
+  });
+  */
   runApp(App());
 }
 
