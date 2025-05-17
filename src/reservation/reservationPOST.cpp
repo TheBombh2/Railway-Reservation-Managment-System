@@ -285,6 +285,26 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
         ([&](const crow::request& req, const std::string& trainID)
          {
          AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::UPDATE_TRAIN_LOCATION)
+         //Firstly, verify that the train ID exists
+         try
+         {
+            soci::session db(pool);
+            std::string trainName;
+            db << GET_TRAIN_NAME, soci::into(trainName), soci::use(trainID);
+            if(trainName.empty())
+            {
+                std::cerr << "BAD REQUEST (/trains/<string>/send): TRAIN ID DOES NOT EXIST\n";
+                std::cerr << "<string> value: " << trainID << '\n';
+                return crow::response(404, "not found");
+            }
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/trains/<string>/send): " << e.what() << '\n';
+            std::cerr << "<string> value: " << trainID << '\n';
+            return crow::response(500, "database error");
+         }
+
          const std::chrono::time_point nowTemp = std::chrono::system_clock::now();
          date::sys_time<std::chrono::seconds> nowTime = date::floor<std::chrono::seconds>(nowTemp);
          redis::OptionalString key = dbRedis->get(trainID);
@@ -294,6 +314,15 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::cerr << "TRAIN UUID: " << trainID << '\n';
             return crow::response(403, "train already sent");
          }
+
+        //UGLY SOLUTION NOTICE:
+         //Now, Egypt currently uses UTC-3 due to daylight savings time
+         //Now, I could use tz.h to convert the timezones, but that requires compiling tz.h
+         //I am too lazy to do that and am on a deadline
+         //So an ugly hard coded solution will be used instead
+         //
+         //Yes, this need to be recompiled when Egypt stops DST (hopefully soon)
+         nowTime += std::chrono::hours(3);
          int result = dbRedis->set(trainID, date::format(TIME_FORMAT_STRING, nowTime));
          if(!result)
          {

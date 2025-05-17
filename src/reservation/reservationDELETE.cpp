@@ -73,4 +73,25 @@ void AddReservationDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          return crow::response(204, "route deleted successfully");
          });
+
+    CROW_ROUTE(app, "/trains/<string>/stop").methods(crow::HTTPMethod::DELETE)
+        ([&](const crow::request& req, const std::string& trainID)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::UPDATE_TRAIN_LOCATION)
+         redis::OptionalString value = dbRedis->get(trainID);
+         if(!value)
+         {
+            std::cerr << "BAD REQUEST: Train is not found!\n";
+            std::cerr << "TRAIN UUID: " << trainID << '\n';
+            return crow::response(404, "not found");
+         }
+
+         int result = dbRedis->del(trainID);
+         if(!result)
+         {
+            std::cerr << "VALKEY ERROR: Failed to delete value for: " << trainID << '\n';
+            return crow::response(500, "valkey error");
+         }
+         return crow::response(204, "successfully stopped train");
+         });
 }
