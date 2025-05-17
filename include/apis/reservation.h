@@ -98,6 +98,13 @@ const inline std::string CREATE_ROUTE_CONNECTION_QUERY =
 const inline std::string GET_ALL_ROUTES_INFO_QUERY =
 "SELECT ID, Title, Description, FirstStation, TotalDistance FROM TrainRoute; ";
 
+const inline std::string GET_ALL_ROUTE_CONNECTIONS_QUERY = 
+"SELECT TS.Name as SourceName, TS2.Name AS DestinationName, DepartureDelay, TravelTime "
+"FROM TrainRouteStations TRS "
+"JOIN `TrainStation` TS ON TS.`ID` = TRS.`SourceStationID` "
+"JOIN `TrainStation` TS2 ON TS2.ID = TRS.`DestinationStationID` "
+"WHERE TRS.ID = :ID; ";
+
 const inline std::string VERIFY_ROUTE_QUERY =
 "SELECT ID FROM TrainRoute WHERE ID = :ID; ";
 

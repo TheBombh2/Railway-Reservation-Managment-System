@@ -182,6 +182,47 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          return crow::response(200, result);
          });
 
+    CROW_ROUTE(app, "/routes/<int>/connections").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req, const int routeID)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::VIEW_TRAIN_DATA)
+         int routeIDTest;
+         soci::indicator routeIDTestInd;
+         std::vector<std::string> sourceStationIDs(MAX_STATION_CONNECTIONS),
+         destinationStationIDS(MAX_STATION_CONNECTIONS);
+         std::vector<int> travelTimes(MAX_STATION_CONNECTIONS), departureDelays(MAX_STATION_CONNECTIONS);
+         try
+         {
+            soci::session db(pool);
+            db << VERIFY_ROUTE_QUERY, soci::use(routeID), soci::into(routeIDTest, routeIDTestInd);
+            if(routeIDTestInd == NULL_INDICATOR)
+            {
+                std::cerr << "ERROR: Route does not exist\n";
+                std::cerr << "<int> value: " << routeID << '\n';
+                return crow::response(404, "not found");
+            }
+
+            db << GET_ALL_ROUTE_CONNECTIONS_QUERY, soci::use(routeID), soci::into(sourceStationIDs),
+            soci::into(destinationStationIDS), soci::into(departureDelays), soci::into(travelTimes);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/routes/<int>/connections): " << e.what() << '\n';
+            std::cerr << "<int> value: " << routeID << '\n';
+         }
+         
+         crow::json::wvalue result;
+         result["size"] = sourceStationIDs.size();
+         for(unsigned int i = 0; i < sourceStationIDs.size(); i++)
+         {
+            result["connections"][i]["sourceStationID"] = sourceStationIDs[i];
+            result["connections"][i]["destinationStationID"] = destinationStationIDS[i];
+            result["connections"][i]["departureDelay"] = departureDelays[i];
+            result["connections"][i]["travelTime"] = travelTimes[i];
+         }
+         return crow::response(200, result);
+         });
+
     CROW_ROUTE(app, "/trains/all-types").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req)
         {
