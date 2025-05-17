@@ -56,8 +56,8 @@ class DepartmentsList extends StatelessWidget {
                 rows: List.generate(state.departmentsList.size!, (index) {
                   return DataRow(
                     cells: [
-                      const DataCell(
-                        Text('1', overflow: TextOverflow.ellipsis),
+                      DataCell(
+                        Text(state.departmentsList.departments![index].id!, overflow: TextOverflow.ellipsis),
                       ),
                       DataCell(
                         Text(state.departmentsList.departments![index].title!),
