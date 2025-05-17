@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/stations/bloc/stations_bloc.dart';
 import 'package:manager_frontend/ui/stations/widgets/new_connection_form.dart';
 import 'package:manager_frontend/ui/stations/widgets/new_station_form.dart';
 import 'package:manager_frontend/ui/stations/widgets/stations_list.dart';
@@ -31,28 +33,15 @@ class StationsFragment extends StatelessWidget {
                     ),
                     icon: Icon(Icons.add_home_work_outlined, color: darkBlue),
                     onPressed: () {
+                      final stationsBloc = context.read<StationsBloc>();
                       showDialog(
                         context: context,
                         builder:
-                            (ctx) => NewStationForm(
-                              departments: [
-                                'RnD',
-                                'HR',
-                                'Finance',
-                                'Operations',
-                              ],
-                              supervisors: [
-                                'John Doe',
-                                'Jane Smith',
-                                'Mike Johnson',
-                              ],
+                            (ctx) => BlocProvider.value(
+                              value: stationsBloc,
+                              child: NewStationForm(),
                             ),
-                      ).then((employeeData) {
-                        if (employeeData != null) {
-                          // Handle the submitted employee data
-                          print(employeeData);
-                        }
-                      });
+                      );
                     },
                     label: Text(
                       'Add Station',
@@ -62,7 +51,7 @@ class StationsFragment extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(width: 20),
                   OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: darkerBlue,
@@ -70,16 +59,13 @@ class StationsFragment extends StatelessWidget {
                     ),
                     icon: Icon(Icons.add_link_rounded, color: darkBlue),
                     onPressed: () {
+                      final bloc = context.read<StationsBloc>();
                       showDialog(
                         context: context,
                         builder:
-                            (ctx) => NewConnectionForm(
-                              stations: [
-                                'First station',
-                                'Second Station',
-                                'Third'
-                              ],
-                             
+                            (ctx) => BlocProvider.value(
+                              value: bloc,
+                              child: NewConnectionForm(),
                             ),
                       ).then((employeeData) {
                         if (employeeData != null) {

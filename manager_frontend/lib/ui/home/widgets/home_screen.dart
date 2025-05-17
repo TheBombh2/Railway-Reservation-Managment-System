@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_frontend/data/repositories/authentication_repository.dart';
 import 'package:manager_frontend/data/repositories/employee_repository.dart';
+import 'package:manager_frontend/data/repositories/reservation_repository.dart';
 import 'package:manager_frontend/data/services/employee_service.dart';
+import 'package:manager_frontend/data/services/reservation_service.dart';
 import 'package:manager_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:manager_frontend/ui/departments/bloc/departments_bloc.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_fragment.dart';
@@ -14,6 +16,7 @@ import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_fragment.dart';
 import 'package:manager_frontend/ui/profile/widgets/profile_fragment.dart';
 import 'package:manager_frontend/ui/routes/widgets/routes_fragment.dart';
+import 'package:manager_frontend/ui/stations/bloc/stations_bloc.dart';
 import 'package:manager_frontend/ui/stations/widgets/stations_fragment.dart';
 import 'package:manager_frontend/ui/trains/widgets/trains_fragment.dart';
 
@@ -90,7 +93,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
 
                       case FragmentType.stationsFragment:
-                        return StationsFragment();
+                        return BlocProvider(
+                          create:
+                              (context) => StationsBloc(
+                                reservationRepository: ReservationRepository(
+                                  reservationService: ReservationService(
+                                    context.read<Dio>(),
+                                  ),
+                                ),
+                                authenticationRepository:
+                                    context.read<AuthenticationRepository>(),
+                              )..add(LoadStations()),
+                          child: StationsFragment(),
+                        );
                       case FragmentType.routesFragment:
                         return RoutesFragment();
                       case FragmentType.trainsFragment:

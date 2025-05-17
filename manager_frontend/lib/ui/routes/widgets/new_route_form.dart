@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manager_frontend/data/model/station.dart';
 
 class NewRouteForm extends StatefulWidget {
-  final List<Station> allStations;
+  final List<FakeStation> allStations;
 
   const NewRouteForm({super.key, required this.allStations});
 
@@ -17,12 +17,12 @@ class _NewRouteFormState extends State<NewRouteForm> {
   final TextEditingController _descriptionController = TextEditingController();
 
 
-  Station? _selectedStartStation;
-  Station? _selectedIntermediateStation;
-  List<Station> intermediateStations = [];
-  List<Station> availableIntermediateStations = [];
+  FakeStation? _selectedStartStation;
+  FakeStation? _selectedIntermediateStation;
+  List<FakeStation> intermediateStations = [];
+  List<FakeStation> availableIntermediateStations = [];
 
-  List<Station> get routePreview {
+  List<FakeStation> get routePreview {
     if (_selectedStartStation == null) return [];
     return [
       _selectedStartStation!,
@@ -50,7 +50,7 @@ class _NewRouteFormState extends State<NewRouteForm> {
     });
   }
 
-  void _addStation(Station station) {
+  void _addStation(FakeStation station) {
     if (station != _selectedStartStation &&
         !intermediateStations.contains(station)) {
       setState(() {
@@ -115,7 +115,7 @@ class _NewRouteFormState extends State<NewRouteForm> {
                 SizedBox(height: 20),
 
                 // Start Station Dropdown
-                DropdownButtonFormField<Station>(
+                DropdownButtonFormField<FakeStation>(
                   value: _selectedStartStation,
                   decoration: const InputDecoration(labelText: 'Start Station'),
                   items:
@@ -140,7 +140,7 @@ class _NewRouteFormState extends State<NewRouteForm> {
                 const SizedBox(height: 16),
 
                 // Add Intermediate Station
-                DropdownButtonFormField<Station>(
+                DropdownButtonFormField<FakeStation>(
                   key: ValueKey(
                     availableIntermediateStations,
                   ), // This forces the widget to rebuild

@@ -36,10 +36,10 @@ class RoutesFragment extends StatelessWidget {
                         builder:
                             (ctx) => NewRouteForm(
                               allStations: [
-                                Station(id: 1, name: 'RnD'),
-                                Station(id: 2, name: 'HR'),
-                                Station(id: 3, name: 'Finance'),
-                                Station(id: 4, name: 'Operations'),
+                                FakeStation(id: 1, name: 'RnD'),
+                                FakeStation(id: 2, name: 'HR'),
+                                FakeStation(id: 3, name: 'Finance'),
+                                FakeStation(id: 4, name: 'Operations'),
                               ],
                             ),
                       ).then((routeIds) {
