@@ -38,6 +38,7 @@ find_package(cpr REQUIRED)
 include_directories("./include")
 include_directories("./include/apis")
 include_directories("./include/crow")
+include_directories("./include/date")
 # Needed to get soci working
 include_directories("/usr/include/mysql")
 
