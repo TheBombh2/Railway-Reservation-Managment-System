@@ -1,6 +1,7 @@
 #include "crypto.h"
 #include "database_connector.h"
 #include "crow/common.h"
+#include "global_variables.h"
 #include "middleware.h"
 #include "permissions.h"
 #include "reservation.h"
@@ -127,15 +128,19 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
          AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_TRAIN)
          const crow::json::rvalue body = crow::json::load(req.body);
-         std::string name;
+         std::string name, tempPurchaseDate;
          double speed;
          int routeID, trainTypeID;
+         std::tm purchaseDate;
          try
          {
             name = body["name"].s();
             speed = body["speed"].d();
             routeID = body["routeID"].i();
             trainTypeID = body["trainTypeID"].i();
+            tempPurchaseDate = body["purchaseDate"].s();
+            if(!strptime(tempPurchaseDate.c_str(), TIME_FORMAT_STRING, &purchaseDate))
+                return crow::response(400, "invalid purchase date");
          }
          catch(const std::exception& e)
          {
@@ -149,7 +154,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             soci::transaction trans(db);
             std::string uuid = GetUUIDv7();
             db << CREATE_TRAIN_QUERY, soci::use(uuid), soci::use(name),
-            soci::use(speed), soci::use(trainTypeID);
+            soci::use(speed), soci::use(trainTypeID), soci::use(purchaseDate);
             db << ADD_ROUTE_TO_TRAIN_QUERY, soci::use(uuid), soci::use(routeID);
             trans.commit();
          }
@@ -198,14 +203,14 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
          AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_STATION)
          const crow::json::rvalue body = crow::json::load(req.body);
-         std::string routeID, sourceStationID, destinationStationID;
+         std::string routeID, sourceStationName, destinationStationName;
          int travelTime, departureDelay;
 
          try
          {
             routeID = body["routeID"].s();
-            sourceStationID = body["sourceStationID"].s();
-            destinationStationID = body["destinationStationID"].s();
+            sourceStationName = body["sourceStationID"].s();
+            destinationStationName = body["destinationStationID"].s();
             travelTime = body["travelTime"].i();
             departureDelay = body["departureDelay"].i();
          }
@@ -222,7 +227,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          try
          {
             soci::session db(pool);
-            db << VERIFY_STATION_CONNECTION_QUERY, soci::use(sourceStationID) ,soci::use(destinationStationID),
+            db << VERIFY_STATION_CONNECTION_QUERY, soci::use(sourceStationName) ,soci::use(destinationStationName),
             soci::into(distance, distanceInd);
             
             if(distanceInd == NULL_INDICATOR)
@@ -231,8 +236,8 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
                 return crow::response(400);
             }
             
-            db << CREATE_ROUTE_CONNECTION_QUERY, soci::use(routeID),soci::use(sourceStationID),
-            soci::use(destinationStationID), soci::use(departureDelay), soci::use(travelTime);
+            db << CREATE_ROUTE_CONNECTION_QUERY, soci::use(routeID),soci::use(sourceStationName),
+            soci::use(destinationStationName), soci::use(departureDelay), soci::use(travelTime);
          }
          catch(const std::exception& e)
          {
