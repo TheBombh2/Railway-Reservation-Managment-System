@@ -121,8 +121,10 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<std::string> descriptions(MAX_DEPARTMENTS_RETURNED);
          std::vector<std::string> locations(MAX_DEPARTMENTS_RETURNED);
          std::vector<std::string> ids(MAX_DEPARTMENTS_RETURNED);
+         std::vector<soci::indicator> descriptionInds(MAX_DEPARTMENTS_RETURNED);
          soci::session db(pool);
-         db << GET_DEPARTMENTS_QUERY, soci::into(titles), soci::into(descriptions), soci::into(locations),
+         db << GET_DEPARTMENTS_QUERY, soci::into(titles), soci::into(descriptions, descriptionInds),
+         soci::into(locations),
          soci::into(ids);
          returnBody["size"] = titles.size();
          for(unsigned int i = 0; i < titles.size(); i++)

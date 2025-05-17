@@ -276,4 +276,11 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
         }
         return crow::response(201, "train type successfully created");
         });
+
+    /*CROW_ROUTE(app, "/trains/<int>/send").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::UPDATE_TRAIN_LOCATION)
+         return crow::response(200, "not ok");
+         });*/
 }
