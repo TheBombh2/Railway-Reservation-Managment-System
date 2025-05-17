@@ -97,6 +97,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          for(unsigned int i = 0; i < ids.size(); i++)
          {
             result["stations"][i]["name"] = titles[i];
+            result["stations"][i]["id"] = ids[i];
             result["stations"][i]["description"] = descriptions[i];
             result["stations"][i]["location"] = locations[i];
             result["stations"][i]["latitude"] = latitudes[i];

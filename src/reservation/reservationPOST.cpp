@@ -6,6 +6,10 @@
 #include "permissions.h"
 #include "reservation.h"
 #include <soci/soci-backend.h>
+#include <chrono>
+#include <sw/redis++/utils.h>
+#include "date/date.h"
+#include "date/tz.h"
 
 std::pair<std::string, std::string> GetStationIDs(const std::pair<std::string, std::string>& stationNames)
 {
@@ -277,10 +281,26 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
         return crow::response(201, "train type successfully created");
         });
 
-    CROW_ROUTE(app, "/trains/<int>/send").methods(crow::HTTPMethod::POST)
-        ([&](const crow::request& req, const int trainID)
+    CROW_ROUTE(app, "/trains/<string>/send").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req, const std::string& trainID)
          {
          AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::UPDATE_TRAIN_LOCATION)
-         return crow::response(200, "not ok");
+         const std::chrono::time_point nowTemp = std::chrono::system_clock::now();
+         date::sys_time<std::chrono::seconds> nowTime = date::floor<std::chrono::seconds>(nowTemp);
+         redis::OptionalString key = dbRedis->get(trainID);
+         if(key)
+         {
+            std::cerr << "TRAINS ERROR: train already sent\n";
+            std::cerr << "TRAIN UUID: " << trainID << '\n';
+            return crow::response(403, "train already sent");
+         }
+         int result = dbRedis->set(trainID, date::format(TIME_FORMAT_STRING, nowTime));
+         if(!result)
+         {
+            std::cerr << "REDIS ERROR: Failed to send train\n";
+            std::cerr << "TRAIN UUID: " << trainID << '\n';
+            return crow::response(500, "valkey error");
+         }
+         return crow::response(200, "train successfully sent");
          });
 }
