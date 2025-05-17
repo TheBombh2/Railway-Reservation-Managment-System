@@ -3,6 +3,8 @@ import 'package:manager_frontend/data/model/citation.dart';
 import 'package:manager_frontend/data/model/department.dart';
 import 'package:manager_frontend/data/model/employee.dart';
 import 'package:manager_frontend/data/model/job.dart';
+import 'package:manager_frontend/data/model/permission.dart';
+import 'package:manager_frontend/data/model/subpermissionsData.dart';
 import 'package:manager_frontend/data/model/task.dart';
 import 'package:manager_frontend/data/services/employee_service.dart';
 import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart';
@@ -113,6 +115,35 @@ class EmployeeRepository {
   ) async {
     try {
       await _employeeService.deleteEmployee(employeeID, sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+  Future<Permissions> getAllPermissions(String sessionToken) async {
+    try {
+      final raw = await _employeeService.getAllPermissions(
+        sessionToken,
+      );
+      final permsList = Permissions.fromJson(raw);
+      return permsList;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
+  Future<SubPermissionsData> getAllSubPermissions(String sessionToken) async {
+    try {
+      final raw = await _employeeService.getAllSubPermissions(
+        sessionToken,
+      );
+      final permsList = SubPermissionsData.fromJson(raw);
+      return permsList;
     } catch (e) {
       rethrow;
     }

@@ -88,8 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               )..add(LoadDepartments()),
                           child: DepartmentsFragment(),
                         );
-                      default:
-                        return Placeholder();
+
+                      case FragmentType.stationsFragment:
+                        return StationsFragment();
+                      case FragmentType.routesFragment:
+                        return RoutesFragment();
+                      case FragmentType.trainsFragment:
+                        return TrainsFragment();
                     }
                   },
                 ),

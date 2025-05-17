@@ -28,7 +28,6 @@ class _NewEmployeeFormState extends State<NewEmployeeForm> {
   String? _selectedGender;
   Department? _selectedDepartment;
   Job? _selectedJob;
-  String? _selectedSupervisor;
 
   //bool _isPasswordObscure = true;
 

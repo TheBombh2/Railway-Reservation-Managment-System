@@ -47,4 +47,59 @@ class Department {
     data['title'] = this.title;
     return data;
   }
+
+
+
+  
+}
+
+
+class DepartmentCreate {
+  final String title;
+  final String description;
+  final String location;
+  final String? managerID;
+  final String? managerHireDate;
+  final int permission;
+  final List<List<int>> subPermission;
+
+  DepartmentCreate({
+    required this.title,
+    required this.description,
+    required this.location,
+    this.managerID,
+    this.managerHireDate,
+    required this.permission,
+    required this.subPermission,
+  });
+
+  factory DepartmentCreate.fromJson(Map<String, dynamic> json) {
+    return DepartmentCreate(
+      title: json['title'],
+      description: json['description'],
+      location: json['location'],
+      managerID: json['managerID'],
+      managerHireDate: json['managerHireDate'],
+      permission: json['permission'],
+      subPermission: (json['subPermission'] as List<dynamic>)
+          .map<List<int>>(
+            (innerList) => (innerList as List<dynamic>)
+                .map<int>((item) => item as int)
+                .toList(),
+          )
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'location': location,
+      'managerID': managerID,
+      'managerHireDate': managerHireDate,
+      'permission': permission,
+      'subPermission': subPermission,
+    };
+  }
 }

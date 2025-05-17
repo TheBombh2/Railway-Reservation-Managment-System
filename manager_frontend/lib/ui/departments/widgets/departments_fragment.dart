@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/departments/bloc/departments_bloc.dart';
 import 'package:manager_frontend/ui/departments/widgets/departments_list.dart';
 import 'package:manager_frontend/ui/departments/widgets/new_department_form.dart';
+import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart';
 
 class DepartmentsFragment extends StatelessWidget {
   const DepartmentsFragment({super.key});
@@ -30,15 +33,15 @@ class DepartmentsFragment extends StatelessWidget {
                     ),
                     icon: Icon(Icons.domain_add_outlined, color: darkBlue),
                     onPressed: () {
+                      final employeeBloc = context.read<DepartmentsBloc>();
                       showDialog(
                         context: context,
-                        builder: (ctx) => const NewDepartmentForm(),
-                      ).then((departmentData) {
-                        if (departmentData != null) {
-                          // Handle the submitted department data
-                          print(departmentData);
-                        }
-                      });
+                        builder:
+                            (ctx) => BlocProvider.value(
+                              value: employeeBloc,
+                              child: const NewDepartmentForm(),
+                            ),
+                      );
                     },
                     label: Text(
                       'Create a New Department',

@@ -310,4 +310,32 @@ class EmployeeService {
       }
     }
   }
+
+
+  Future<Map<String, dynamic>> getAllPermissions(String sessionToken) async {
+    try {
+      final response = await _apiClient.getRequest(
+        '/permissions/all-permissions',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } catch (e) {
+      throw Exception("Failed to get permissions information");
+    }
+  }
+
+
+  Future<Map<String, dynamic>> getAllSubPermissions(String sessionToken) async {
+    try {
+      final response = await _apiClient.getRequest(
+        '/subpermissions/all-subpermissions',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } catch (e) {
+      throw Exception("Failed to get subpermissions information");
+    }
+  }
 }
