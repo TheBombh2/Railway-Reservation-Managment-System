@@ -42,6 +42,23 @@ class ApiClient {
     return response.data;
   }
 
+
+  Future<dynamic> deleteRequest(
+    String endPoint, {
+    dynamic body,
+    String? sessionToken,
+    ResponseType responseType = ResponseType.json,
+  }) async {
+    final url = '${_buildBaseUrl()}$endPoint';
+    
+    final response = await _dio.delete(
+      url,
+      data: body,
+      options: _buildOptions(sessionToken),
+    );
+    return response.data;
+  }
+
   
   Options _buildOptions(String? sessionToken) {
     return Options(

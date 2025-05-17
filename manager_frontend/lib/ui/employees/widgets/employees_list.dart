@@ -14,7 +14,6 @@ class EmployeesList extends StatefulWidget {
 }
 
 class _EmployeesListState extends State<EmployeesList> {
-
   final _scrollController = ScrollController();
 
   @override
@@ -22,6 +21,7 @@ class _EmployeesListState extends State<EmployeesList> {
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<EmployeesBloc, EmployeesState>(
@@ -76,20 +76,28 @@ class _EmployeesListState extends State<EmployeesList> {
                         ),
                       ),
                       DataColumn(
-                        label: Text('Job Title', overflow: TextOverflow.ellipsis),
+                        label: Text(
+                          'Job Title',
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       /*DataColumn(
                         label: Text('Department', overflow: TextOverflow.ellipsis),
                       ),
                       */
                       DataColumn(
-                        label: Text('Supervisor', overflow: TextOverflow.ellipsis),
+                        label: Text(
+                          'Supervisor',
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       DataColumn(
                         label: Text('Actions', overflow: TextOverflow.ellipsis),
                       ),
                     ],
-                    rows: List.generate(state.employees.employees!.length, (index) {
+                    rows: List.generate(state.employees.employees!.length, (
+                      index,
+                    ) {
                       return DataRow(
                         cells: [
                           DataCell(
@@ -107,21 +115,27 @@ class _EmployeesListState extends State<EmployeesList> {
                           ),
                           DataCell(
                             Text(
-                              state.employees.employees![index].employeeGender ==
+                              state
+                                          .employees
+                                          .employees![index]
+                                          .employeeGender ==
                                       'M'
                                   ? 'Male'
                                   : "Female",
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                           DataCell(
+                          DataCell(
                             Text(
                               state.employees.employees![index].email!,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                           DataCell(
-                            Text(state.employees.employees![index].phoneNumber!, overflow: TextOverflow.ellipsis),
+                          DataCell(
+                            Text(
+                              state.employees.employees![index].phoneNumber!,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           DataCell(
                             Text(
@@ -150,20 +164,23 @@ class _EmployeesListState extends State<EmployeesList> {
                                       color: darkBlue,
                                     ),
                                     onPressed: () {
+                                      final employeeBloc =
+                                          context.read<EmployeesBloc>();
                                       showDialog(
                                         context: context,
-                                        builder: (ctx) => const EmployeeTaskForm(),
-                                      ).then((appraisalData) {
-                                        if (appraisalData != null) {
-                                          // Handle the submitted appraisal data
-                                          print('Title: ${appraisalData['title']}');
-                                          print(
-                                            'Description: ${appraisalData['description']}',
-                                          );
-                                          print('Date: ${appraisalData['date']}');
-                                        }
-                                      });
-                                    }, // Create a new appraisal
+                                        builder:
+                                            (ctx) => BlocProvider.value(
+                                              value: employeeBloc,
+                                              child: EmployeeTaskForm(
+                                                employeeID:
+                                                    state
+                                                        .employees
+                                                        .employees![index]
+                                                        .employeeID!,
+                                              ),
+                                            ),
+                                      );
+                                    },
                                   ),
                                   IconButton(
                                     icon: Icon(
@@ -171,23 +188,22 @@ class _EmployeesListState extends State<EmployeesList> {
                                       color: darkBlue,
                                     ),
                                     onPressed: () {
+                                      final employeeBloc =
+                                          context.read<EmployeesBloc>();
                                       showDialog(
                                         context: context,
                                         builder:
-                                            (ctx) => const EmployeeAppraisalForm(),
-                                      ).then((appraisalData) {
-                                        if (appraisalData != null) {
-                                          // Handle the submitted appraisal data
-                                          print('Title: ${appraisalData['title']}');
-                                          print(
-                                            'Description: ${appraisalData['description']}',
-                                          );
-                                          print('Date: ${appraisalData['date']}');
-                                          print(
-                                            'Amount: \$${appraisalData['amount']}',
-                                          );
-                                        }
-                                      });
+                                            (ctx) => BlocProvider.value(
+                                              value: employeeBloc,
+                                              child: EmployeeAppraisalForm(
+                                                employeeID:
+                                                    state
+                                                        .employees
+                                                        .employees![index]
+                                                        .employeeID!,
+                                              ),
+                                            ),
+                                      );
                                     }, // Create a new citation
                                   ),
                                   IconButton(
@@ -196,23 +212,23 @@ class _EmployeesListState extends State<EmployeesList> {
                                       color: Colors.red,
                                     ),
                                     onPressed: () {
+                                      final employeeBloc =
+                                          context.read<EmployeesBloc>();
                                       showDialog(
                                         context: context,
                                         builder:
-                                            (ctx) => const EmployeeCitationForm(),
-                                      ).then((appraisalData) {
-                                        if (appraisalData != null) {
-                                          // Handle the submitted appraisal data
-                                          print('Title: ${appraisalData['title']}');
-                                          print(
-                                            'Description: ${appraisalData['description']}',
-                                          );
-                                          print('Date: ${appraisalData['date']}');
-                                          print(
-                                            'Amount: \$${appraisalData['amount']}',
-                                          );
-                                        }
-                                      });
+                                            (ctx) => BlocProvider.value(
+                                              value: employeeBloc,
+
+                                              child: EmployeeCitationForm(
+                                                employeeID:
+                                                    state
+                                                        .employees
+                                                        .employees![index]
+                                                        .employeeID!,
+                                              ),
+                                            ),
+                                      );
                                     },
                                   ),
                                   IconButton(
@@ -220,8 +236,53 @@ class _EmployeesListState extends State<EmployeesList> {
                                       Icons.delete_outline,
                                       color: darkerBlue,
                                     ),
-                                    onPressed:
-                                        () {}, // TODO:Remove employee from db
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (ctx) => AlertDialog(
+                                              title: Text("Confirm deletion"),
+                                              content: const Text(
+                                                'Are you sure you want to proceed?',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(
+                                                      ctx,
+                                                    ).pop(); // Close the dialog
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed:
+                                                      state is EmployeesLoading
+                                                          ? null
+                                                          : () {
+                                                            context
+                                                                .read<
+                                                                  EmployeesBloc
+                                                                >()
+                                                                .add(
+                                                                  (DeleteEmployee(
+                                                                    state
+                                                                        .employees
+                                                                        .employees![index]
+                                                                        .employeeID!,
+                                                                  )),
+                                                                );
+
+                                                            // Do something after confirmation
+                                                            Navigator.of(
+                                                              ctx,
+                                                            ).pop(); // Close the dialog
+                                                          },
+                                                  child: const Text('Yes'),
+                                                ),
+                                              ],
+                                            ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

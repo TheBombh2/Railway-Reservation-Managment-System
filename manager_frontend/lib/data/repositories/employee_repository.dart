@@ -1,7 +1,11 @@
+import 'package:manager_frontend/data/model/appraisal.dart';
+import 'package:manager_frontend/data/model/citation.dart';
 import 'package:manager_frontend/data/model/department.dart';
 import 'package:manager_frontend/data/model/employee.dart';
 import 'package:manager_frontend/data/model/job.dart';
+import 'package:manager_frontend/data/model/task.dart';
 import 'package:manager_frontend/data/services/employee_service.dart';
+import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart';
 
 class EmployeeRepository {
   EmployeeRepository({required EmployeeService employeeService})
@@ -63,6 +67,52 @@ class EmployeeRepository {
   ) async {
     try {
       await _employeeService.createNewJob(jobData.toJson(), sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+   Future<void> createTask(
+    Task data,
+    String sessionToken,
+  ) async {
+    try {
+      await _employeeService.createNewTask(data.toJson(), sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+   Future<void> createAppraisal(
+    Appraisal data,
+    String sessionToken,
+  ) async {
+    try {
+      await _employeeService.createNewAppraisal(data.toJson(), sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+   Future<void> createCitation(
+    Citation data,
+    String sessionToken,
+  ) async {
+    try {
+      await _employeeService.createNewCitation(data.toJson(), sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+   Future<void> deleteEmployee(
+    String employeeID,
+    String sessionToken,
+  ) async {
+    try {
+      await _employeeService.deleteEmployee(employeeID, sessionToken);
     } catch (e) {
       rethrow;
     }

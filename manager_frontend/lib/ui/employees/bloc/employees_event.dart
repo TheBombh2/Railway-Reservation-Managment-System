@@ -11,6 +11,26 @@ class CreateEmployee extends EmployeesEvent {
   CreateEmployee(this.employeeData);
 }
 
+class DeleteEmployee extends EmployeesEvent {
+  final String employeeID;
+  DeleteEmployee(this.employeeID);
+}
+
+class CreateTask extends EmployeesEvent {
+  final Task taskData;
+  CreateTask(this.taskData);
+}
+
+class CreateAppraisal extends EmployeesEvent {
+  final Appraisal appraisalData;
+  CreateAppraisal(this.appraisalData);
+}
+
+class CreateCitation extends EmployeesEvent {
+  final Citation citationData;
+  CreateCitation(this.citationData);
+}
+
 class CreateJob extends EmployeesEvent {
   final JobCreate jobData;
   CreateJob(this.jobData);

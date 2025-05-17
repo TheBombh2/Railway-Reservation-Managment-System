@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:manager_frontend/data/model/appraisal.dart';
+import 'package:manager_frontend/data/model/citation.dart';
 import 'package:manager_frontend/data/model/department.dart';
 import 'package:manager_frontend/data/model/employee.dart';
 import 'package:manager_frontend/data/model/job.dart';
+import 'package:manager_frontend/data/model/task.dart';
 import 'package:manager_frontend/data/repositories/authentication_repository.dart';
 import 'package:manager_frontend/data/repositories/employee_repository.dart';
 import 'package:meta/meta.dart';
@@ -19,6 +22,10 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     on<LoadEmployees>(_onLoadEmployees);
     on<CreateEmployee>(_onCreateEmployee);
     on<CreateJob>(_onCreateJob);
+    on<CreateTask>(_onCreateTask);
+    on<CreateAppraisal>(_onCreateAppraisal);
+    on<CreateCitation>(_onCreateCitation);
+    on<DeleteEmployee>(_onDeleteEmployee);
   }
 
   Future<void> _onLoadEmployees(
@@ -82,6 +89,87 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
       try {
         await employeeRepository.createJob(
           event.jobData,
+          authenticationRepository.getSessionToken(),
+        );
+        emit(EmployeeOperationSuccess());
+        add(LoadEmployees());
+      } catch (e) {
+        emit(EmployeesError(message: e.toString()));
+        emit(currentState);
+      }
+    }
+  }
+
+  Future<void> _onCreateTask(
+    CreateTask event,
+    Emitter<EmployeesState> emit,
+  ) async {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      try {
+        await employeeRepository.createTask(
+          event.taskData,
+          authenticationRepository.getSessionToken(),
+        );
+        emit(EmployeeOperationSuccess());
+        add(LoadEmployees());
+      } catch (e) {
+        emit(EmployeesError(message: e.toString()));
+        emit(currentState);
+      }
+    }
+  }
+
+  Future<void> _onCreateAppraisal(
+    CreateAppraisal event,
+    Emitter<EmployeesState> emit,
+  ) async {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      try {
+        await employeeRepository.createAppraisal(
+          event.appraisalData,
+          authenticationRepository.getSessionToken(),
+        );
+        emit(EmployeeOperationSuccess());
+        add(LoadEmployees());
+      } catch (e) {
+        emit(EmployeesError(message: e.toString()));
+        emit(currentState);
+      }
+    }
+  }
+
+  Future<void> _onCreateCitation(
+    CreateCitation event,
+    Emitter<EmployeesState> emit,
+  ) async {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      try {
+        await employeeRepository.createCitation(
+          event.citationData,
+          authenticationRepository.getSessionToken(),
+        );
+        emit(EmployeeOperationSuccess());
+        add(LoadEmployees());
+      } catch (e) {
+        emit(EmployeesError(message: e.toString()));
+        emit(currentState);
+      }
+    }
+  }
+
+
+  Future<void> _onDeleteEmployee(
+    DeleteEmployee event,
+    Emitter<EmployeesState> emit,
+  ) async {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      try {
+        await employeeRepository.deleteEmployee(
+          event.employeeID,
           authenticationRepository.getSessionToken(),
         );
         emit(EmployeeOperationSuccess());

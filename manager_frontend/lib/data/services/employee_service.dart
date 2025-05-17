@@ -265,4 +265,26 @@ class EmployeeService {
       throw Exception("Failed to get jobs information");
     }
   }
+
+
+  Future<void> deleteEmployee(
+    String employeeID,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.deleteRequest(
+        '/employee/$employeeID/delete',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
 }

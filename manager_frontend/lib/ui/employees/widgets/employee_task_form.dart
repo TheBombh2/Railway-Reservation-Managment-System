@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:manager_frontend/data/model/task.dart';
+import 'package:manager_frontend/ui/employees/bloc/employees_bloc.dart'; // For date formatting
 
 class EmployeeTaskForm extends StatefulWidget {
-  const EmployeeTaskForm({super.key});
+  final String employeeID;
+  const EmployeeTaskForm({required this.employeeID, super.key});
 
   @override
   State<EmployeeTaskForm> createState() => _EmployeeTaskFormmState();
@@ -37,100 +41,128 @@ class _EmployeeTaskFormmState extends State<EmployeeTaskForm> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Assign Task'),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minWidth: 500,
-          maxWidth: 800,
-        ),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Title Field
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Task Title*',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a title';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
+    return BlocConsumer<EmployeesBloc, EmployeesState>(
+      listener: (context, state) {
+        if (state is EmployeeOperationSuccess) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pop(context); // Close dialog on success
+          });
 
-                // Description Field
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    hintText: 'Enter task details',
-                    alignLabelWithHint: true,
-                  ),
-                  maxLines: 3,
-                  keyboardType: TextInputType.multiline,
-                ),
-                const SizedBox(height: 20),
-
-                // Date Field
-                InkWell(
-                  onTap: () => _selectDate(context),
-                  child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Task Deadline*',
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Task created successfully')),
+          );
+        }
+        if (state is EmployeesError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      builder: (context, state) {
+        return AlertDialog(
+          title: const Text('Assign Task'),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 500, maxWidth: 800),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Title Field
+                    TextFormField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Task Title*',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a title';
+                        }
+                        return null;
+                      },
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _selectedDate == null
-                              ? 'Select date'
-                              : DateFormat('yyyy-MM-dd').format(_selectedDate!),
+                    const SizedBox(height: 20),
+
+                    // Description Field
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                        hintText: 'Enter task details',
+                        alignLabelWithHint: true,
+                      ),
+                      maxLines: 3,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Date Field
+                    InkWell(
+                      onTap: () => _selectDate(context),
+                      child: InputDecorator(
+                        decoration: const InputDecoration(
+                          labelText: 'Task Deadline*',
                         ),
-                        const Icon(Icons.calendar_today),
-                      ],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _selectedDate == null
+                                  ? 'Select date'
+                                  : DateFormat(
+                                    'yyyy-MM-dd',
+                                  ).format(_selectedDate!),
+                            ),
+                            const Icon(Icons.calendar_today),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
-                const SizedBox(height: 20),
-
-               
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              if (_selectedDate == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please select a date')),
-                );
-                return;
-              }
-              
-              Navigator.pop(context, {
-                'title': _titleController.text,
-                'description': _descriptionController.text,
-                'date': _selectedDate,
-              });
-            }
-          },
-          child: const Text('Assign'),
-        ),
-      ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed:
+                  state is EmployeesLoading
+                      ? null
+                      : () {
+                        if (_formKey.currentState!.validate()) {
+                          if (_selectedDate == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please select a date'),
+                              ),
+                            );
+                            return;
+                          }
+                          final taskData = Task(
+                            assignedEmployee: widget.employeeID,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            deadline:
+                                DateFormat(
+                                  "yyyy-MM-dd HH:mm:ss",
+                                ).format(_selectedDate!).toString(),
+                          );
+                          context.read<EmployeesBloc>().add(
+                            CreateTask(taskData),
+                          );
+                        }
+                      },
+              child: const Text('Assign'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
