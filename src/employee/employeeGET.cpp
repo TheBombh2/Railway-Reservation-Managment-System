@@ -375,4 +375,92 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(404, "not found");
          return crow::response(200, employeeUUID);
          });
+
+    CROW_ROUTE(app, "/permissions/all-permissions").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::NONE_SUBPERM)
+         crow::json::wvalue result;
+         result["size"] = 8;
+         result["permissions"][0]["name"] = "Human Resources";
+         result["permissions"][0]["value"] = PERMISSIONS::HUMAN_RESOURCES;
+         result["permissions"][1]["name"] = "Information Technology";
+         result["permissions"][1]["value"] = PERMISSIONS::INFORMATION_TECHNOLOGY;
+         result["permissions"][2]["name"] = "Asset Management";
+         result["permissions"][2]["value"] = PERMISSIONS::ASSET_MANAGEMENT;
+         result["permissions"][3]["name"] = "Train Management";
+         result["permissions"][3]["value"] = PERMISSIONS::TRAIN_MANAGEMENT;
+         result["permissions"][4]["name"] = "Maintenance";
+         result["permissions"][4]["value"] = PERMISSIONS::MAINTENANCE;
+         result["permissions"][5]["name"] = "Ticketing";
+         result["permissions"][5]["value"] = PERMISSIONS::TICKETING;
+         result["permissions"][6]["name"] = "Management";
+         result["permissions"][6]["value"] = PERMISSIONS::MANAGEMENT;
+         result["permissions"][7]["name"] = "Jobs Management";
+         result["permissions"][7]["value"] = PERMISSIONS::JOBS;
+         return crow::response(200, result);
+         });
+
+    CROW_ROUTE(app, "/subpermissions/all-subpermissions").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::HUMAN_RESOURCES, SUB_PERMISSIONS::NONE_SUBPERM)
+         crow::json::wvalue result;
+         result["size"] = 8;
+         result["subPermissions"]["Human Resources"]["Fire Employee"] = SUB_PERMISSIONS::FIRE_EMPLOYEE;
+         result["subPermissions"]["Human Resources"]["Hire Employee"] = SUB_PERMISSIONS::HIRE_EMPLOYEE;
+         result["subPermissions"]["Human Resources"]["View Employee"] = SUB_PERMISSIONS::VIEW_EMPLOYEE;
+         result["subPermissions"]["Human Resources"]["Edit Employee"] = SUB_PERMISSIONS::EDIT_EMPLOYEE;
+         result["subPermissions"]["Human Resources"]["Add Department"] = SUB_PERMISSIONS::ADD_DEPARTMENT;
+         result["subPermissions"]["Human Resources"]["Delete Department"] = SUB_PERMISSIONS::DELETE_DEPARTMENT;
+         result["subPermissions"]["Human Resources"]["View Department"] = SUB_PERMISSIONS::VIEW_DEPARTMENT;
+         result["subPermissions"]["Human Resources"]["Edit Department"] = SUB_PERMISSIONS::EDIT_DEPARTMENT;
+         result["subPermissions"]["Human Resources"]["index"] = DEPARTMENT_IDS::DEP_HUMAN_RESOURCES;
+
+         result["subPermissions"]["Information Technology"]["Change Password"] = SUB_PERMISSIONS::CHANGE_PASSWORD;
+         result["subPermissions"]["Information Technology"]["View Ticket"] = SUB_PERMISSIONS::VIEW_TICKET;
+         result["subPermissions"]["Information Technology"]["Reserve Resolve Ticket"] = SUB_PERMISSIONS::RESERVE_RESOLVE_TICKET;
+         result["subPermissions"]["Information Technology"]["index"] = DEPARTMENT_IDS::DEP_INFORMATION_TECHNOLOGY;
+
+         result["subPermissions"]["Asset Management"]["Purchase Asset"] = SUB_PERMISSIONS::PURCHASE_ASSET;
+         result["subPermissions"]["Asset Management"]["Sell Asset"] = SUB_PERMISSIONS::SELL_ASSET;
+         result["subPermissions"]["Asset Management"]["Edit Asset"] = SUB_PERMISSIONS::EDIT_ASSET;
+         result["subPermissions"]["Asset Management"]["Add Asset"] = SUB_PERMISSIONS::ADD_ASSET;
+         result["subPermissions"]["Asset Management"]["Delete Asset"] = SUB_PERMISSIONS::DELETE_ASSET;
+         result["subPermissions"]["Asset Management"]["Create Maintenance"] = SUB_PERMISSIONS::CREATE_MAINTENANCE;
+         result["subPermissions"]["Asset Management"]["index"] = DEPARTMENT_IDS::DEP_ASSET_MANAGEMENT;
+
+         result["subPermissions"]["Train Management"]["View Train Location"] = SUB_PERMISSIONS::VIEW_TRAIN_LOCATION;
+         result["subPermissions"]["Train Management"]["Update Train Location"] = SUB_PERMISSIONS::UPDATE_TRAIN_LOCATION;
+         result["subPermissions"]["Train Management"]["Add Train"] = SUB_PERMISSIONS::ADD_TRAIN;
+         result["subPermissions"]["Train Management"]["Edit Train"] = SUB_PERMISSIONS::EDIT_TRAIN;
+         result["subPermissions"]["Train Management"]["Delete Train"] = SUB_PERMISSIONS::DELETE_TRAIN;
+         result["subPermissions"]["Train Management"]["View Train Data"] = SUB_PERMISSIONS::VIEW_TRAIN_DATA;
+         result["subPermissions"]["Train Management"]["Add Station"] = SUB_PERMISSIONS::ADD_STATION;
+         result["subPermissions"]["Train Management"]["Delete Station"] = SUB_PERMISSIONS::DELETE_STATION;
+         result["subPermissions"]["Train Management"]["index"] = DEPARTMENT_IDS::DEP_TRAIN_MANAGEMENT;
+
+         result["subPermissions"]["Maintenance"]["View Maintenance Job"] = SUB_PERMISSIONS::VIEW_MAINTENANCE_JOB;
+         result["subPermissions"]["Maintenance"]["Reserve Resolve Maintenance"] = SUB_PERMISSIONS::RESERVE_RESOLVE_MAINTENANCE;
+         result["subPermissions"]["Maintenance"]["Create Maintenance Job"] = SUB_PERMISSIONS::CREATE_MAINTENANCE_JOB;
+         result["subPermissions"]["Maintenance"]["View Maintenance Job"] = SUB_PERMISSIONS::VIEW_MAINTENANCE_JOB;
+         result["subPermissions"]["Maintenance"]["Edit Maintenance Job"] = SUB_PERMISSIONS::EDIT_MAINTENANCE_JOB;
+         result["subPermissions"]["Maintenance"]["index"] = DEPARTMENT_IDS::DEP_MAINTENANCE;
+
+         result["subPermissions"]["Ticketing"]["Create Ticket"] = SUB_PERMISSIONS::CREATE_TICKET;
+         result["subPermissions"]["Ticketing"]["Cancel Ticket"] = SUB_PERMISSIONS::CANCEL_TICKET;
+         result["subPermissions"]["Ticketing"]["Verify Ticket"] = SUB_PERMISSIONS::VERIFY_TICKET;
+         result["subPermissions"]["Ticketing"]["index"] = DEPARTMENT_IDS::DEP_TICKETING;
+
+         result["subPermissions"]["Management"]["View Reports"] = SUB_PERMISSIONS::VIEW_REPORTS;
+         result["subPermissions"]["Management"]["View Performance Statistsics"] = SUB_PERMISSIONS::VIEW_PERFORMANCE_STATISTICS;
+         result["subPermissions"]["Management"]["index"] = DEPARTMENT_IDS::DEP_MANAGEMENT;
+
+         result["subPermissions"]["Jobs"]["View Job"] = SUB_PERMISSIONS::VIEW_JOB;
+         result["subPermissions"]["Jobs"]["Create Job"] = SUB_PERMISSIONS::CREATE_JOB;
+         result["subPermissions"]["Jobs"]["Delete Job"] = SUB_PERMISSIONS::DELETE_JOB;
+         result["subPermissions"]["Jobs"]["Edit Job"] = SUB_PERMISSIONS::EDIT_JOB;
+         result["subPermissions"]["Jobs"]["index"] = DEPARTMENT_IDS::DEP_JOBS;
+         return crow::response(200, result);
+         });
 }
