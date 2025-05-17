@@ -182,4 +182,32 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          return crow::response(200, result);
          });
 
+    CROW_ROUTE(app, "/trains/all-types").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+        {
+        AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::VIEW_TRAIN_DATA)
+        std::vector<std::string> titles(MAX_TRAINS_RETURNED), descriptions(MAX_TRAINS_RETURNED);
+        std::vector<int> ids(MAX_TRAINS_RETURNED);
+        try
+        {
+           soci::session db(pool); 
+           db << GET_TRAIN_TYPES_QUERY, soci::into(ids), soci::into(titles), soci::into(descriptions);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "DATABASE ERROR (/trains/all-types): " << e.what() << '\n';
+            return crow::response(500, "database error");
+        }
+
+        crow::json::wvalue result;
+        result["size"] = ids.size();
+        for(unsigned int i = 0; i < ids.size(); i++)
+        {
+            result["types"][i]["title"] = titles[i];
+            result["types"][i]["description"] = descriptions[i];
+            result["types"][i]["id"] = ids[i];
+        }
+        return crow::response(200, result);
+        });
+
 }

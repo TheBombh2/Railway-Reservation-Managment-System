@@ -69,7 +69,7 @@ const inline std::string ADD_STATION_CONNECTION_QUERY =
 "VALUES (:Source, :Destination, :Distance); ";
 
 const inline std::string CREATE_TRAIN_QUERY = 
-"INSERT INTO `Train` (ID, Name, Speed) VALUES (:ID, :Name, :Speed); ";
+"INSERT INTO `Train` (ID, Name, Speed, TrainTypeID) VALUES (:ID, :Name, :Speed, :TypeID); ";
 
 const inline std::string GET_ALL_TRAINS_INFO =
 "SELECT ID, Name, Speed FROM `Train`; ";
@@ -101,5 +101,14 @@ const inline std::string GET_ALL_ROUTES_INFO_QUERY =
 const inline std::string VERIFY_ROUTE_QUERY =
 "SELECT ID FROM TrainRoute WHERE ID = :ID; ";
 
+const inline std::string ADD_ROUTE_TO_TRAIN_QUERY = 
+"INSERT INTO TrainAssignedRoutes (TrainID, RouteID) VALUES (:TrainID, :RouteID); ";
+
 const inline std::string DELETE_ROUTE_QUERY =
 "DELETE FROM TrainRoute WHERE ID = :ID; ";
+
+const inline std::string GET_TRAIN_TYPES_QUERY =
+"SELECT ID, Title, Description FROM TrainType; ";
+
+const inline std::string CREATE_TRAIN_TYPE_QUERY =
+"INSERT INTO TrainType (Title, Description) VALUES (:Title, :Description); ";

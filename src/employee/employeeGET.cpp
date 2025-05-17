@@ -448,6 +448,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          result["subPermissions"]["Maintenance"]["Create Maintenance Job"] = SUB_PERMISSIONS::CREATE_MAINTENANCE_JOB;
          result["subPermissions"]["Maintenance"]["View Maintenance Job"] = SUB_PERMISSIONS::VIEW_MAINTENANCE_JOB;
          result["subPermissions"]["Maintenance"]["Edit Maintenance Job"] = SUB_PERMISSIONS::EDIT_MAINTENANCE_JOB;
+         result["subPermissions"]["Maintenance"]["Delete Maintenance Job"] = SUB_PERMISSIONS::DELETE_MAINTENANCE_JOB;
          result["subPermissions"]["Maintenance"]["index"] = DEPARTMENT_IDS::DEP_MAINTENANCE;
 
          result["subPermissions"]["Ticketing"]["Create Ticket"] = SUB_PERMISSIONS::CREATE_TICKET;

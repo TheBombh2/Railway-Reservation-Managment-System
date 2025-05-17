@@ -129,10 +129,13 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          const crow::json::rvalue body = crow::json::load(req.body);
          std::string name;
          double speed;
+         int routeID, trainTypeID;
          try
          {
             name = body["name"].s();
             speed = body["speed"].d();
+            routeID = body["routeID"].i();
+            trainTypeID = body["trainTypeID"].i();
          }
          catch(const std::exception& e)
          {
@@ -143,8 +146,12 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          try
          {
             soci::session db(pool);
+            soci::transaction trans(db);
             std::string uuid = GetUUIDv7();
-            db << CREATE_TRAIN_QUERY, soci::use(uuid), soci::use(name), soci::use(speed);
+            db << CREATE_TRAIN_QUERY, soci::use(uuid), soci::use(name),
+            soci::use(speed), soci::use(trainTypeID);
+            db << ADD_ROUTE_TO_TRAIN_QUERY, soci::use(uuid), soci::use(routeID);
+            trans.commit();
          }
          catch(const std::exception& e)
          {
@@ -234,4 +241,34 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          return crow::response(201, "route connection added successfully");
          });
+
+    CROW_ROUTE(app, "/trains/types/create").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+        {
+        AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::ADD_TRAIN)
+        const crow::json::rvalue body = crow::json::load(req.body);
+        std::string title, description;
+        try
+        {
+            title = body["title"].s();
+            description = body["description"].s();
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "JSON ERROR (/trains/types/create): " << e.what() << '\n';
+            return crow::response(400, "bad request");
+        }
+
+        try
+        {
+            soci::session db(pool);
+            db << CREATE_TRAIN_TYPE_QUERY, soci::use(title), soci::use(description);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "DATABASE ERROR (/trains/types/create): " << e.what() << '\n'; 
+            return crow::response(500, "database error");
+        }
+        return crow::response(201, "train type successfully created");
+        });
 }
