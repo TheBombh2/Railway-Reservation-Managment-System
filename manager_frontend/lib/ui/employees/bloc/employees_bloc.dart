@@ -12,12 +12,13 @@ part 'employees_state.dart';
 class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
   final EmployeeRepository employeeRepository;
   final AuthenticationRepository authenticationRepository;
-  EmployeesBloc({required this.employeeRepository, required this.authenticationRepository})
-    : super(EmployeesInitial()) {
+  EmployeesBloc({
+    required this.employeeRepository,
+    required this.authenticationRepository,
+  }) : super(EmployeesInitial()) {
     on<LoadEmployees>(_onLoadEmployees);
     on<CreateEmployee>(_onCreateEmployee);
     on<CreateJob>(_onCreateJob);
-
   }
 
   Future<void> _onLoadEmployees(
@@ -26,51 +27,69 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
   ) async {
     emit(EmployeesLoading());
     try {
-      final employees = await employeeRepository.getAllEmployeesInfo(
+      var employees = await employeeRepository.getAllEmployeesInfo(
         authenticationRepository.getSessionToken(),
       );
-      final departments = await employeeRepository.getAllDepartmentsInfo(authenticationRepository.getSessionToken());
-      final jobs = await employeeRepository.getAllJobsInfo(authenticationRepository.getSessionToken());
-      emit(EmployeesLoaded(employees: employees,departments: departments,jobs: jobs));
+
+      final uuid = await authenticationRepository.getUuid();
+      employees.employees =
+          employees.employees!.where((emp) => emp.managerID == uuid).toList();
+      final departments = await employeeRepository.getAllDepartmentsInfo(
+        authenticationRepository.getSessionToken(),
+      );
+      final jobs = await employeeRepository.getAllJobsInfo(
+        authenticationRepository.getSessionToken(),
+      );
+      emit(
+        EmployeesLoaded(
+          employees: employees,
+          departments: departments,
+          jobs: jobs,
+        ),
+      );
     } catch (e) {
       emit(EmployeesError(message: e.toString()));
     }
   }
 
-  Future<void> _onCreateEmployee(CreateEmployee event,Emitter<EmployeesState> emit) async{
-    if(state is EmployeesLoaded){
-        final currentState = state as EmployeesLoaded;
-      try{
+  Future<void> _onCreateEmployee(
+    CreateEmployee event,
+    Emitter<EmployeesState> emit,
+  ) async {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      try {
         event.employeeData.managerID = await authenticationRepository.getUuid();
-        await employeeRepository.createEmployee(event.employeeData,authenticationRepository.getSessionToken());
+        await employeeRepository.createEmployee(
+          event.employeeData,
+          authenticationRepository.getSessionToken(),
+        );
         emit(EmployeeOperationSuccess());
         add(LoadEmployees());
-      }
-      catch(e){
+      } catch (e) {
         emit(EmployeesError(message: e.toString()));
         emit(currentState);
-
       }
     }
   }
 
-
-
-   Future<void> _onCreateJob(CreateJob event,Emitter<EmployeesState> emit) async{
-    if(state is EmployeesLoaded){
-        final currentState = state as EmployeesLoaded;
-      try{
-        await employeeRepository.createJob(event.jobData,authenticationRepository.getSessionToken());
+  Future<void> _onCreateJob(
+    CreateJob event,
+    Emitter<EmployeesState> emit,
+  ) async {
+    if (state is EmployeesLoaded) {
+      final currentState = state as EmployeesLoaded;
+      try {
+        await employeeRepository.createJob(
+          event.jobData,
+          authenticationRepository.getSessionToken(),
+        );
         emit(EmployeeOperationSuccess());
         add(LoadEmployees());
-      }
-      catch(e){
+      } catch (e) {
         emit(EmployeesError(message: e.toString()));
         emit(currentState);
-
       }
     }
   }
-
-  
 }

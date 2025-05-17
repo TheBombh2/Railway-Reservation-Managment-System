@@ -36,6 +36,7 @@ class Employee {
   String? managerFirstName;
   String? employeeMiddleName;
   String? employeeFirstName;
+  String? managerID;
 
   Employee(
       {this.email,
@@ -48,7 +49,8 @@ class Employee {
       this.employeeLastName,
       this.managerFirstName,
       this.employeeMiddleName,
-      this.employeeFirstName});
+      this.employeeFirstName,
+      this.managerID});
 
   Employee.fromJson(Map<String, dynamic> json) {
     email = json['email'];
@@ -62,6 +64,7 @@ class Employee {
     managerFirstName = json['managerFirstName'];
     employeeMiddleName = json['employeeMiddleName'];
     employeeFirstName = json['employeeFirstName'];
+    managerID = json['managerID'];
   }
 
   Map<String, dynamic> toJson() {
@@ -77,6 +80,7 @@ class Employee {
     data['managerFirstName'] = this.managerFirstName;
     data['employeeMiddleName'] = this.employeeMiddleName;
     data['employeeFirstName'] = this.employeeFirstName;
+    data['managerID'] = this.managerID;
     return data;
   }
 }
