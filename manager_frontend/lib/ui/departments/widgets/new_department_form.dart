@@ -18,7 +18,7 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  final Map<String, Set<String>> _selectedPermissions = {};
+  final Map<String, Set<String>> _selectedSubPermissions = {};
   String? _selectedGroup;
 
   late Permissions permissionsList;
@@ -55,7 +55,10 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
         if (state is DepartmentsLoaded) {
           permissionsList = state.permissionsList;
           subPermissionsList = state.subPermissionsList;
+        } else {
+          return const Center(child: CircularProgressIndicator());
         }
+
         return AlertDialog(
           title: const Text('Add New Department'),
           content: SizedBox(
@@ -80,8 +83,8 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
                         child: ListView.builder(
                           itemCount: permissionsList.size,
                           itemBuilder: (context, index) {
-                            final permission = permissionsList.permissions!
-                                .elementAt(index);
+                            final permission =
+                                permissionsList.permissions![index];
                             return ListTile(
                               title: Text(permission.name!),
                               trailing: const Icon(
@@ -107,7 +110,7 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
                         height: 150,
                         child: ListView(
                           children:
-                              _selectedPermissions.entries.expand((entry) {
+                              _selectedSubPermissions.entries.expand((entry) {
                                 final group = entry.key;
                                 return entry.value.map(
                                   (perm) => ListTile(
@@ -117,13 +120,14 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
                                       icon: const Icon(Icons.close, size: 16),
                                       onPressed: () {
                                         setState(() {
-                                          _selectedPermissions[group]?.remove(
-                                            perm,
-                                          );
-                                          if (_selectedPermissions[group]
+                                          _selectedSubPermissions[group]
+                                              ?.remove(perm);
+                                          if (_selectedSubPermissions[group]
                                                   ?.isEmpty ??
                                               true) {
-                                            _selectedPermissions.remove(group);
+                                            _selectedSubPermissions.remove(
+                                              group,
+                                            );
                                           }
                                         });
                                       },
@@ -212,7 +216,7 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
                                         ) {
                                           final subPermission = entry.key;
                                           final isSelected =
-                                              _selectedPermissions[_selectedGroup!]
+                                              _selectedSubPermissions[_selectedGroup!]
                                                   ?.contains(subPermission) ??
                                               false;
                                           return CheckboxListTile(
@@ -221,21 +225,22 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
                                             onChanged: (bool? selected) {
                                               setState(() {
                                                 if (selected == true) {
-                                                  _selectedPermissions
+                                                  _selectedSubPermissions
                                                       .putIfAbsent(
                                                         _selectedGroup!,
                                                         () => <String>{},
                                                       )
                                                       .add(subPermission);
                                                 } else {
-                                                  _selectedPermissions[_selectedGroup!]
+                                                  _selectedSubPermissions[_selectedGroup!]
                                                       ?.remove(subPermission);
-                                                  if (_selectedPermissions[_selectedGroup!]
+                                                  if (_selectedSubPermissions[_selectedGroup!]
                                                           ?.isEmpty ??
                                                       true) {
-                                                    _selectedPermissions.remove(
-                                                      _selectedGroup!,
-                                                    );
+                                                    _selectedSubPermissions
+                                                        .remove(
+                                                          _selectedGroup!,
+                                                        );
                                                   }
                                                 }
                                               });
@@ -264,20 +269,66 @@ class _NewDepartmentFormState extends State<NewDepartmentForm> {
                   state is DepartmentsLoading
                       ? null
                       : () {
-                        /* if (_formKey.currentState!.validate()) {
+                        if (_formKey.currentState!.validate()) {
+                          final selectedPermissionNames =
+                              _selectedSubPermissions.keys.toList();
+                          final selectedPermissions =
+                              permissionsList.permissions!
+                                  .where(
+                                    (perm) => selectedPermissionNames.contains(
+                                      perm.name,
+                                    ),
+                                  )
+                                  .toList();
+
+                          final Map<String, Map<String, dynamic>>
+                          formattedSubPermissions = {};
+
+                          _selectedSubPermissions.forEach((
+                            groupName,
+                            subPermList,
+                          ) {
+                            final groupIndex = permissionsList.permissions!
+                                .indexWhere((perm) => perm.name == groupName);
+
+                            final subPermsWithValues = <String, dynamic>{
+                              'index': groupIndex,
+                            };
+
+                            final subPermValues =
+                                subPermissionsList.groups
+                                    .firstWhere(
+                                      (group) => group.name == groupName,
+                                    )
+                                    .permissions;
+
+                            for (final subPerm in subPermList) {
+                              final value = subPermValues[subPerm];
+                              if (value != null) {
+                                subPermsWithValues[subPerm] = value;
+                              }
+                            }
+
+                            formattedSubPermissions[groupName] =
+                                subPermsWithValues;
+                          });
+
                           final departmentData = DepartmentCreate(
                             title: _titleController.text,
                             description: _descriptionController.text,
                             location: _locationController.text,
-                            permission: permission,
-                            subPermission: subPermission,
+                            permission: 0,
+                            subPermission: BigInt.zero,
                           );
+
                           context.read<DepartmentsBloc>().add(
-                            CreateDpeartment(departmentData: departmentData),
+                            CreateDpeartment(
+                              departmentData: departmentData,
+                              permissions: selectedPermissions,
+                              subPermissions: formattedSubPermissions,
+                            ),
                           );
-                          
                         }
-                        */
                       },
               child: const Text('Save'),
             ),

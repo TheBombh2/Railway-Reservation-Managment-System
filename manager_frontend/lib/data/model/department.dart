@@ -47,12 +47,7 @@ class Department {
     data['title'] = this.title;
     return data;
   }
-
-
-
-  
 }
-
 
 class DepartmentCreate {
   final String title;
@@ -61,7 +56,7 @@ class DepartmentCreate {
   final String? managerID;
   final String? managerHireDate;
   final int permission;
-  final List<List<int>> subPermission;
+  final BigInt subPermission;
 
   DepartmentCreate({
     required this.title,
@@ -81,13 +76,27 @@ class DepartmentCreate {
       managerID: json['managerID'],
       managerHireDate: json['managerHireDate'],
       permission: json['permission'],
-      subPermission: (json['subPermission'] as List<dynamic>)
-          .map<List<int>>(
-            (innerList) => (innerList as List<dynamic>)
-                .map<int>((item) => item as int)
-                .toList(),
-          )
-          .toList(),
+      subPermission: json['subPermission'],
+    );
+  }
+
+  DepartmentCreate copyWith({
+    String? title,
+    String? description,
+    String? location,
+    String? managerID,
+    String? managerHireDate,
+    int? permission,
+    BigInt? subPermission,
+  }) {
+    return DepartmentCreate(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      location: location ?? this.location,
+      managerID: managerID ?? this.managerID,
+      managerHireDate: managerHireDate ?? this.managerHireDate,
+      permission: permission ?? this.permission,
+      subPermission: subPermission ?? this.subPermission,
     );
   }
 

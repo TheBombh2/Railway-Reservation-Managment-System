@@ -1,3 +1,4 @@
+import 'package:json_bigint/json_bigint.dart';
 import 'package:manager_frontend/data/model/appraisal.dart';
 import 'package:manager_frontend/data/model/citation.dart';
 import 'package:manager_frontend/data/model/department.dart';
@@ -29,9 +30,7 @@ class EmployeeRepository {
 
   Future<DepartmentsList> getAllDepartmentsInfo(String sessionToken) async {
     try {
-      final raw = await _employeeService.getAllDepartmentsInfo(
-        sessionToken,
-      );
+      final raw = await _employeeService.getAllDepartmentsInfo(sessionToken);
       final depsList = DepartmentsList.fromJson(raw);
       return depsList;
     } catch (e) {
@@ -39,12 +38,33 @@ class EmployeeRepository {
     }
   }
 
+  Future<void> createDpeartment(
+    DepartmentCreate data,
+    String sessionToken,
+  ) async {
+    try {
+      
+      final formattedData = encodeJson(data.toJson());
+     // print(formattedData);
+      final newData = decodeJson(formattedData) as Map<String, dynamic>;
+      await _employeeService.createNewDepartment(newData, sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  Future<void> deleteDepartment(String departmentID, String sessionToken) async {
+    try {
+      await _employeeService.deleteDepartment(departmentID, sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<JobsList> getAllJobsInfo(String sessionToken) async {
     try {
-      final raw = await _employeeService.getAllJobsInfo(
-        sessionToken,
-      );
+      final raw = await _employeeService.getAllJobsInfo(sessionToken);
       final jobsList = JobsList.fromJson(raw);
       return jobsList;
     } catch (e) {
@@ -57,16 +77,16 @@ class EmployeeRepository {
     String sessionToken,
   ) async {
     try {
-      await _employeeService.createNewEmployee(employeeData.toJson(), sessionToken);
+      await _employeeService.createNewEmployee(
+        employeeData.toJson(),
+        sessionToken,
+      );
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<void> createJob(
-    JobCreate jobData,
-    String sessionToken,
-  ) async {
+  Future<void> createJob(JobCreate jobData, String sessionToken) async {
     try {
       await _employeeService.createNewJob(jobData.toJson(), sessionToken);
     } catch (e) {
@@ -74,10 +94,7 @@ class EmployeeRepository {
     }
   }
 
-   Future<void> createTask(
-    Task data,
-    String sessionToken,
-  ) async {
+  Future<void> createTask(Task data, String sessionToken) async {
     try {
       await _employeeService.createNewTask(data.toJson(), sessionToken);
     } catch (e) {
@@ -85,10 +102,7 @@ class EmployeeRepository {
     }
   }
 
-   Future<void> createAppraisal(
-    Appraisal data,
-    String sessionToken,
-  ) async {
+  Future<void> createAppraisal(Appraisal data, String sessionToken) async {
     try {
       await _employeeService.createNewAppraisal(data.toJson(), sessionToken);
     } catch (e) {
@@ -96,11 +110,7 @@ class EmployeeRepository {
     }
   }
 
-
-   Future<void> createCitation(
-    Citation data,
-    String sessionToken,
-  ) async {
+  Future<void> createCitation(Citation data, String sessionToken) async {
     try {
       await _employeeService.createNewCitation(data.toJson(), sessionToken);
     } catch (e) {
@@ -108,11 +118,7 @@ class EmployeeRepository {
     }
   }
 
-
-   Future<void> deleteEmployee(
-    String employeeID,
-    String sessionToken,
-  ) async {
+  Future<void> deleteEmployee(String employeeID, String sessionToken) async {
     try {
       await _employeeService.deleteEmployee(employeeID, sessionToken);
     } catch (e) {
@@ -120,13 +126,9 @@ class EmployeeRepository {
     }
   }
 
-
-
   Future<Permissions> getAllPermissions(String sessionToken) async {
     try {
-      final raw = await _employeeService.getAllPermissions(
-        sessionToken,
-      );
+      final raw = await _employeeService.getAllPermissions(sessionToken);
       final permsList = Permissions.fromJson(raw);
       return permsList;
     } catch (e) {
@@ -134,14 +136,9 @@ class EmployeeRepository {
     }
   }
 
-
-
-
   Future<SubPermissionsData> getAllSubPermissions(String sessionToken) async {
     try {
-      final raw = await _employeeService.getAllSubPermissions(
-        sessionToken,
-      );
+      final raw = await _employeeService.getAllSubPermissions(sessionToken);
       final permsList = SubPermissionsData.fromJson(raw);
       return permsList;
     } catch (e) {

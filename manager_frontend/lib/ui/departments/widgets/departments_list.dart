@@ -18,7 +18,7 @@ class DepartmentsList extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is DepartmentsLoading) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         if (state is DepartmentsLoaded) {
           return Container(
@@ -57,7 +57,10 @@ class DepartmentsList extends StatelessWidget {
                   return DataRow(
                     cells: [
                       DataCell(
-                        Text(state.departmentsList.departments![index].id!, overflow: TextOverflow.ellipsis),
+                        Text(
+                          state.departmentsList.departments![index].id!,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       DataCell(
                         Text(state.departmentsList.departments![index].title!),
@@ -100,7 +103,54 @@ class DepartmentsList extends StatelessWidget {
                                   Icons.delete_outline,
                                   color: darkerBlue,
                                 ),
-                                onPressed: () {}, // Delete action
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder:
+                                        (ctx) => AlertDialog(
+                                          title: Text("Confirm deletion"),
+                                          content: const Text(
+                                            'Are you sure you want to proceed?',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(
+                                                  ctx,
+                                                ).pop(); // Close the dialog
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed:
+                                                  state is DepartmentsLoading
+                                                      ? null
+                                                      : () {
+                                                        context
+                                                            .read<
+                                                              DepartmentsBloc
+                                                            >()
+                                                            .add(
+                                                              (DeleteDepartment(
+                                                                departmentID:
+                                                                    state
+                                                                        .departmentsList
+                                                                        .departments![index]
+                                                                        .id!,
+                                                              )),
+                                                            );
+
+                                                        // Do something after confirmation
+                                                        Navigator.of(
+                                                          ctx,
+                                                        ).pop(); // Close the dialog
+                                                      },
+                                              child: const Text('Yes'),
+                                            ),
+                                          ],
+                                        ),
+                                  );
+                                }, // Delete action
                               ),
                             ],
                           ),

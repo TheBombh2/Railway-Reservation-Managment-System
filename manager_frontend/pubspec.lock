@@ -160,6 +160,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
+  json_bigint:
+    dependency: "direct main"
+    description:
+      name: json_bigint
+      sha256: "9e613e731847ab2154d67160682adf104cbd9863741ec2f7abfcf6e77c70592f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -240,6 +248,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      sha256: "07c8f0b1913bcde1ff0d26e57ace2f3012ccbf2b204e070290dad3bb22797646"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.0"
   plugin_platform_interface:
     dependency: transitive
     description:

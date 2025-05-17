@@ -255,13 +255,35 @@ class EmployeeService {
 
 
   Future<void> createNewDepartment(
-    Map<String, dynamic> citationData,
+    Map<String, dynamic> data,
     String sessionToken,
   ) async {
     try {
       final response = await _apiClient.postRequest(
-        '/users/citations/create',
-        body: citationData,
+        '/departments/create',
+        body: data,
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+
+   Future<void> deleteDepartment(
+    String departmentID,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.deleteRequest(
+        '/departments/$departmentID/delete',
         sessionToken: sessionToken,
       );
 
