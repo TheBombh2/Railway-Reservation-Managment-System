@@ -75,6 +75,9 @@ const inline std::string CREATE_TRAIN_QUERY =
 const inline std::string GET_ALL_TRAINS_INFO =
 "SELECT ID, Name, Speed FROM `Train`; ";
 
+const inline std::string GET_TRAIN_ROUTE_QUERY =
+"SELECT ID, RouteID FROM `Train`; ";
+
 const inline std::string GET_TRAIN_NAME =
 "SELECT Name FROM Train WHERE ID = :ID; ";
 

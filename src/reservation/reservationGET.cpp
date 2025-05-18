@@ -5,6 +5,7 @@
 #include "permissions.h"
 #include "reservation.h"
 #include <soci/soci-backend.h>
+#include <sw/redis++/redis.h>
 #include <sw/redis++/utils.h>
 
 void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
@@ -280,6 +281,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/trains/get-states): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -302,6 +304,31 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          return crow::response(200, result);
          });
 
+    CROW_ROUTE(app, "/trains/<string>/get-state").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req, const std::string& uuid)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::VIEW_TRAIN_DATA)
+         try
+         {
+            std::string trainName;
+            soci::session db(pool);
+            db << GET_TRAIN_NAME, soci::use(uuid), soci::into(trainName);
+            if(trainName.empty())
+                return crow::response(404, "not found");
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/trains/<string>/get-state): " << e.what() << '\n';
+            std::cerr << "<string> value: " << uuid << '\n';
+            return crow::response(500, "database error");
+         }
+         redis::OptionalString result = RedisGetValue(uuid);
+         if(result)
+            return crow::response(200, "sent");
+         return crow::response(200, "stationary");
+         });
+
     CROW_ROUTE(app, "/reservations/get-reservations").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req)
          {
@@ -313,6 +340,34 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
           * THIRDLY, look for the routes which contain the 'source' station,
           * FOURTHLY, get the arrival time at the 'destination' stationA
           */
+         std::vector<std::string> trainIds(MAX_TRAINS_RETURNED);
+         std::vector<int> trainRouteIDs(MAX_TRAINS_RETURNED);
+         std::unordered_map<std::string, std::pair<std::string, int>> sentTrains;
+         try
+         {
+            soci::session db(pool);
+            db << GET_ALL_TRAINS_INFO, soci::into(trainIds), soci::into(trainRouteIDs);
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/reservations/get-reservations): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+            
+         //Find out which trains have been 'sent' and where their routes are
+         for(unsigned int i = 0; i < trainIds.size(); i++)
+         {
+            redis::OptionalString temp = RedisGetValue(trainIds[i]);
+            if(temp)
+                sentTrains[trainIds[i]] = std::make_pair(*temp, trainRouteIDs[i]);
+         }
+         //For each train that has been 'sent', calculate their arrival time at each station in
+         //their route
+         for(auto it = sentTrains.begin(); it != sentTrains.end(); it++)
+         {
+            
+         }
          });
 
 }

@@ -43,4 +43,4 @@ inline soci::indicator OK_INDICATOR = soci::indicator::i_ok;
 //Maybe we need another one for setting the value?
 //Ah well, maybe in the future! I am on a tight schedule now
 redis::OptionalString RedisGetValue(const std::string& key);
-const inline int MAX_REDIS_RETRIES = 3;
+const inline int MAX_REDIS_RETRIES = 5;
