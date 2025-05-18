@@ -16,6 +16,7 @@ import 'package:employee_frontend/ui/shared_features/profile/widgets/profile_scr
 import 'package:employee_frontend/ui/shared_features/tasks/widgets/tasks_screen.dart';
 import 'package:employee_frontend/ui/train_driver/train_tracking/widgets/train_tracking_screen.dart';
 
+late  User userData;
 final router = GoRouter(
   initialLocation: '/login',
   redirect: (ctx, state) {
@@ -31,6 +32,7 @@ final router = GoRouter(
     if (isUnAuthenticated && !loggingIn) {
       return '/login';
     } else if (isAuthenticated && loggingIn) {
+      userData = authenticationBloc.state.user;
       return '/';
     }
     return null;
@@ -42,7 +44,7 @@ final router = GoRouter(
         pageBuilder: (ctx, state) {
           return CustomTransitionPage(
             key: state.pageKey,
-            child: const HomeScreen(),
+            child:  HomeScreen(user:userData),
             transitionsBuilder: (ctx, animation, secondartAnimation, child) {
               const begin = Offset(1.0, 0.0);
               const end = Offset.zero;

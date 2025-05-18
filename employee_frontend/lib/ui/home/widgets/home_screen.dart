@@ -1,3 +1,4 @@
+import 'package:employee_frontend/data/model/user.dart';
 import 'package:employee_frontend/data/repositories/authentication_repository.dart';
 import 'package:employee_frontend/ui/core/shared_widgets/circle_button.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final User user;
+  const HomeScreen({required this.user, super.key});
 
   @override
-  Widget build(BuildContext context)  {
+  Widget build(BuildContext context) {
     List<Map<String, dynamic>> buttons = [
       /*{
         'label': 'Assigned Trains',
@@ -24,7 +26,8 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/svg/profile.svg',
         'isSVG': true,
         'onTap': () async {
-          context.push('/profile',extra: await context.read<AuthenticationRepository>().getUser());
+          context.push('/profile',
+              extra: await context.read<AuthenticationRepository>().getUser());
         }
       },
       {
@@ -109,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                 width: 200,
                 child: Text(
                   maxLines: 2,
-                  'Good Morning! ELGamed',
+                  'Good Morning! ${user.basicInfo.firstName} ${user.basicInfo.lastName}',
                   style: TextStyle(
                       fontSize: 24,
                       color: Colors.black.withValues(

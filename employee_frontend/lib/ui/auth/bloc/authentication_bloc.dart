@@ -29,10 +29,10 @@ class AuthenticationBloc
           case AuthenticationStatus.unauthenticated:
             return emit(AuthenticationState.unauthenticated());
           case AuthenticationStatus.authenticated:
-            final manager = await _authenticationRepositroy.getUser();
+            final user = await _authenticationRepositroy.getUser();
             return emit(
-              manager != null
-                  ? AuthenticationState.authenticated(manager)
+              user != null
+                  ? AuthenticationState.authenticated(user)
                   :  AuthenticationState.unauthenticated(),
             );
           case AuthenticationStatus.unknown:
