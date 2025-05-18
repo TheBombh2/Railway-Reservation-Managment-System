@@ -1,12 +1,17 @@
 #include "crow/common.h"
 #include "database_common.h"
 #include "database_connector.h"
+#include "date.h"
+#include "global_variables.h"
 #include "middleware.h"
+#include "misc_functions.h"
 #include "permissions.h"
 #include "reservation.h"
+#include <chrono>
 #include <soci/soci-backend.h>
 #include <sw/redis++/redis.h>
 #include <sw/redis++/utils.h>
+#include <utility>
 
 void RouteGraph::PopulateGraph(const std::vector<std::string>& src, const std::vector<std::string>& dst, 
                                const std::vector<int>& departureDelay, const std::vector<int>& travelTime)
@@ -15,6 +20,24 @@ void RouteGraph::PopulateGraph(const std::vector<std::string>& src, const std::v
     {
         std::tuple<std::string, int, int> temp(dst[i], departureDelay[i], travelTime[i]); 
         this->map.insert_or_assign(src[i], temp);
+    }
+}
+
+void DebugPrintRoutesDS(const std::unordered_map<std::string, 
+                        std::vector<std::pair<std::string, date::sys_time<std::chrono::seconds>>>>& input)
+{
+    for(auto it = input.begin(); it != input.end(); it++)
+    {
+        std::cout << "TRAIN ID: " << it->first << '\n';
+        for(const auto& elm : it->second)
+        {
+            if(it->first != "0196e345-9dda-7899-9024-54f8e7638a56")
+                break;
+            std::cout << "SOURCE ID: " << it->first << '\n';
+            std::cout << "STATION ID: " << elm.first << '\n';
+            std::cout << "TIME: " << elm.second << '\n';
+            std::cout << "\n";
+        }
     }
 }
 
@@ -70,8 +93,8 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          try
          {
             db << GET_CUSTOMER_INFORMATION_QUERY, soci::use(uuid), soci::into(firstName),
-            soci::use(middleName, middleNameInd), soci::use(lastName), soci::use(gender),
-            soci::use(email), soci::use(phoneNumber);
+            soci::into(middleName, middleNameInd), soci::into(lastName), soci::into(gender),
+            soci::into(email), soci::into(phoneNumber);
          }
          catch(const std::exception& e)
          {
@@ -353,10 +376,14 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<std::string> trainIds(MAX_TRAINS_RETURNED);
          std::vector<int> trainRouteIDs(MAX_TRAINS_RETURNED);
          std::unordered_map<std::string, std::pair<std::string, int>> sentTrains;
+         const char* const sourceStation = req.url_params.get("source");
+         const char* const destinationStation = req.url_params.get("destination");
+         if(sourceStation == nullptr || destinationStation == nullptr)
+            return crow::response(400, "bad request");
          try
          {
             soci::session db(pool);
-            db << GET_ALL_TRAINS_INFO, soci::into(trainIds), soci::into(trainRouteIDs);
+            db << GET_TRAIN_AND_ROUTE_ID, soci::into(trainIds), soci::into(trainRouteIDs);
          }
          catch(const std::exception& e)
          {
@@ -364,7 +391,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::cerr << "DATABASE ERROR (/reservations/get-reservations): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
-            
+         
          //Find out which trains have been 'sent' and where their routes are
          for(unsigned int i = 0; i < trainIds.size(); i++)
          {
@@ -375,31 +402,99 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          //For each train that has been 'sent', calculate their arrival time at each station in
          //their route
          //Key: Train ID | Value: pair<station id, arrival time>
-         std::unordered_map<std::string, std::vector<std::pair<std::string, std::string>>> result;
+         std::unordered_map<std::string, std::vector<std::pair<std::string,
+         date::sys_time<std::chrono::seconds>>>> result;
+
+         //Key: sentTrainID | Value: initialTime, routeID
+         const std::chrono::time_point CURRENT_TIME = std::chrono::system_clock::now();
+         const date::sys_time<std::chrono::seconds> CURRENT_SYS_TIME = 
+         date::floor<std::chrono::seconds>(CURRENT_TIME);
          for(auto it = sentTrains.begin(); it != sentTrains.end(); it++)
          {
             std::vector<std::string> sources(MAX_STATION_CONNECTIONS), destinations(MAX_STATION_CONNECTIONS);
             std::vector<int> departureDelays(MAX_STATION_CONNECTIONS), travelTimes(MAX_STATION_CONNECTIONS);
             soci::session db(pool);
             db << GET_ALL_ROUTE_CONNECTION_IDS_QUERY, soci::into(sources), soci::into(destinations),
-            soci::into(departureDelays), soci::into(travelTimes);
+            soci::into(departureDelays), soci::into(travelTimes), soci::use(it->second.second);
             
             RouteGraph rg;
+            //Key: sourceStationID | Value: destinationStationID, departureDelay, travelTime
             rg.PopulateGraph(sources, destinations, departureDelays, travelTimes);
             std::string firstStation, tempStation;
-            std::string tempTime = it->second.first;
+            date::sys_time<std::chrono::seconds> tempTime = LoadTimeFromString(it->second.first);
             //First station is from the Route entity itself
             db << GET_ROUTE_FIRST_STATION_QUERY, soci::use(it->second.second), soci::into(firstStation);
             tempStation = firstStation;
+            int totalInsertions = 0;
             while(true)
             {
-                std::tuple<std::string, int, int> currentStation(rg.map[tempStation]);
+                std::tuple<std::string, int, int> currentStation(rg.map.at(tempStation));
                 tempStation = std::get<0>(currentStation);
-                if(tempStation == firstStation)
+                //Add departureDelay
+                tempTime += std::chrono::minutes(std::get<1>(currentStation)); 
+                //Add travelTime
+                tempTime += std::chrono::minutes(std::get<2>(currentStation));
+                if(tempTime < CURRENT_SYS_TIME)
+                    continue;
+                result[it->first].push_back(std::make_pair(tempStation, tempTime));
+                totalInsertions++;
+                
+                //Temrination condition
+                if(tempStation == firstStation && tempTime > CURRENT_SYS_TIME && totalInsertions >= ROUTE_SIZE)
                     break;
-                //result[it->first]
+            }
+            std::cout << "total insertions: " << totalInsertions << '\n';
+         }
+         DebugPrintRoutesDS(result);
+         //Desired JSON Response:
+         //size: 
+         //[trainID, trainArrivalTime, destinationArrivalTime]
+         std::vector<std::tuple<std::string, 
+         date::sys_time<std::chrono::seconds>,
+         date::sys_time<std::chrono::seconds>>> finalAnswer;
+         for(auto it = result.begin(); it != result.end(); it++)
+         {
+            std::vector<std::pair<std::string, date::sys_time<std::chrono::seconds>>>&
+             temp = it->second;
+            bool foundSource = false;
+            date::sys_time<std::chrono::seconds> sourceTime, destinationTime;
+            bool foundDestination = false;
+            for(const auto& elm : temp)
+            {
+                //elm here is the pair
+                if(elm.first == sourceStation && elm.second > CURRENT_SYS_TIME)
+                {
+                    foundSource = true;
+                    sourceTime = elm.second;
+                }
+                else if(elm.first == destinationStation && elm.second > CURRENT_SYS_TIME)
+                {
+                    foundDestination = true;
+                    destinationTime = elm.second;
+                }
+            }
+            if(foundDestination && foundSource)
+            {
+                finalAnswer.push_back(std::tuple(it->first, sourceTime, destinationTime));
             }
          }
+
+         crow::json::wvalue jsonResult;
+         jsonResult["size"] = finalAnswer.size();
+         for(unsigned int i = 0; i < finalAnswer.size(); i++)
+         {
+            jsonResult["trains"][i]["trainID"] = std::get<0>(finalAnswer[i]);
+            jsonResult["trains"][i]["trainArrivalTime"] = date::format(TIME_FORMAT_STRING, std::get<1>(finalAnswer[i]));
+            jsonResult["trains"][i]["destinationArrivalTime"] = date::format(TIME_FORMAT_STRING, std::get<2>(finalAnswer[i]));
+         }
+         return crow::response(200, jsonResult);
          });
 
+
+    CROW_ROUTE(app, "/reservations/<string>/get").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+
+         });
 }

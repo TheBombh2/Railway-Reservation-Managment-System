@@ -1,3 +1,7 @@
+#include <soci/soci-backend.h>
+#include <chrono>
+#include <sw/redis++/utils.h>
+#include <algorithm>
 #include "crypto.h"
 #include "database_connector.h"
 #include "crow/common.h"
@@ -5,9 +9,6 @@
 #include "middleware.h"
 #include "permissions.h"
 #include "reservation.h"
-#include <soci/soci-backend.h>
-#include <chrono>
-#include <sw/redis++/utils.h>
 #include "date/date.h"
 #include "date/tz.h"
 
@@ -18,6 +19,17 @@ std::pair<std::string, std::string> GetStationIDs(const std::pair<std::string, s
     db << GET_STATION_ID_QUERY, soci::into(id1), soci::use(stationNames.first);
     db << GET_STATION_ID_QUERY, soci::into(id2), soci::use(stationNames.second);
     return std::make_pair(id1, id2);
+}
+
+int GetTicketCost(const int ticketType)
+{
+    switch(ticketType)
+    {
+        case(1): return 150;
+        case(2): return 100;
+        case(3): return 50;
+        default: return 99999; //cause why not bankrupt the user if the system has an error?
+    }
 }
 
 void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
@@ -390,5 +402,54 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(500, "valkey error");
          }
          return crow::response(200, "train successfully sent");
+         });
+
+    CROW_ROUTE(app, "/reservations/create").methods(crow::HTTPMethod::POST)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         const crow::json::rvalue body = crow::json::load(req.body);
+         std::string trainID, trainArrivalDate, destinationArrivalDate;
+         int ticketsNum, ticketType, minimumSeatNumber;
+         std::vector<int> trainCarIDs(3);
+         try
+         {
+            trainID = body["trainID"].s();
+            trainArrivalDate = body["trainArrivalDate"].s();
+            destinationArrivalDate = body["destinationArrivalDate"].s();
+            ticketsNum = body["ticketsNum"].i();
+            ticketType = body["ticketType"].i();
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "JSON ERROR (/reservations/create): " << e.what() << '\n';
+            return crow::response(400, "bad request");
+         }
+
+         try
+         {
+            soci::session db(pool);
+            db << GET_TRAIN_CAR_IDS, soci::use(trainID), soci::into(trainCarIDs);
+            std::sort(trainCarIDs.begin(), trainCarIDs.end());
+            db << GET_MINIMUM_SEAT_NUMBER, soci::into(minimumSeatNumber),
+            soci::use(trainCarIDs[ticketType - 1]);
+            std::string customerID = tokenInfo.GetUUID();
+            int costNum = GetTicketCost(ticketType);
+
+            soci::transaction trans(db);
+            for(int i = 0; i < ticketsNum; i++)
+            {
+                db << CREATE_CUSTOMER_SEAT_RESERVATION, soci::use(i + 1), soci::use(trainCarIDs[ticketType - 1]),
+                soci::use(customerID), soci::use(trainArrivalDate), soci::use(destinationArrivalDate),
+                soci::use(costNum), soci::use(SAMPLE_PDF_PATH);
+            }
+            trans.commit();
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/reservations/create): " << e.what() << '\n';
+         }
+         return crow::response(201, "reservation created successfully");
          });
 }

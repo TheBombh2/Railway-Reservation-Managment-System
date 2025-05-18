@@ -2,6 +2,8 @@
 #include <ctime>
 #include <string>
 #include <yaml-cpp/yaml.h>
+#include <chrono>
+#include "date/date.h"
 
 #define VERIFY_TIME(tmObject) tmObject.tm_year != 9999 ? FormatTimeToString(tmObject) : ""
 
@@ -11,3 +13,4 @@ std::string FormatTimeToString(const std::tm& time);
 void WriteInitialSecretsFile();
 YAML::Node LoadSecretsFile();
 std::tm GetEmptyTMObject();
+date::sys_time<std::chrono::seconds> LoadTimeFromString(const std::string& input);

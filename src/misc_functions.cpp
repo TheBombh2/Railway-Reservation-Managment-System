@@ -1,3 +1,4 @@
+#include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
@@ -5,6 +6,7 @@
 #include <initializer_list>
 #include <fstream>
 #include "misc_functions.h"
+#include "date.h"
 #include "global_variables.h"
 
 std::string GetExecutableDirectory(char *argvInput)
@@ -101,5 +103,19 @@ std::tm GetEmptyTMObject()
 {
     std::tm result;
     result.tm_year = 9999;
+    return result;
+}
+
+date::sys_time<std::chrono::seconds> LoadTimeFromString(const std::string& input)
+{
+    std::istringstream iss(input);
+    int year, month, day, hour, minute, second;
+    char dash1, dash2, colon1, colon2;
+    iss >> year >> dash1 >> month >> dash2 >> day >> hour >> colon1 >> minute >> colon2 >> second;
+    date::year_month_day ymd{date::year(year), date::month(month), date::day(day)};
+    date::sys_time<std::chrono::seconds> result = date::sys_days(ymd);
+    result += std::chrono::hours(hour);
+    result += std::chrono::minutes(minute);
+    result += std::chrono::seconds(second);
     return result;
 }
