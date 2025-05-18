@@ -2,8 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:employee_frontend/data/repositories/authentication_repository.dart';
 import 'package:employee_frontend/data/repositories/employee_repository.dart';
 import 'package:employee_frontend/data/services/employee_service.dart';
-import 'package:employee_frontend/ui/core/shared_widgets/mission_item.dart';
-import 'package:employee_frontend/ui/core/shared_widgets/missions_list.dart';
 import 'package:employee_frontend/ui/shared_features/tasks/bloc/tasks_bloc.dart';
 import 'package:employee_frontend/ui/shared_features/tasks/widgets/tasks_list.dart';
 import 'package:flutter/material.dart';

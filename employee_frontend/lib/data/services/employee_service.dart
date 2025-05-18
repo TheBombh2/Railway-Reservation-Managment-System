@@ -34,7 +34,23 @@ Future<Map<String, dynamic>> getAllTasks(String sessionToken) async {
 
       return response;
     } catch (e) {
-      throw Exception("Failed to get employee information");
+      throw Exception("Failed to get tasks information");
+    }
+  }
+
+
+  Future<Map<String, dynamic>> getAllAppraisals(String employeeID, String sessionToken) async {
+    
+
+    try {
+      final response = await _apiClient.getRequest(
+        '/users/$employeeID/appraisals',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } catch (e) {
+      throw Exception("Failed to get appraisals information");
     }
   }
   

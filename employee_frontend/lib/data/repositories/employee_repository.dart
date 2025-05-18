@@ -1,5 +1,6 @@
 
 
+import 'package:employee_frontend/data/model/appraisal.dart';
 import 'package:employee_frontend/data/model/task.dart';
 import 'package:employee_frontend/data/services/employee_service.dart';
 
@@ -14,6 +15,16 @@ class EmployeeRepository {
     try {
       final raw = await _employeeService.getAllTasks(sessionToken);
       final list = TasksListModel.fromJson(raw);
+      return list;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+   Future<AppraisalsListModel> getAllAppraisals(String employeeID,String sessionToken) async {
+    try {
+      final raw = await _employeeService.getAllAppraisals(employeeID,sessionToken);
+      final list = AppraisalsListModel.fromJson(raw);
       return list;
     } catch (e) {
       rethrow;
