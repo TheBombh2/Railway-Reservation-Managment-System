@@ -157,9 +157,9 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          result["size"] = trainIDs.size();
          for(unsigned int i = 0; i < trainIDs.size(); i++)
          {
-            result["trains"]["id"] = trainIDs[i];
-            result["trains"]["name"] = trainNames[i];
-            result["trains"]["speed"] = trainSpeeds[i];
+            result["trains"][i]["id"] = trainIDs[i];
+            result["trains"][i]["name"] = trainNames[i];
+            result["trains"][i]["speed"] = trainSpeeds[i];
          }
          return crow::response(200, result);
          });
