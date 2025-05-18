@@ -15,11 +15,12 @@ import 'package:customer_frontend/ui/reservation/trains/widgets/trains_screen.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-late  User userData;
+
+late User userData;
 
 final router = GoRouter(
   initialLocation: '/login',
-  redirect:(ctx, state) {
+  redirect: (ctx, state) {
     final authenticationBloc = ctx.read<AuthenticationBloc>();
     final authStatus = authenticationBloc.state.status;
 
@@ -36,14 +37,30 @@ final router = GoRouter(
       return '/';
     }
     return null;
-  }, 
+  },
   routes: [
-    GoRoute(path: '/login', builder: (ctx, state) => LoginScreen(), routes: [
-      GoRoute(path: '/register',builder: (context, state) => RegisterScreen(),),
-      GoRoute(path: '/reset_password',builder: (context, state) => ResetPasswordScreen(),),
-      GoRoute(path: '/onboarding1',builder: (context, state) => Onboarding1(),),
-      GoRoute(path: '/onboarding2',builder: (context, state) => Onboarding2(),)
-    ]),
+    GoRoute(
+      path: '/login',
+      builder: (ctx, state) => LoginScreen(),
+      routes: [
+        GoRoute(
+          path: '/register',
+          builder: (context, state) => RegisterScreen(),
+        ),
+        GoRoute(
+          path: '/reset_password',
+          builder: (context, state) => ResetPasswordScreen(),
+        ),
+        GoRoute(
+          path: '/onboarding1',
+          builder: (context, state) => Onboarding1(),
+        ),
+        GoRoute(
+          path: '/onboarding2',
+          builder: (context, state) => Onboarding2(),
+        ),
+      ],
+    ),
     GoRoute(
       path: '/',
       pageBuilder: (ctx, state) {
@@ -68,7 +85,7 @@ final router = GoRouter(
       routes: [
         GoRoute(
           path: 'profile',
-          builder: (ctx, state) => const ProfileScreen(),
+          builder: (ctx, state) => ProfileScreen(userData: state.extra as User),
         ),
         GoRoute(
           path: 'trains',

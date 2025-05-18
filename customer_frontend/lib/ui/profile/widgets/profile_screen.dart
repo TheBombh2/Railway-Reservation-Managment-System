@@ -1,9 +1,10 @@
-import 'package:customer_frontend/ui/core/shared_widgets/input_text_field.dart';
+import 'package:customer_frontend/data/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  User userData;
+  ProfileScreen({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,6 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         leading: BackButton(
           color: Color(0xff0076CB),
-          
         ),
         title: Text(
           'Profile',
@@ -34,27 +34,21 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(
                   height: 30,
                 ),
-                InputTextField(hintText: 'First name'),
+                _infoRow("Name",
+                    '${userData.firstName} ${userData.middleName} ${userData.lastName}'),
                 SizedBox(
                   height: 20,
                 ),
-                InputTextField(hintText: 'Middle name'),
+                _infoRow("Gender",
+                    userData.gender == "M" ? "Male" : "Female"),
                 SizedBox(
                   height: 29,
                 ),
-                InputTextField(hintText: 'Last name'),
+                _infoRow("Phone number", userData.phoneNumber!),
                 SizedBox(
                   height: 29,
                 ),
-                InputTextField(hintText: 'Phone number'),
-                SizedBox(
-                  height: 29,
-                ),
-                InputTextField(hintText: 'Email'),
-                SizedBox(
-                  height: 29,
-                ),
-                InputTextField(hintText: 'National ID'),
+                _infoRow("Email", userData.email!),
                 SizedBox(
                   height: 29,
                 ),
@@ -74,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       child: Text(
-                        'Save changes',
+                        'OK',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 22,
@@ -83,11 +77,38 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 16,)
+                SizedBox(
+                  height: 16,
+                )
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _infoRow extends StatelessWidget {
+  final String label, value;
+  const _infoRow(this.label, this.value);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 29),
+      child: Row(
+        children: [
+          Text("$label :",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17,color: Color(0xFF0076CB))),
+          const SizedBox(width: 8),
+          Expanded(
+              child: Text(
+            value,
+            style: TextStyle(fontSize: 16),
+            maxLines: 2,
+          )),
+        ],
       ),
     );
   }

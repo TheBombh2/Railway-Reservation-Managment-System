@@ -1,5 +1,7 @@
+import 'package:customer_frontend/data/repositories/authentication_repository.dart';
 import 'package:customer_frontend/ui/core/shared_widgets/circle_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,15 +15,15 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/svg/map_train_station.svg',
         'isSVG': true,
         'onTap': () {
-          context.push('/home/trains');
+          context.push('/trains');
         }
       },
       {
         'label': 'Profile',
         'icon': 'assets/svg/profile.svg',
         'isSVG': true,
-        'onTap': () {
-          context.push('/home/profile');
+        'onTap': ()  async {
+          context.push('/profile',extra: await context.read<AuthenticationRepository>().getUser());
         }
       },
       
