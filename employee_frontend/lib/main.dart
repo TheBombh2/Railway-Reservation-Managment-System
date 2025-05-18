@@ -1,21 +1,78 @@
+import 'package:dio/dio.dart';
+import 'package:employee_frontend/data/repositories/authentication_repository.dart';
+import 'package:employee_frontend/data/services/authentication_service.dart';
+import 'package:employee_frontend/data/services/employee_service.dart';
+import 'package:employee_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:employee_frontend/routing/router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      title: 'RRMS',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => Dio(
+            BaseOptions(
+              connectTimeout: Duration(seconds: 30),
+              sendTimeout: Duration(seconds: 30),
+              receiveTimeout: (Duration(seconds: 30)),
+            ),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => AuthenticationService(context.read<Dio>()),
+        ),
+        RepositoryProvider(
+          create: (context) => EmployeeService(context.read<Dio>()),
+        ),
+        RepositoryProvider(
+          create: (context) => AuthenticationRepository(
+            authenticationService: context.read<AuthenticationService>(),
+            employeeService: context.read<EmployeeService>(),
+          ),
+          dispose: (repository) => repository.dispose(),
+        ),
+      ],
+      child: BlocProvider(
+        lazy: false,
+        create: (context) => AuthenticationBloc(
+          authenticationRepositroy: context.read<AuthenticationRepository>(),
+        )..add(AuthenticationSubscriptionRequest()),
+        child: AppView(),
+      ),
+    );
+  }
+}
+
+class AppView extends StatefulWidget {
+  const AppView({super.key});
+
+  @override
+  State<AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<AppView> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        router.refresh();
+      },
+      child: MaterialApp.router(
+        routerConfig: router,
+        title: 'RRMS',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
       ),
     );
   }

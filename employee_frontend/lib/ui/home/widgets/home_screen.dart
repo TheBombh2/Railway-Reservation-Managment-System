@@ -1,14 +1,16 @@
+import 'package:employee_frontend/data/repositories/authentication_repository.dart';
 import 'package:employee_frontend/ui/core/shared_widgets/circle_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     List<Map<String, dynamic>> buttons = [
-      {
+      /*{
         'label': 'Assigned Trains',
         'icon': 'assets/svg/map_train_station.svg',
         'isSVG': true,
@@ -16,12 +18,13 @@ class HomeScreen extends StatelessWidget {
           context.push('/home/assigned_trains');
         }
       },
+      */
       {
         'label': 'Profile',
         'icon': 'assets/svg/profile.svg',
         'isSVG': true,
-        'onTap': () {
-          context.push('/home/profile');
+        'onTap': () async {
+          context.push('/profile',extra: await context.read<AuthenticationRepository>().getUser());
         }
       },
       {
@@ -29,7 +32,7 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/svg/tasks.svg',
         'isSVG': true,
         'onTap': () {
-          context.push('/home/tasks');
+          context.push('/tasks');
         }
       },
       {
@@ -37,7 +40,7 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/images/star.png',
         'isSVG': false,
         'onTap': () {
-          context.push('/home/appraisals');
+          context.push('/appraisals');
         }
       },
       {
@@ -45,9 +48,10 @@ class HomeScreen extends StatelessWidget {
         'icon': 'assets/images/warning.png',
         'isSVG': false,
         'onTap': () {
-          context.push('/home/citations');
+          context.push('/citations');
         }
       },
+      /*
       {
         'label': 'Maintenance Jobs',
         'icon': 'assets/svg/tools.svg',
@@ -65,7 +69,10 @@ class HomeScreen extends StatelessWidget {
           context.push('/home/verify_ticket');
         },
         
+        
       },
+
+      */
       // More buttons can be added dynamically
     ];
 
