@@ -88,6 +88,9 @@ const inline std::string GET_ALL_IDS_QUERY =
 "SELECT DepartmentID, JobID, ManagerID, ManagerAppointmentDate FROM `EmployeeBasicInformation` "
 "WHERE EmployeeID = :ID; ";
 
+const inline std::string GET_DEPARTMENT_MANAGER_ID_QUERY =
+"SELECT ManagerID FROM `Department` WHERE DepartmentID = :ID; ";
+
 const inline std::string GET_MANAGER_INFORMATION_QUERY =
 "SELECT FirstName, MiddleName, LastName, Gender, J.`Title`, J.`Description` FROM `EmployeeBasicInformation` EBI "
 "JOIN `Job` J ON J.`JobID` = EBI.`JobID` "

@@ -8,6 +8,16 @@
 #include <sw/redis++/redis.h>
 #include <sw/redis++/utils.h>
 
+void RouteGraph::PopulateGraph(const std::vector<std::string>& src, const std::vector<std::string>& dst, 
+                               const std::vector<int>& departureDelay, const std::vector<int>& travelTime)
+{
+    for(unsigned int i = 0; i < src.size(); i++)
+    {
+        std::tuple<std::string, int, int> temp(dst[i], departureDelay[i], travelTime[i]); 
+        this->map.insert_or_assign(src[i], temp);
+    }
+}
+
 void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
   CROW_ROUTE(app, "/users/<string>/salt").methods(crow::HTTPMethod::GET)
@@ -364,9 +374,31 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          //For each train that has been 'sent', calculate their arrival time at each station in
          //their route
+         //Key: Train ID | Value: pair<station id, arrival time>
+         std::unordered_map<std::string, std::vector<std::pair<std::string, std::string>>> result;
          for(auto it = sentTrains.begin(); it != sentTrains.end(); it++)
          {
+            std::vector<std::string> sources(MAX_STATION_CONNECTIONS), destinations(MAX_STATION_CONNECTIONS);
+            std::vector<int> departureDelays(MAX_STATION_CONNECTIONS), travelTimes(MAX_STATION_CONNECTIONS);
+            soci::session db(pool);
+            db << GET_ALL_ROUTE_CONNECTION_IDS_QUERY, soci::into(sources), soci::into(destinations),
+            soci::into(departureDelays), soci::into(travelTimes);
             
+            RouteGraph rg;
+            rg.PopulateGraph(sources, destinations, departureDelays, travelTimes);
+            std::string firstStation, tempStation;
+            std::string tempTime = it->second.first;
+            //First station is from the Route entity itself
+            db << GET_ROUTE_FIRST_STATION_QUERY, soci::use(it->second.second), soci::into(firstStation);
+            tempStation = firstStation;
+            while(true)
+            {
+                std::tuple<std::string, int, int> currentStation(rg.map[tempStation]);
+                tempStation = std::get<0>(currentStation);
+                if(tempStation == firstStation)
+                    break;
+                //result[it->first]
+            }
          }
          });
 

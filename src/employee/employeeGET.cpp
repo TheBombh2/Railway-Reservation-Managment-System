@@ -271,6 +271,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::tm depManagerHiringDate = GetEmptyTMObject();
          std::string depTitle, depDescription, depLocation, depManagerFirstName, depManagerMiddleName,
          depManagerLastName, depManagerGender;
+         std::string departmentManagerID;
          //Be prepared little session, we are going to need you a lot
          soci::session db(pool); 
          try
@@ -280,6 +281,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             soci::indicator jobIDInd, managerIDInd, departmentIDInd;
             db << GET_ALL_IDS_QUERY, soci::use(employeeID), soci::into(departmentID, departmentIDInd),
             soci::into(jobID, jobIDInd), soci::into(managerID, managerIDInd), soci::into(managerHireDate);
+            db << GET_DEPARTMENT_INFORMATION_QUERY, soci::use(departmentID), soci::into(departmentManagerID);
 
             //Info to get:
             //Job title, job description
@@ -306,11 +308,12 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             //Department manager hiring date, department manager first name,
             //department manager middle name, department manager last name,
             //department manager gender
-            if(departmentIDInd != NULL_INDICATOR)
+            if(departmentIDInd != NULL_INDICATOR && !departmentManagerID.empty())
             {
+                soci::indicator middleNameInd;
                 db << GET_DEPARTMENT_INFORMATION_QUERY, soci::into(depTitle), soci::into(depDescription),
                 soci::into(depLocation), soci::into(depManagerHiringDate), soci::into(depManagerFirstName),
-                soci::into(depManagerMiddleName), soci::into(depManagerLastName), soci::into(depManagerGender),
+                soci::into(depManagerMiddleName, middleNameInd), soci::into(depManagerLastName), soci::into(depManagerGender),
                 soci::use(departmentID);
             }
 

@@ -1,9 +1,19 @@
 #pragma once
 #include <soci/session.h>
 #include <soci/soci.h>
+#include <tuple>
 #include <sw/redis++/redis.h>
 #include "crow/app.h"
 #include "middleware.h"
+
+class RouteGraph
+{
+public:
+    void PopulateGraph();
+    void PopulateGraph(const std::vector<std::string>& src, const std::vector<std::string>& dst, 
+                                   const std::vector<int>& departureDelay, const std::vector<int>& travelTime);
+    std::unordered_map<std::string, std::tuple<std::string, int, int>> map;
+};
 
 const inline int MAX_STATIONS_RETURNED = 256;
 //This is nothing but an ASSUMPTION
@@ -108,6 +118,13 @@ const inline std::string GET_ALL_ROUTE_CONNECTIONS_QUERY =
 "JOIN `TrainStation` TS ON TS.`ID` = TRS.`SourceStationID` "
 "JOIN `TrainStation` TS2 ON TS2.ID = TRS.`DestinationStationID` "
 "WHERE TRS.ID = :ID; ";
+
+const inline std::string GET_ALL_ROUTE_CONNECTION_IDS_QUERY = 
+"SELECT SourceStationID, DestinationStationID, DepartureDelay, TravelTime FROM "
+"TrainRouteStations WHERE ID = :ID; ";
+
+const inline std::string GET_ROUTE_FIRST_STATION_QUERY =
+"SELECT FirstStation FROM TrainRoute WHERE ID = :ID; ";
 
 const inline std::string VERIFY_ROUTE_QUERY =
 "SELECT ID FROM TrainRoute WHERE ID = :ID; ";
