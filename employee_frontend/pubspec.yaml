@@ -45,6 +45,7 @@ dependencies:
   dio: ^5.8.0+1
   flutter_bloc: ^9.1.1
   formz: ^0.8.0
+  crypto: ^3.0.6
 
 dev_dependencies:
   flutter_test:
