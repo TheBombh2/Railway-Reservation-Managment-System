@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_frontend/data/model/station.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/routes/bloc/routes_bloc.dart';
 import 'package:manager_frontend/ui/routes/widgets/new_route_form.dart';
 import 'package:manager_frontend/ui/routes/widgets/routes_list.dart';
 
@@ -31,16 +33,13 @@ class RoutesFragment extends StatelessWidget {
                     ),
                     icon: Icon(Icons.route_outlined, color: darkBlue),
                     onPressed: () {
+                      final bloc = context.read<RoutesBloc>();
                       showDialog(
                         context: context,
                         builder:
-                            (ctx) => NewRouteForm(
-                              allStations: [
-                                FakeStation(id: 1, name: 'RnD'),
-                                FakeStation(id: 2, name: 'HR'),
-                                FakeStation(id: 3, name: 'Finance'),
-                                FakeStation(id: 4, name: 'Operations'),
-                              ],
+                            (ctx) => BlocProvider.value(
+                              value: bloc..add(LoadRouteConnectionsCreation()),
+                              child: NewRouteForm(),
                             ),
                       ).then((routeIds) {
                         if (routeIds != null) {

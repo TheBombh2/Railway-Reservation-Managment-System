@@ -10,7 +10,7 @@ class ApiClient {
   ApiClient(
     this._dio, {
     String subdomain = 'employee',
-    this.useIPandPort = false,
+    this.useIPandPort = true,
     this.portNumber = Secrets.employeePortNumber,
   }) : _subdomain = subdomain;
 
@@ -40,7 +40,7 @@ class ApiClient {
     String? sessionToken,
     ResponseType responseType = ResponseType.json,
   }) async {
-    final url = '${_buildBaseUrl()}$endPoint';
+    final url = '${useIPandPort ? _buildIPBasedUrl() :_buildBaseUrl()}$endPoint';
 
     final response = await _dio.post(
       url,
@@ -56,7 +56,7 @@ class ApiClient {
     String? sessionToken,
     ResponseType responseType = ResponseType.json,
   }) async {
-    final url = '${_buildBaseUrl()}$endPoint';
+    final url = '${useIPandPort ? _buildIPBasedUrl() :_buildBaseUrl()}$endPoint';
 
     final response = await _dio.delete(
       url,

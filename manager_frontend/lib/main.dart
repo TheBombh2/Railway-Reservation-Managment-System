@@ -34,9 +34,9 @@ class App extends StatelessWidget {
           create:
               (context) => Dio(
                 BaseOptions(
-                  connectTimeout: Duration(seconds: 5),
-                  sendTimeout: Duration(seconds: 5),
-                  receiveTimeout: (Duration(seconds: 5)),
+                  connectTimeout: Duration(seconds: 30),
+                  sendTimeout: Duration(seconds: 30),
+                  receiveTimeout: (Duration(seconds: 30)),
                 ),
               ),
         ),

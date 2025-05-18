@@ -15,6 +15,7 @@ import 'package:manager_frontend/ui/home/widgets/admin_navigation_drawer.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
 import 'package:manager_frontend/ui/employees/widgets/employees_fragment.dart';
 import 'package:manager_frontend/ui/profile/widgets/profile_fragment.dart';
+import 'package:manager_frontend/ui/routes/bloc/routes_bloc.dart';
 import 'package:manager_frontend/ui/routes/widgets/routes_fragment.dart';
 import 'package:manager_frontend/ui/stations/bloc/stations_bloc.dart';
 import 'package:manager_frontend/ui/stations/widgets/stations_fragment.dart';
@@ -107,7 +108,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StationsFragment(),
                         );
                       case FragmentType.routesFragment:
-                        return RoutesFragment();
+                        return BlocProvider(
+                          create:
+                              (context) => RoutesBloc(
+                                reservationRepository: ReservationRepository(
+                                  reservationService: ReservationService(
+                                    context.read<Dio>(),
+                                  ),
+                                ),
+                                authenticationRepository:
+                                    context.read<AuthenticationRepository>(),
+                              )..add(LoadRoutes()),
+                          child: RoutesFragment(),
+                        );
                       case FragmentType.trainsFragment:
                         return TrainsFragment();
                     }
