@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
     ];
 
     
-
+    
     return Scaffold(
       body: Column(
         children: [
@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                 width: 200,
                 child: Text(
                   maxLines: 2,
-                  'Good Morning! ELGamed',
+                  'Good Morning!',
                   style: TextStyle(
                       fontSize: 24,
                       color: Colors.black.withValues(

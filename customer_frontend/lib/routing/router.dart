@@ -1,4 +1,7 @@
-import 'package:customer_frontend/ui/auth/widgets/login_screen.dart';
+import 'package:customer_frontend/data/model/user.dart';
+import 'package:customer_frontend/data/repositories/authentication_repository.dart';
+import 'package:customer_frontend/ui/auth/bloc/authentication_bloc.dart';
+import 'package:customer_frontend/ui/login/widgets/login_screen.dart';
 import 'package:customer_frontend/ui/auth/widgets/onboarding/onboarding1.dart';
 import 'package:customer_frontend/ui/auth/widgets/onboarding/onboarding2.dart';
 import 'package:customer_frontend/ui/auth/widgets/register_screen.dart';
@@ -10,19 +13,39 @@ import 'package:customer_frontend/ui/reservation/tickets/widgets/ticket_details_
 import 'package:customer_frontend/ui/reservation/tickets/widgets/ticket_reservation_screen.dart';
 import 'package:customer_frontend/ui/reservation/trains/widgets/trains_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+late  User userData;
 
 final router = GoRouter(
-  initialLocation: '/onboarding1',
+  initialLocation: '/login',
+  redirect:(ctx, state) {
+    final authenticationBloc = ctx.read<AuthenticationBloc>();
+    final authStatus = authenticationBloc.state.status;
+
+    final isAuthenticated = authStatus == AuthenticationStatus.authenticated;
+    final isUnAuthenticated =
+        authStatus == AuthenticationStatus.unauthenticated;
+
+    final loggingIn = state.matchedLocation == '/login';
+
+    if (isUnAuthenticated && !loggingIn) {
+      return '/login';
+    } else if (isAuthenticated && loggingIn) {
+      userData = authenticationBloc.state.user;
+      return '/';
+    }
+    return null;
+  }, 
   routes: [
-    GoRoute(path: '/', builder: (ctx, state) => LoginScreen(), routes: [
+    GoRoute(path: '/login', builder: (ctx, state) => LoginScreen(), routes: [
       GoRoute(path: '/register',builder: (context, state) => RegisterScreen(),),
       GoRoute(path: '/reset_password',builder: (context, state) => ResetPasswordScreen(),),
       GoRoute(path: '/onboarding1',builder: (context, state) => Onboarding1(),),
       GoRoute(path: '/onboarding2',builder: (context, state) => Onboarding2(),)
     ]),
     GoRoute(
-      path: '/home',
+      path: '/',
       pageBuilder: (ctx, state) {
         return CustomTransitionPage(
           key: state.pageKey,
