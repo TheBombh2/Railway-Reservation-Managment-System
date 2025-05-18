@@ -194,7 +194,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             soci::use(CHECK_NULLABILITY(description)), soci::use(location),
             soci::use(permission), soci::use(subPermission),
             soci::use(CHECK_NULLABILITY(managerID)),
-            soci::use(managerHireDate, managerID.size() ? NULL_INDICATOR : OK_INDICATOR );
+            soci::use(managerHireDate, managerID.empty() ? NULL_INDICATOR : OK_INDICATOR );
             return crow::response(201, "department successfully created");
          }
          
