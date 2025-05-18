@@ -37,6 +37,7 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
         }
         catch(const std::exception& e)
         {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/login/customer): " << e.what() << '\n';
             return crow::response(500, "database error");
         }
@@ -76,6 +77,7 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/login/employee): " << e.what() << '\n';
             return crow::response(500, "database error");
          }

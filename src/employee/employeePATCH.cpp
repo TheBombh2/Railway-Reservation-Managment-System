@@ -18,6 +18,7 @@ void AddEmployeePATCHRequests(crow::App<AUTH_MIDDLEWARE>& app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/users/<string>/employee/password-reset): " << e.what() << '\n';
             std::cerr << "<string> value: " << employeeUUID << '\n';
             return crow::response(500, "database error");
@@ -34,6 +35,7 @@ void AddEmployeePATCHRequests(crow::App<AUTH_MIDDLEWARE>& app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/users/<string>/employee/password-reset): " << e.what() << '\n';
             std::cerr << "<string> value: " << employeeUUID << '\n';
             return crow::response(500, "database error");

@@ -27,6 +27,7 @@ void AddEmployeeDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/employee/<string>/delete): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -48,6 +49,7 @@ void AddEmployeeDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/departments/<string>/delete): " << e.what() << '\n';
             std::cerr << "<string> value: " << departmentUUID << '\n';
             return crow::response(500, "database error");

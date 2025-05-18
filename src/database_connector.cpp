@@ -85,9 +85,21 @@ void InitializeConnectionPool()
   }
 }
 
+void ReconnectEntireConnectionPool()
+{
+    //I think this will work but will need further testing to prove so
+    //I currently don't have enough time
+    for(unsigned int i = 0; i < THREADS_NUMBER; i++)
+    {
+        std::lock_guard<std::mutex> lock(poolMutex);
+        soci::session& temp = pool.at(i);
+        temp.reconnect();
+    }
+}
 redis::OptionalString RedisGetValue(const std::string& key)
 {
     redis::OptionalString result;
+    int retries = 0;
     while(true)
     {
         try
@@ -97,7 +109,14 @@ redis::OptionalString RedisGetValue(const std::string& key)
         }
         catch(const redis::TimeoutError& te)
         {
+            if(retries == MAX_REDIS_RETRIES)
+            {
+                std::cerr << "REDIS ERROR: REDIS RETRIES EXCEEDED\n";
+                return "";
+            }
             std::cerr << "REDIS TIMEOUT ERROR: Due to unknown black magic reasons, the connection has timed out. We will try again until it succeeds. In the meantime, please check your network!\n";
+            std::cerr << te.what() << '\n';
+            retries++;
             continue;
         }
     }

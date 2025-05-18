@@ -26,27 +26,47 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
   ([&](const crow::request& req)
    {
       const auto body = crow::json::load(req.body);
-      std::string firstName = body["firstName"].s();
-      std::string middleName = body["middleName"].s();
-      std::string lastName = body["lastName"].s();
-      std::string gender = body["gender"].s();
+      std::string firstName, middleName, lastName, gender, phoneNumber, email,
+      passwordHash, passwordSalt;
+      try
+      {
+        firstName = body["firstName"].s();
+        middleName = body["middleName"].s();
+        lastName = body["lastName"].s();
+        gender = body["gender"].s();
 
-      std::string phoneNumber = body["phoneNumber"].s();
-      std::string email = body["email"].s();
+        phoneNumber = body["phoneNumber"].s();
+        email = body["email"].s();
       
-      std::string passwordHash = body["passwordHash"].s();
-      std::string passwordSalt = body["passwordSalt"].s();
+        passwordHash = body["passwordHash"].s();
+        passwordSalt = body["passwordSalt"].s();
+      }
+      catch(const std::exception& e)
+      {
+        std::cerr << "JSON ERROR (/users/create/customer): " << e.what() << '\n'; 
+        return crow::response(400, "bad request");
+      }
+
       std::string ID = GetUUIDv7();
-      
-      soci::session db(pool);
-      soci::transaction trans(db);
-      db << CREATE_CUSTOMER_QUERY_BASIC_INFO, soci::use(ID), soci::use(firstName), soci::use(middleName), 
-      soci::use(lastName), soci::use(gender);
-      db << CREATE_CUSTOMER_QUERY_CONTACT_INFO, soci::use(ID, "ID"), soci::use(email, "Email")
-      ,soci::use(phoneNumber, "PhoneNumber");
-      db << CREATE_CUSTOMER_QUERY_SECURITY_INFO, soci::use(ID, "ID"), soci::use(passwordHash, "PasswordHash"),
-      soci::use(passwordSalt, "PasswordSalt");
-      trans.commit();
+    
+      try
+      {
+        soci::session db(pool);
+        soci::transaction trans(db);
+        db << CREATE_CUSTOMER_QUERY_BASIC_INFO, soci::use(ID), soci::use(firstName), soci::use(middleName), 
+        soci::use(lastName), soci::use(gender);
+        db << CREATE_CUSTOMER_QUERY_CONTACT_INFO, soci::use(ID, "ID"), soci::use(email, "Email")
+        ,soci::use(phoneNumber, "PhoneNumber");
+        db << CREATE_CUSTOMER_QUERY_SECURITY_INFO, soci::use(ID, "ID"), soci::use(passwordHash, "PasswordHash"),
+        soci::use(passwordSalt, "PasswordSalt");
+        trans.commit();
+      }
+      catch(const std::exception& e)
+      {
+        CHECK_DATABASE_DISCONNECTION
+        std::cerr << "DATABASE ERROR (/users/create/customer): " << e.what() << '\n';
+        return crow::response(500, "database error");
+      }
 
       return crow::response(201, "customer user created successfully");
    });
@@ -69,7 +89,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
-            std::cerr << "ERROR (/stations/create-station): bad request " << e.what() << '\n';
+            std::cerr << "JSON ERROR (/stations/create-station): bad request " << e.what() << '\n';
             return crow::response(400, "bad request");
          }
          try
@@ -81,6 +101,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/stations/create-station): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -121,6 +142,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/stations/add-connection): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -164,6 +186,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR: (/trains/create) " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -196,6 +219,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/routes/create): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -245,6 +269,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/routes/add-connection): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -275,6 +300,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
         }
         catch(const std::exception& e)
         {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/trains/types/create): " << e.what() << '\n'; 
             return crow::response(500, "database error");
         }
@@ -300,6 +326,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/trains/<string>/send): " << e.what() << '\n';
             std::cerr << "<string> value: " << trainID << '\n';
             return crow::response(500, "database error");
@@ -307,7 +334,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
 
          const std::chrono::time_point nowTemp = std::chrono::system_clock::now();
          date::sys_time<std::chrono::seconds> nowTime = date::floor<std::chrono::seconds>(nowTemp);
-         redis::OptionalString key = dbRedis->get(trainID);
+         redis::OptionalString key = RedisGetValue(trainID);
          if(key)
          {
             std::cerr << "TRAINS ERROR: train already sent\n";

@@ -43,6 +43,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/users/appraisals/create): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -80,6 +81,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/users/citations/create): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -102,6 +104,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             }
             catch(const std::exception& e)
             {
+                CHECK_DATABASE_DISCONNECTION
                 std::cerr << "DATABASE ERROR: " << e.what() << '\n';
                 return crow::response(500, "database error");
             }
@@ -198,6 +201,7 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          catch(const std::exception& e)
          {
             //To fix later
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << e.what() << '\n';
             return crow::response(400, "bad request or database error");
          }
@@ -232,10 +236,18 @@ void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
 
          if(!strptime(tempDeadline.c_str(), TIME_FORMAT_STRING, &deadline))
             return crow::response(400, "invalid deadline");
-         
-         soci::session db(pool);
-         db << CREATE_TASK_QUERY, soci::use(title), soci::use(description), soci::use(deadline),
-         soci::use(assignedEmployee), soci::use(creatorUUID);
+         try
+         { 
+            soci::session db(pool);
+            db << CREATE_TASK_QUERY, soci::use(title), soci::use(description), soci::use(deadline),
+            soci::use(assignedEmployee), soci::use(creatorUUID);
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/user/tasks/create): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
          return crow::response(200, "task created successfully");
          });
 }

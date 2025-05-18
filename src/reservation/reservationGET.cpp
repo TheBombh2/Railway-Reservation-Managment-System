@@ -14,26 +14,35 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
         if(tokenInfo.GetUUID() != uuid)
             return crow::response(403, "forbidden");
-        soci::session db(pool); 
-        soci::transaction trans(db);
-        soci::indicator ind;
-        std::string saltResult;
-        db << SELECT_CUSTOMER_PASSWORD_SALT_QUERY, soci::use(uuid), soci::into(saltResult, ind);
-        trans.commit();
-
-        if(db.got_data())
+        try
         {
-          switch(ind)
-          {
-          case soci::i_ok:
-              return crow::response(200, saltResult);
-              break;
-          case soci::i_null:
-              return crow::response(404, "user not found");
-              break;
-          case soci::i_truncated:
-              return crow::response(500);
-          }
+            soci::session db(pool); 
+            soci::transaction trans(db);
+            soci::indicator ind;
+            std::string saltResult;
+            db << SELECT_CUSTOMER_PASSWORD_SALT_QUERY, soci::use(uuid), soci::into(saltResult, ind);
+            trans.commit();
+            if(db.got_data())
+            {
+                switch(ind)
+                {
+                    case soci::i_ok:
+                        return crow::response(200, saltResult);
+                        break;
+                    case soci::i_null:
+                        return crow::response(404, "user not found");
+                        break;
+                    case soci::i_truncated:
+                        return crow::response(500);
+                }
+            }
+        }
+        catch(const std::exception& e)
+        {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/users/<string>/salt): " << e.what() << '\n'; 
+            std::cerr << "<string> value: " << uuid << '\n';
+            return crow::response(500, "database error");
         }
         return crow::response(500, "database error");
      });
@@ -54,6 +63,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/users/customer/all-info): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -90,6 +100,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/stations/all-stations): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -136,6 +147,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/trains/all-info): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -166,6 +178,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/routes/all-info): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -208,6 +221,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/routes/<int>/connections): " << e.what() << '\n';
             std::cerr << "<int> value: " << routeID << '\n';
          }
@@ -237,6 +251,7 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         }
         catch(const std::exception& e)
         {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/trains/all-types): " << e.what() << '\n';
             return crow::response(500, "database error");
         }

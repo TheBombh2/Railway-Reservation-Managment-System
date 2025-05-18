@@ -33,6 +33,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/users/<string>/appraisals): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -76,6 +77,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/users/<string>/citations): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -105,10 +107,20 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             return crow::response(403, "forbidden");
          std::string salt;
          soci::indicator ind;
-         soci::session db(pool);
-         db << GET_EMPLOYEE_SALT_QUERY, soci::use(uuid), soci::into(salt, ind);
-         if(ind != soci::indicator::i_ok)
-            return crow::response(404, "not found");
+         try
+         {
+            soci::session db(pool);
+            db << GET_EMPLOYEE_SALT_QUERY, soci::use(uuid), soci::into(salt, ind);
+            if(ind != soci::indicator::i_ok)
+                return crow::response(404, "not found");
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/users/<string>/employee/salt): " << e.what() << '\n'; 
+            std::cerr << "<string> value: " << uuidInput << '\n';
+            return crow::response(500, "database error");
+         }
          return crow::response(200, salt);
          });
 
@@ -122,10 +134,19 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<std::string> locations(MAX_DEPARTMENTS_RETURNED);
          std::vector<std::string> ids(MAX_DEPARTMENTS_RETURNED);
          std::vector<soci::indicator> descriptionInds(MAX_DEPARTMENTS_RETURNED);
-         soci::session db(pool);
-         db << GET_DEPARTMENTS_QUERY, soci::into(titles), soci::into(descriptions, descriptionInds),
-         soci::into(locations),
-         soci::into(ids);
+         try
+         {
+            soci::session db(pool);
+            db << GET_DEPARTMENTS_QUERY, soci::into(titles), soci::into(descriptions, descriptionInds),
+            soci::into(locations),
+            soci::into(ids);
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/departments/info): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
          returnBody["size"] = titles.size();
          for(unsigned int i = 0; i < titles.size(); i++)
          {
@@ -145,9 +166,19 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          soci::indicator ind;
          soci::session db(pool);
          std::string title, description;
-         db << GET_JOB_INFO_QUERY, soci::use(uuid), soci::into(title, ind), soci::into(description);
-         if(ind == soci::indicator::i_null)
-            return crow::response(404, "not found");
+         try
+         {
+            db << GET_JOB_INFO_QUERY, soci::use(uuid), soci::into(title, ind), soci::into(description);
+            if(ind == soci::indicator::i_null)
+                return crow::response(404, "not found");
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/jobs/<string>/info): " << e.what() << '\n';
+            std::cerr << "<string> value: " << uuid << '\n';
+            return crow::response(500, "database error");
+         }
          crow::json::wvalue result;
          result["title"] = title;
          result["description"] = description;
@@ -166,6 +197,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/jobs/all-info): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -196,9 +228,18 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<std::string> managerFirstNames(MAX_TASKS_RETURNED);
          std::vector<std::string> managerLastNames(MAX_TASKS_RETURNED);
          soci::session db(pool);
-         db << GET_TASKS_QUERY, soci::use(uuid), soci::into(titles), soci::into(descriptions),
-         soci::into(deadlines), soci::into(completionDates, completionDateIndicators),
-         soci::into(managerFirstNames), soci::into(managerLastNames);
+         try
+         {
+            db << GET_TASKS_QUERY, soci::use(uuid), soci::into(titles), soci::into(descriptions),
+            soci::into(deadlines), soci::into(completionDates, completionDateIndicators),
+            soci::into(managerFirstNames), soci::into(managerLastNames);
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/users/tasks): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
          crow::json::wvalue result;
          result["size"] = titles.size();
          for(unsigned int i = 0; i < titles.size(); i++)
@@ -285,6 +326,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/users/employee/all-info): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
@@ -346,6 +388,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR(/users/employees/all-info): " << e.what() << '\n';
             return crow::response(500, "database error");
          }

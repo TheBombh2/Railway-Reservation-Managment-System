@@ -21,6 +21,7 @@ void AddReservationDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/trains/<string>/delete): " << e.what() << '\n';
             std::cerr << "<string> value: " << trainUUID << '\n'; 
             return crow::response(500, "database error");
@@ -43,6 +44,7 @@ void AddReservationDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/stations/<string>/delete): " << e.what() << '\n';
             std::cerr << "<string> value: " << stationUUID << '\n';
             return crow::response(500, "database error");
@@ -67,6 +69,7 @@ void AddReservationDELETERequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          catch(const std::exception& e)
          {
+            CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/routes/<int>/delete-route): " << e.what() << '\n';
             std::cerr << "<int> value: " << routeID << '\n';
             return crow::response(500, "database error");
