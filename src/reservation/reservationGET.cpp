@@ -5,6 +5,7 @@
 #include "permissions.h"
 #include "reservation.h"
 #include <soci/soci-backend.h>
+#include <sw/redis++/utils.h>
 
 void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
@@ -266,5 +267,52 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         }
         return crow::response(200, result);
         });
+
+    CROW_ROUTE(app, "/trains/get-states").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::TRAIN_MANAGEMENT, SUB_PERMISSIONS::VIEW_TRAIN_DATA)
+         std::vector<std::string> trainIds(MAX_TRAINS_RETURNED);
+         try
+         {
+            soci::session db(pool);
+            db << GET_ALL_TRAINS_INFO, soci::into(trainIds);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/trains/get-states): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+
+         //Now we must check database entries for each of those trainIDs
+         std::vector<redis::OptionalString> trainSendTimes(trainIds.size());
+         for(unsigned int i = 0; i < trainSendTimes.size(); i++)
+         {
+            trainSendTimes[i] = RedisGetValue(trainIds[i]);
+         }
+
+         crow::json::wvalue result;
+         result["size"] = trainSendTimes.size();
+         for(unsigned int i = 0; i < trainSendTimes.size(); i++)
+         {
+            result["trains"][i]["id"] = trainIds[i];
+            result["trains"][i]["state"] = 
+            (trainSendTimes[i] ? "sent" : "stationary");
+         }
+         return crow::response(200, result);
+         });
+
+    CROW_ROUTE(app, "/reservations/get-reservations").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         /*
+          * The solution is as follows:
+          * FIRSTLY, search valkey for any 'sent' trains
+          * FOR EACH 'sent' TRAIN, calculate their arrival time at each station in the route
+          * THIRDLY, look for the routes which contain the 'source' station,
+          * FOURTHLY, get the arrival time at the 'destination' stationA
+          */
+         });
 
 }

@@ -184,8 +184,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             soci::transaction trans(db);
             std::string trainID = GetUUIDv7();
             db << CREATE_TRAIN_QUERY, soci::use(trainID), soci::use(name),
-            soci::use(speed), soci::use(trainTypeID), soci::use(purchaseDate);
-            db << ADD_ROUTE_TO_TRAIN_QUERY, soci::use(trainID), soci::use(routeID);
+            soci::use(speed), soci::use(trainTypeID), soci::use(purchaseDate), soci::use(routeID);
 
             //At this point, we want to create three train cars, one for each class
             //(First class, second class, third class)
@@ -195,8 +194,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             for(unsigned int i = 0; i < 3; i++)
             {
                 db << CREATE_TRAIN_CAR_QUERY, soci::use(i + 1), soci::use(trainTypeID);
-                bool res = db.get_last_insert_id("Train Car", carIDs[i]);
-                std::cout << "RESULT OF INSERTION: " << (res ? "yes" : "no") << '\n';
+                db.get_last_insert_id("Train Car", carIDs[i]);
             }
             
             //Now, we assign those cars to the train
