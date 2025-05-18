@@ -257,7 +257,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::cerr << "DATABASE ERROR (/routes/create): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
-         return crow::response(201, insertedKey);
+         return crow::response(201, std::to_string(insertedKey));
          });
     
     CROW_ROUTE(app, "/routes/add-connection").methods(crow::HTTPMethod::POST)
