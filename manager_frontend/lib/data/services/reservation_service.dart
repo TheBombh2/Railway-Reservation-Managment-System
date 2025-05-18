@@ -1,11 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:manager_frontend/data/services/api_client.dart';
+import 'package:manager_frontend/secrets.dart';
 
 class ReservationService {
   final ApiClient _apiClient;
 
   ReservationService(Dio dio)
-    : _apiClient = ApiClient(dio, subdomain: 'reservation');
+    : _apiClient = ApiClient(
+        dio,
+        subdomain: 'reservation',
+        portNumber: Secrets.reservationPortNumber,
+      );
 
   Future<Map<String, dynamic>> getAllStations(String sessionToken) async {
     try {
