@@ -491,10 +491,10 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          });
 
 
-    CROW_ROUTE(app, "/reservations/<string>/get").methods(crow::HTTPMethod::GET)
+    CROW_ROUTE(app, "/reservations/customer/get-reservations").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
-
+         return crow::response(200, "not ok");
          });
 }
