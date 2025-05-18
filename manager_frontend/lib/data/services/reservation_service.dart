@@ -197,4 +197,173 @@ class ReservationService {
       }
     }
   }
+
+
+  Future<String> createTrain(
+    Map<String, dynamic> data,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/trains/create',
+        body: data,
+        sessionToken: sessionToken,
+        responseType: ResponseType.plain
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+   Future<String> createTrainType(
+    Map<String, dynamic> data,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/trains/types/create',
+        body: data,
+        sessionToken: sessionToken,
+        responseType: ResponseType.plain
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+
+  Future<Map<String, dynamic>> getAllTrainsinfo(
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.getRequest(
+        '/trains/all-info',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+
+  Future<String> getTrainState(
+    String id,
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.getRequest(
+        '/trains/$id/get-state',
+        sessionToken: sessionToken,
+
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+
+  Future<Map<String, dynamic>> getAllTrainTypes(
+    String sessionToken,
+  ) async {
+    try {
+      final response = await _apiClient.getRequest(
+        '/trains/all-types',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+
+  Future<void> deleteTrain(String trainID, String sessionToken) async {
+    try {
+      final response = await _apiClient.deleteRequest(
+        '/trains/$trainID/delete',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+
+  Future<void> stopTrain(String trainID, String sessionToken) async {
+    try {
+      final response = await _apiClient.deleteRequest(
+        '/trains/$trainID/stop',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+  Future<void> sendTrain(String trainID, String sessionToken) async {
+    try {
+      final response = await _apiClient.postRequest(
+        '/trains/$trainID/send',
+        sessionToken: sessionToken,
+        body: {}
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 401:
+          throw 'Please Login';
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
 }

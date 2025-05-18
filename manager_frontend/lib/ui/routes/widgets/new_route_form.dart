@@ -311,7 +311,10 @@ class _NewRouteFormState extends State<NewRouteForm> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                Navigator.pop(context);
+                context.read<RoutesBloc>().add(LoadRoutes());
+              },
               child: const Text('Cancel'),
             ),
             ElevatedButton(

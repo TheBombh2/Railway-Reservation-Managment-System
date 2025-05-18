@@ -1,5 +1,6 @@
 import 'package:manager_frontend/data/model/route.dart';
 import 'package:manager_frontend/data/model/station.dart';
+import 'package:manager_frontend/data/model/train.dart';
 import 'package:manager_frontend/data/services/reservation_service.dart';
 
 class ReservationRepository {
@@ -47,14 +48,20 @@ class ReservationRepository {
 
   Future<String> createNewRoute(RouteCreate data, String sessionToken) async {
     try {
-      final routeID =await _reservationService.createRoute(data.toJson(), sessionToken);
+      final routeID = await _reservationService.createRoute(
+        data.toJson(),
+        sessionToken,
+      );
       return routeID;
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<void> addRouteConnection(RouteConnection data, String sessionToken) async {
+  Future<void> addRouteConnection(
+    RouteConnection data,
+    String sessionToken,
+  ) async {
     try {
       await _reservationService.addRouteConnection(data.toJson(), sessionToken);
     } catch (e) {
@@ -91,6 +98,91 @@ class ReservationRepository {
   Future<void> deleteRoute(String routeID, String sessionToken) async {
     try {
       await _reservationService.deleteRoute(routeID, sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+   Future<void> createNewTrain(TrainCreate data, String sessionToken) async {
+    try {
+      await _reservationService.createTrain(data.toJson(), sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createNewTrainType(TrainType data, String sessionToken) async {
+    try {
+      await _reservationService.createTrainType(data.toJson(), sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<TrainTypesList> getAllTrainTypes(
+    String sessionToken,
+  ) async {
+    try {
+      final raw = await _reservationService.getAllTrainTypes(
+        sessionToken,
+      );
+      final list = TrainTypesList.fromJson(raw);
+      return list;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  Future<TrainsList> getAllTrainsInfo(
+    String sessionToken,
+  ) async {
+    try {
+      final raw = await _reservationService.getAllTrainsinfo(
+        sessionToken,
+      );
+      final list = TrainsList.fromJson(raw);
+      return list;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  Future<String> getTrainState(
+    String trainID,
+    String sessionToken,
+  ) async {
+    try {
+      final raw = await _reservationService.getTrainState(
+        trainID,
+        sessionToken,
+      );
+      return raw;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> sendTrain(String trainID, String sessionToken) async {
+    try {
+      await _reservationService.sendTrain(trainID, sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> stopTrain(String trainID, String sessionToken) async {
+    try {
+      await _reservationService.stopTrain(trainID, sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteTrain(String trainID, String sessionToken) async {
+    try {
+      await _reservationService.deleteTrain(trainID, sessionToken);
     } catch (e) {
       rethrow;
     }

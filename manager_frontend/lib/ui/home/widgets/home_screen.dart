@@ -19,6 +19,7 @@ import 'package:manager_frontend/ui/routes/bloc/routes_bloc.dart';
 import 'package:manager_frontend/ui/routes/widgets/routes_fragment.dart';
 import 'package:manager_frontend/ui/stations/bloc/stations_bloc.dart';
 import 'package:manager_frontend/ui/stations/widgets/stations_fragment.dart';
+import 'package:manager_frontend/ui/trains/bloc/trains_bloc.dart';
 import 'package:manager_frontend/ui/trains/widgets/trains_fragment.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -122,7 +123,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: RoutesFragment(),
                         );
                       case FragmentType.trainsFragment:
-                        return TrainsFragment();
+                        return BlocProvider(
+                          create:
+                              (context) => TrainsBloc(
+                                reservationRepository: ReservationRepository(
+                                  reservationService: ReservationService(
+                                    context.read<Dio>(),
+                                  ),
+                                ),
+                                authenticationRepository:
+                                    context.read<AuthenticationRepository>(),
+                              )..add(LoadTrains()),
+                          child: TrainsFragment(),
+                        );
                     }
                   },
                 ),

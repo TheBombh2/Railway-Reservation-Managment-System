@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manager_frontend/ui/core/themes/theme.dart';
+import 'package:manager_frontend/ui/trains/bloc/trains_bloc.dart';
 import 'package:manager_frontend/ui/trains/widgets/new_train_form.dart';
 import 'package:manager_frontend/ui/trains/widgets/new_train_type_form.dart';
 import 'package:manager_frontend/ui/trains/widgets/trains_list.dart';
@@ -31,9 +33,15 @@ class TrainsFragment extends StatelessWidget {
                     ),
                     icon: Icon(Icons.train_outlined, color: darkBlue),
                     onPressed: () {
+                      final bloc = context.read<TrainsBloc>();
+
                       showDialog(
                         context: context,
-                        builder: (ctx) => NewTrainForm(),
+                        builder:
+                            (ctx) => BlocProvider.value(
+                              value: bloc..add(LoadTrainCreation()),
+                              child: NewTrainForm(),
+                            ),
                       );
                     },
                     label: Text(
@@ -44,17 +52,22 @@ class TrainsFragment extends StatelessWidget {
                       ),
                     ),
                   ),
-                 SizedBox(width: 20,),
-                 OutlinedButton.icon(
+                  SizedBox(width: 20),
+                  OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: darkerBlue,
                       surfaceTintColor: darkerBlue,
                     ),
                     icon: Icon(Icons.create_outlined, color: darkBlue),
                     onPressed: () {
+                      final bloc = context.read<TrainsBloc>();
                       showDialog(
                         context: context,
-                        builder: (ctx) => NewTrainTypeForm(),
+                        builder:
+                            (ctx) => BlocProvider.value(
+                              value: bloc,
+                              child: NewTrainTypeForm(),
+                            ),
                       );
                     },
                     label: Text(
@@ -65,7 +78,6 @@ class TrainsFragment extends StatelessWidget {
                       ),
                     ),
                   ),
-                
                 ],
               ),
 
