@@ -63,7 +63,7 @@ const inline std::string GET_CUSTOMER_INFORMATION_QUERY =
 "SELECT FirstName, MiddleName, LastName, Gender, Email, PhoneNumber "
 "FROM `CustomerBasicInformation` CBI "
 "JOIN `CustomerContactInformation` CCI ON CBI.ID = CCI.ID "
-"WHERE ID = :ID; ";
+"WHERE CBI.ID = :ID; ";
 
 //Stations queries go here
 const inline std::string CREATE_STATION_QUERY =
