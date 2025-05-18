@@ -120,3 +120,13 @@ const inline std::string GET_TRAIN_TYPES_QUERY =
 
 const inline std::string CREATE_TRAIN_TYPE_QUERY =
 "INSERT INTO TrainType (Title, Description) VALUES (:Title, :Description); ";
+
+const inline std::string CREATE_TRAIN_CAR_QUERY = 
+"INSERT INTO TrainCar (CarClass, CarType) VALUES (:CarClass, :CarType)";
+
+const inline std::string ASSIGN_TRAIN_CAR_QUERY = 
+"INSERT INTO TrainCarAssignedTrain (TrainCarID, TrainID) "
+"VALUES (:TrainCarID, :TrainID); ";
+
+const inline std::string CREATE_TRAIN_SEATS_QUERY =
+"INSERT INTO TrainCarSeat (ID, AssignedCar) VALUES (:ID, :AssignedCar); ";

@@ -156,7 +156,8 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          const crow::json::rvalue body = crow::json::load(req.body);
          std::string name, tempPurchaseDate;
          double speed;
-         int routeID, trainTypeID;
+         int routeID, trainTypeID,
+         firstClassSeatNum, secondClassSeatNum, thirdClassSeatNum;
          std::tm purchaseDate;
          try
          {
@@ -165,6 +166,9 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             routeID = body["routeID"].i();
             trainTypeID = body["trainTypeID"].i();
             tempPurchaseDate = body["purchaseDate"].s();
+            firstClassSeatNum = body["firstClassSeatNum"].i();
+            secondClassSeatNum = body["secondClassSeatNum"].i();
+            thirdClassSeatNum = body["thirdClassSeatNum"].i();
             if(!strptime(tempPurchaseDate.c_str(), TIME_FORMAT_STRING, &purchaseDate))
                 return crow::response(400, "invalid purchase date");
          }
@@ -178,10 +182,39 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
             soci::session db(pool);
             soci::transaction trans(db);
-            std::string uuid = GetUUIDv7();
-            db << CREATE_TRAIN_QUERY, soci::use(uuid), soci::use(name),
+            std::string trainID = GetUUIDv7();
+            db << CREATE_TRAIN_QUERY, soci::use(trainID), soci::use(name),
             soci::use(speed), soci::use(trainTypeID), soci::use(purchaseDate);
-            db << ADD_ROUTE_TO_TRAIN_QUERY, soci::use(uuid), soci::use(routeID);
+            db << ADD_ROUTE_TO_TRAIN_QUERY, soci::use(trainID), soci::use(routeID);
+
+            //At this point, we want to create three train cars, one for each class
+            //(First class, second class, third class)
+            //Then, we will create a X,Y, and Z amount of seats in each car according to the
+            //parameters given
+            long long carIDs[3];
+            for(unsigned int i = 0; i < 3; i++)
+            {
+                db << CREATE_TRAIN_CAR_QUERY, soci::use(i + 1), soci::use(trainTypeID);
+                bool res = db.get_last_insert_id("Train Car", carIDs[i]);
+                std::cout << "RESULT OF INSERTION: " << (res ? "yes" : "no") << '\n';
+            }
+            
+            //Now, we assign those cars to the train
+            for(int i = 0; i < 3; i++)
+            {
+                db << ASSIGN_TRAIN_CAR_QUERY, soci::use(carIDs[i]), soci::use(trainID);
+            }
+
+            //Now, we create seats for those cars
+            for(int i = 0; i < firstClassSeatNum; i++)
+                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i + 1), soci::use(carIDs[0]);
+
+            for(int i = 0; i < secondClassSeatNum; i++)
+                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i + 1), soci::use(carIDs[1]);
+
+            for(int i = 0; i < thirdClassSeatNum; i++)
+                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i + 1), soci::use(carIDs[2]);
+
             trans.commit();
          }
          catch(const std::exception& e)
@@ -210,12 +243,13 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::cerr << "JSON ERROR (/routes/create): " << e.what() << '\n';
             return crow::response(400, "bad request");
          }
-         
+         long long insertedKey; 
          try
          {
             soci::session db(pool);
             db << CREATE_ROUTE_QUERY, soci::use(name), soci::use(description),
             soci::use(firstStationID);
+            db.get_last_insert_id("TrainRoute", insertedKey);
          }
          catch(const std::exception& e)
          {
@@ -223,7 +257,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             std::cerr << "DATABASE ERROR (/routes/create): " << e.what() << '\n';
             return crow::response(500, "database error");
          }
-         return crow::response(201, "successfully created route");
+         return crow::response(201, insertedKey);
          });
     
     CROW_ROUTE(app, "/routes/add-connection").methods(crow::HTTPMethod::POST)
