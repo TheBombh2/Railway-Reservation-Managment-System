@@ -1,6 +1,7 @@
 
 
 import 'package:employee_frontend/data/model/appraisal.dart';
+import 'package:employee_frontend/data/model/citation.dart';
 import 'package:employee_frontend/data/model/task.dart';
 import 'package:employee_frontend/data/services/employee_service.dart';
 
@@ -25,6 +26,17 @@ class EmployeeRepository {
     try {
       final raw = await _employeeService.getAllAppraisals(employeeID,sessionToken);
       final list = AppraisalsListModel.fromJson(raw);
+      return list;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  Future<CitationsListModel> getAllCitations(String employeeID,String sessionToken) async {
+    try {
+      final raw = await _employeeService.getAllCitations(employeeID,sessionToken);
+      final list = CitationsListModel.fromJson(raw);
       return list;
     } catch (e) {
       rethrow;

@@ -55,5 +55,20 @@ Future<Map<String, dynamic>> getAllTasks(String sessionToken) async {
   }
   
 
+  Future<Map<String, dynamic>> getAllCitations(String employeeID, String sessionToken) async {
+    
+
+    try {
+      final response = await _apiClient.getRequest(
+        '/users/$employeeID/citations',
+        sessionToken: sessionToken,
+      );
+
+      return response;
+    } catch (e) {
+      throw Exception("Failed to get citations information");
+    }
+  }
+
 
 }
