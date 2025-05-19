@@ -90,7 +90,7 @@ class LoginForm extends StatelessWidget {
                         ),
                       ),
                       
-                      TextButton(
+                     /* TextButton(
                     onPressed: () {},
                     child: Text(
                       'Sign up',
@@ -100,7 +100,7 @@ class LoginForm extends StatelessWidget {
                         fontWeight: FontWeight.normal,
                       ),
                     ),
-                  ),
+                  ),*/
                     ],
                   ),
                   SizedBox(
