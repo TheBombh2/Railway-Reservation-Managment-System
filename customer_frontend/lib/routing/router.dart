@@ -1,3 +1,4 @@
+import 'package:customer_frontend/data/model/ticket.dart';
 import 'package:customer_frontend/data/model/user.dart';
 import 'package:customer_frontend/data/repositories/authentication_repository.dart';
 import 'package:customer_frontend/ui/auth/bloc/authentication_bloc.dart';
@@ -11,7 +12,9 @@ import 'package:customer_frontend/ui/profile/widgets/profile_screen.dart';
 import 'package:customer_frontend/ui/reservation/stations/widgets/station_selection_screen.dart';
 import 'package:customer_frontend/ui/reservation/tickets/widgets/ticket_details_screen.dart';
 import 'package:customer_frontend/ui/reservation/tickets/widgets/ticket_reservation_screen.dart';
+import 'package:customer_frontend/ui/reservation/trains/bloc/trains_bloc.dart';
 import 'package:customer_frontend/ui/reservation/trains/widgets/trains_screen.dart';
+import 'package:customer_frontend/ui/reservations/widgets/reservation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -88,23 +91,31 @@ final router = GoRouter(
           builder: (ctx, state) => ProfileScreen(userData: state.extra as User),
         ),
         GoRoute(
+          path: 'reservations',
+          builder: (ctx, state) => AppraisalsScreen(),
+        ),
+        GoRoute(
           path: 'trains',
-          builder: (ctx, state) => const TrainsScreen(),
+          builder: (ctx, state) => TrainsScreen(),
           routes: [
             GoRoute(
               path: 'station_selection_screen',
-              builder: (ctx, state) => StationSelectionScreen(),
+              builder: (ctx, state) {
+                final value = state.extra as bool;
+                return StationSelectionScreen(value);
+              },
             ),
             GoRoute(
               path: 'ticket_reserve',
-              builder: (ctx, state) => const TicketReservationScreen(),
+              builder:
+                  (ctx, state) => TicketReservationScreen(state.extra as List),
             ),
           ],
         ),
 
         GoRoute(
           path: 'ticket_details',
-          builder: (ctx, state) => const TicketDetailsScreen(),
+          builder: (ctx, state) => TicketDetailsScreen(state.extra as Ticket),
         ),
       ],
     ),

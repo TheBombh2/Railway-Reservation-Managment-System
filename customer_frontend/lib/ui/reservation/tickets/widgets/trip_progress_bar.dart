@@ -1,12 +1,21 @@
+import 'package:customer_frontend/data/model/train.dart';
 import 'package:flutter/material.dart';
 
 class TripProgressBar extends StatelessWidget {
-  const TripProgressBar({super.key});
+  Train train;
+  String firstStation;
+  String secondStation;
+  TripProgressBar(
+    this.train,
+    this.firstStation,
+    this.secondStation, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -14,11 +23,11 @@ class TripProgressBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                '7:05 PM',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                train.trainArrivalTime!,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
               Text(
-                'Rathmalana',
+                firstStation,
                 style: TextStyle(color: Colors.black.withValues(alpha: 0.6)),
               ),
             ],
@@ -50,12 +59,12 @@ class TripProgressBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                '7:45 PM',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                train.destinationArrivalTime!,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
               Text(
-                'Panadura',
-                style: TextStyle(color: Colors.black.withValues(alpha:  0.6)),
+                secondStation,
+                style: TextStyle(color: Colors.black.withValues(alpha: 0.6)),
               ),
             ],
           ),

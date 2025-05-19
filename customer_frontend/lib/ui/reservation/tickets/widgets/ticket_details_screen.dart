@@ -1,8 +1,10 @@
+import 'package:customer_frontend/data/model/ticket.dart';
 import 'package:customer_frontend/ui/reservation/tickets/widgets/trip_progress_bar.dart';
 import 'package:flutter/material.dart';
 
 class TicketDetailsScreen extends StatelessWidget {
-  const TicketDetailsScreen({super.key});
+  Ticket ticket;
+  TicketDetailsScreen(this.ticket, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +45,8 @@ class TicketDetailsScreen extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-                TripProgressBar(),
 
+                //TripProgressBar(train),
                 SizedBox(height: 24),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,12 +103,18 @@ class TicketDetailsScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.download_rounded, color: Color(0xff0076CB),),
+                      icon: Icon(
+                        Icons.download_rounded,
+                        color: Color(0xff0076CB),
+                      ),
                     ),
                     Spacer(),
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.info_outline_rounded,color: Color(0xff0076CB)),
+                      icon: Icon(
+                        Icons.info_outline_rounded,
+                        color: Color(0xff0076CB),
+                      ),
                     ),
                   ],
                 ),

@@ -19,6 +19,14 @@ class HomeScreen extends StatelessWidget {
         }
       },
       {
+        'label': 'Reservations',
+        'icon': 'assets/svg/map_train_station.svg',
+        'isSVG': true,
+        'onTap': () {
+          context.push('/reservations');
+        }
+      },
+      {
         'label': 'Profile',
         'icon': 'assets/svg/profile.svg',
         'isSVG': true,

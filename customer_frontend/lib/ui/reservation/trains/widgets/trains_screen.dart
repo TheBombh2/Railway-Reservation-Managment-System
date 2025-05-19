@@ -1,68 +1,57 @@
+import 'package:customer_frontend/data/model/station.dart';
+
+import 'package:customer_frontend/ui/reservation/trains/bloc/trains_bloc.dart';
 import 'package:customer_frontend/ui/reservation/trains/widgets/from_to_information_box.dart';
 import 'package:customer_frontend/ui/reservation/trains/widgets/trains_list.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TrainsScreen extends StatefulWidget {
-  const TrainsScreen({super.key});
+  TrainsScreen({super.key});
 
   @override
   State<TrainsScreen> createState() => _TrainsScreenState();
 }
 
 class _TrainsScreenState extends State<TrainsScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      if (!mounted) return;
-      showTrainsList();
-    });
-  }
+  late final StationsListModel? stationsList;
 
-  void showTrainsList() {
-    showModalBottomSheet(
-        barrierColor: Color.fromRGBO(0, 0, 0, 0),
-        context: context,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-        useSafeArea: true,
-        enableDrag: true,
-        builder: (ctx) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32,horizontal: 16),
-                child: FromToInformationBox(fromCity: 'Rathmalana', toCity: 'Panadura'),
-              ),
-              Expanded(child: TrainsList()),
-            ],
-          );
-        });
-  }
+  Station fromCity = Station(name: "Not Selected");
+
+  Station toCity = Station(name: "Not Selected");
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.large(
-        backgroundColor: Colors.white,
-        child: Icon(
-          Icons.train,
-          color: Color(0xff0077CD),
-          size: 60,
-        ),
-        onPressed: () {
-          showTrainsList();
-        },
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(
-                'assets/images/map_placeholder.png',
-              ),
-              fit: BoxFit.cover),
-        ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Spacer(flex: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+            child: BlocConsumer<TrainsBloc, TrainsState>(
+              listener: (context, state) {
+                if (state is StationsSelected) {
+                  fromCity = state.fromStation;
+                  toCity = state.toStation;
+                }
+              },
+              builder: (context, state) {
+                if (state is StationsLoading) {
+                  Center(child: CircularProgressIndicator());
+                } else {
+                  return FromToInformationBox(
+                    fromCity: fromCity.name!,
+                    toCity: toCity.name!,
+                  );
+                }
+                return Text("Please reopen");
+              },
+            ),
+          ),
+          Expanded(flex: 2, child: TrainsList()),
+        ],
       ),
     );
   }

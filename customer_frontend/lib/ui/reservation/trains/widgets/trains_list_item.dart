@@ -1,9 +1,14 @@
+import 'package:customer_frontend/data/model/station.dart';
+import 'package:customer_frontend/data/model/train.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 class TrainsListItem extends StatelessWidget {
-  const TrainsListItem({super.key});
+  final Station firstStation;
+  final Station secondStation;
+  final Train train;
+  const TrainsListItem(this.train,this.firstStation,this.secondStation, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,45 +19,38 @@ class TrainsListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Icon(Icons.people, color: Colors.green),
+              SizedBox(width: 10),
               Text(
-                'KTS/MDA-1122',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'Aluthgama',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
                   color: Color.fromRGBO(0, 0, 0, 0.6),
                 ),
+                'Arrival: ${train.trainArrivalTime}',
               ),
             ],
           ),
           Row(
             children: [
-              Icon(Icons.people,color: Colors.green,),
-              SizedBox(width: 10,),
+              Icon(Icons.people, color: Colors.red),
+              SizedBox(width: 10),
               Text(
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 10,
                   color: Color.fromRGBO(0, 0, 0, 0.6),
                 ),
-                'Arrival Now',
+                'Destination: ${train.trainArrivalTime}',
               ),
             ],
           ),
         ],
       ),
-      trailing: FloatingActionButton.small(
+      trailing: IconButton.outlined(
+        icon: Icon(Icons.arrow_right_alt_outlined),
         onPressed: () {
-          
-          context.go('/home/trains/ticket_reserve');
-          
+          context.go('/trains/ticket_reserve',extra: [train,firstStation,secondStation]);
         },
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Icon(Icons.arrow_forward_ios_rounded, color: Color(0xff0076CB)),
       ),
     );
   }

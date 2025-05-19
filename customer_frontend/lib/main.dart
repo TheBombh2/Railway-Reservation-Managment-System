@@ -1,8 +1,12 @@
 import 'package:customer_frontend/data/repositories/authentication_repository.dart';
+import 'package:customer_frontend/data/repositories/reservation_repository.dart';
 import 'package:customer_frontend/data/services/authentication_service.dart';
 import 'package:customer_frontend/data/services/customer_service.dart';
+import 'package:customer_frontend/data/services/reservation_service.dart';
 import 'package:customer_frontend/routing/router.dart';
+import 'package:customer_frontend/secrets.dart';
 import 'package:customer_frontend/ui/auth/bloc/authentication_bloc.dart';
+import 'package:customer_frontend/ui/reservation/trains/bloc/trains_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,6 +46,7 @@ class App extends StatelessWidget {
               ),
           dispose: (repository) => repository.dispose(),
         ),
+        
       ],
       child: BlocProvider(
         lazy: false,
@@ -50,7 +55,18 @@ class App extends StatelessWidget {
               authenticationRepositroy:
                   context.read<AuthenticationRepository>(),
             )..add(AuthenticationSubscriptionRequest()),
-        child: AppView(),
+        child: BlocProvider(
+          create:
+              (context) => TrainsBloc(
+                reservationRepository: ReservationRepository(
+                  reservationService: ReservationService(context.read<Dio>()),
+                ),
+                authenticationRepository:
+                    context.read<AuthenticationRepository>(),
+              ),
+
+          child: AppView(),
+        ),
       ),
     );
   }
