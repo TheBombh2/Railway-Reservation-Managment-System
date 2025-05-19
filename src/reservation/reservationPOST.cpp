@@ -410,8 +410,14 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
          const crow::json::rvalue body = crow::json::load(req.body);
          std::string trainID, trainArrivalDate, destinationArrivalDate;
-         int ticketsNum, ticketType, minimumSeatNumber;
+         int ticketsNum, ticketType;
          std::vector<int> trainCarIDs(3);
+
+         std::vector<int> minimumSeatNumbers(3);
+         std::vector<soci::indicator> minimumSeatNumbersInds(3);
+
+         std::vector<int> fetchedClasses(3);
+         std::vector<soci::indicator> classesInds(3);
          try
          {
             trainID = body["trainID"].s();
@@ -430,16 +436,33 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
             soci::session db(pool);
             db << GET_TRAIN_CAR_IDS, soci::use(trainID), soci::into(trainCarIDs);
+            if(trainCarIDs.empty())
+                return crow::response(404, "not found");
             std::sort(trainCarIDs.begin(), trainCarIDs.end());
-            db << GET_MINIMUM_SEAT_NUMBER, soci::into(minimumSeatNumber),
+
+            db << GET_MINIMUM_SEAT_NUMBER_PER_CLASS, soci::into(minimumSeatNumbers), soci::into(fetchedClasses, classesInds),
             soci::use(trainCarIDs[ticketType - 1]);
+           
+            int thisMinimumSeatNum;
+            auto res = std::find(fetchedClasses.begin(), fetchedClasses.end(), ticketType);
+            if(res == fetchedClasses.end())
+            {
+                thisMinimumSeatNum = 0;
+            }
+            else
+            {
+               int temp = res - fetchedClasses.begin();
+               thisMinimumSeatNum = minimumSeatNumbers[temp];
+            }
+
             std::string customerID = tokenInfo.GetUUID();
             int costNum = GetTicketCost(ticketType);
-
+        
             soci::transaction trans(db);
             for(int i = 0; i < ticketsNum; i++)
             {
-                db << CREATE_CUSTOMER_SEAT_RESERVATION, soci::use(i + 1), soci::use(trainCarIDs[ticketType - 1]),
+                db << CREATE_CUSTOMER_SEAT_RESERVATION, soci::use(thisMinimumSeatNum + i + 1),
+                soci::use(trainCarIDs[ticketType - 1]),
                 soci::use(customerID), soci::use(trainArrivalDate), soci::use(destinationArrivalDate),
                 soci::use(costNum), soci::use(SAMPLE_PDF_PATH);
             }
@@ -449,6 +472,7 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
          {
             CHECK_DATABASE_DISCONNECTION
             std::cerr << "DATABASE ERROR (/reservations/create): " << e.what() << '\n';
+            return crow::response(500, "database error");
          }
          return crow::response(201, "reservation created successfully");
          });

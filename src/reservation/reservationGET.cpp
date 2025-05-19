@@ -495,6 +495,30 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         ([&](const crow::request& req)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
-         return crow::response(200, "not ok");
+         std::vector<int> seatIDs(MAX_TICKETS_RETURNED);
+         std::vector<std::tm> trainArrivalTime(MAX_TICKETS_RETURNED), destinationArrivalTime(MAX_TICKETS_RETURNED);
+         std::vector<std::string> trainNames(MAX_TICKETS_RETURNED); 
+         try
+         {
+            soci::session db(pool);
+            db << GET_CUSTOMER_RESERVATIONS, soci::into(seatIDs), soci::into(trainArrivalTime),
+            soci::into(destinationArrivalTime), soci::into(trainNames);
+         }
+         catch(const std::exception& e)
+         {
+            std::cerr << "DATABASE ERROR (/reservations/customer/get-reservations): " << e.what() << '\n';
+            return crow::response(500, "database error");
+         }
+
+         crow::json::wvalue result;
+         result["size"] = seatIDs.size();
+         for(unsigned int i = 0; i < seatIDs.size(); i++)
+         {
+            result["reservations"][i]["trainName"] = trainNames[i];
+            result["reservations"][i]["trainArrivalTime"] = FormatTimeToString(trainArrivalTime[i]);
+            result["reservations"][i]["destinationArrivalTime"] = FormatTimeToString(destinationArrivalTime[i]);
+            result["reservations"][i]["seatID"] = seatIDs[i];
+         }
+         return crow::response(200, result);
          });
 }

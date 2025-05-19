@@ -26,6 +26,7 @@ const inline int MAX_STATIONS_RETURNED = 256;
 const inline int MAX_STATION_CONNECTIONS = 16;
 const inline int MAX_TRAINS_RETURNED = 8;
 const inline int MAX_ROUTES_RETURNED = 16;
+const inline int MAX_TICKETS_RETURNED = 8;
 
 //YES, THIS IS AN EXTREMELY UGLY AND EXTREMELY UGLY HARD CODED SOLUTION
 //   ;)
@@ -167,12 +168,23 @@ const inline std::string CREATE_TRAIN_SEATS_QUERY =
 "INSERT INTO TrainCarSeat (ID, AssignedCar) VALUES (:ID, :AssignedCar); ";
 
 const inline std::string GET_TRAIN_CAR_IDS = 
-"SELECT TrainCarID FROM `TrainCarAssignment` WHERE `TrainID` = :ID; ";
+"SELECT TrainCarID FROM `TrainCarAssignedTrain` WHERE `TrainID` = :ID; ";
 
-const inline std::string GET_MINIMUM_SEAT_NUMBER =
-"SELECT MIN(SeatID) FROM `CustomerSeatReservation` WHERE `TrainCarID` = :ID; ";
+const inline std::string GET_MINIMUM_SEAT_NUMBER_PER_CLASS =
+"SELECT MAX(SeatID), TC.`CarClass` "
+"FROM `CustomerSeatReservation` CSR "
+"JOIN `TrainCar` TC ON CSR.`TrainCarID` = TC.`ID` "
+"WHERE `TrainCarID` = :ID "
+"GROUP BY TC.`CarClass`; ";
 
 const inline std::string CREATE_CUSTOMER_SEAT_RESERVATION =
-"INSERT INTO `CustomerSecurityInformation` "
+"INSERT INTO `CustomerSeatReservation` "
 "(SeatID, TrainCarID, CustomerID, TrainArrivalTime, DestinationArrivalTime, Cost, PDFPath) "
 "VALUES (:SeatID, :TrainCarID, :CustomerID, :TrainArrivalTime, :DestinationArrivalTime, :Cost, :PDFPath); ";
+
+const inline std::string GET_CUSTOMER_RESERVATIONS = 
+"SELECT `SeatID`, `TrainArrivalTime`, `DestinationArrivalTime`, "
+"T.`Name` "
+"FROM `CustomerSeatReservation` CSR "
+"JOIN `TrainCarAssignedTrain` TCAT ON TCAT.`TrainCarID` = CSR.`TrainCarID` "
+"JOIN `Train` T ON T.`ID` = TCAT.`TrainID`; ";
