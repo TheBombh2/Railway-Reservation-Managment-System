@@ -4,6 +4,7 @@
 #include "authorization.h"
 #include "tokens.h"
 #include "crypto.h"
+#include <soci/transaction.h>
 
 void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
 {
@@ -98,5 +99,55 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
          return crow::response(201, token);
          });
 
-   
+  CROW_ROUTE(app, "/users/create/customer").methods(crow::HTTPMethod::POST)
+  ([&](const crow::request& req)
+   {
+      const auto body = crow::json::load(req.body);
+      std::string firstName, middleName, lastName, gender, phoneNumber, email,
+      passwordHash, passwordSalt;
+      try
+      {
+        firstName = body["firstName"].s();
+        middleName = body["middleName"].s();
+        lastName = body["lastName"].s();
+        gender = body["gender"].s();
+
+        phoneNumber = body["phoneNumber"].s();
+        email = body["email"].s();
+      
+        passwordHash = body["passwordHash"].s();
+        passwordSalt = body["passwordSalt"].s();
+      }
+      catch(const std::exception& e)
+      {
+        std::cerr << "JSON ERROR (/users/create/customer): " << e.what() << '\n'; 
+        return crow::response(400, "bad request");
+      }
+
+      if(passwordSalt.length() != SALT_LENGTH)
+        return crow::response(400, "bad request");
+
+      std::string ID = GetUUIDv7();
+    
+      try
+      {
+        soci::session db(pool);
+        soci::transaction trans(db);
+        db << CREATE_CUSTOMER_QUERY_BASIC_INFO, soci::use(ID), soci::use(firstName), soci::use(middleName), 
+        soci::use(lastName), soci::use(gender);
+        db << CREATE_CUSTOMER_QUERY_CONTACT_INFO, soci::use(ID, "ID"), soci::use(email, "Email")
+        ,soci::use(phoneNumber, "PhoneNumber");
+        db << CREATE_CUSTOMER_QUERY_SECURITY_INFO, soci::use(ID, "ID"), soci::use(passwordHash, "PasswordHash"),
+        soci::use(passwordSalt, "PasswordSalt");
+        trans.commit();
+      }
+      catch(const std::exception& e)
+      {
+        CHECK_DATABASE_DISCONNECTION
+        std::cerr << "DATABASE ERROR (/users/create/customer): " << e.what() << '\n';
+        return crow::response(500, "database error");
+      }
+
+      return crow::response(201, "customer user created successfully");
+   });
 }

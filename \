@@ -98,6 +98,31 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          return crow::response(200, result);
          });
 
+    CROW_ROUTE(app, "/users/<string>/employee/salt").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req, const std::string& emailInput)
+         {
+         std::string uuid = GetEmployeeUUID(emailInput);
+         if(uuid.empty())
+            return crow::response(404, "not found");
+         std::string salt;
+         soci::indicator ind;
+         try
+         {
+            soci::session db(pool);
+            db << GET_EMPLOYEE_SALT_QUERY, soci::use(uuid), soci::into(salt, ind);
+            if(ind != soci::indicator::i_ok)
+                return crow::response(404, "not found");
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/users/<string>/employee/salt): " << e.what() << '\n'; 
+            std::cerr << "<string> value: " << uuidInput << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(200, salt);
+         });
+
     CROW_ROUTE(app, "/departments/info").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req)
          {

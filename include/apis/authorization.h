@@ -32,3 +32,29 @@ const inline std::string GET_CUSTOMER_PASSWORD_HASH =
 
 const inline std::string GET_EMPLOYEE_PASSWORD_HASH =
 "SELECT PasswordHash FROM EmployeeSecurityInformation WHERE ID = :ID; ";
+
+const inline std::string GET_EMPLOYEE_SALT_QUERY =
+"SELECT PasswordSalt FROM EmployeeSecurityInformation WHERE ID=:ID;";
+
+const inline std::string GET_CUSTOMER_PASSWORD_SALT_QUERY = 
+"SELECT PasswordSalt FROM CustomerSecurityInformation WHERE ID=:ID;";
+
+
+const inline std::string CREATE_CUSTOMER_QUERY_BASIC_INFO = 
+"INSERT INTO CustomerBasicInformation "
+"(ID, FirstName, MiddleName, LastName, Gender) "
+"VALUES " 
+"(:ID, :FirstName, :MiddleName, :LastName, :Gender);";
+
+const inline std::string CREATE_CUSTOMER_QUERY_SECURITY_INFO = 
+"INSERT INTO CustomerSecurityInformation "
+"(ID, PasswordSalt, PasswordHash) "
+"VALUES "
+"(:ID, :PasswordSalt, :PasswordHash);";
+
+const inline std::string CREATE_CUSTOMER_QUERY_CONTACT_INFO =
+"INSERT INTO CustomerContactInformation "
+"(ID, Email, PhoneNumber) "
+"VALUES "
+"(:ID, :Email, :PhoneNumber);";
+

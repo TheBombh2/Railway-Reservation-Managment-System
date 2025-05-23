@@ -55,6 +55,17 @@ const inline std::string CREATE_TASK_QUERY =
 "(Title, Description, Deadline, AssignedEmployee, CreatorEmployee) "
 "VALUES (:Title, :Desc, :Deadline, :AssignedEmp, :CreatorEmp); ";
 
+const inline std::string GET_TASK_ASSIGNEE_QUERY =
+"SELECT AssignedEmployee FROM `Task` WHERE TaskID = :ID; ";
+
+const inline std::string COMPLETE_TASK_QUERY =
+"UPDATE `Task` SET `CompletionDate` = :Date WHERE `TaskID` = :ID; ";
+
+const inline std::string GET_UNCOMPLETED_TASKS = 
+"SELECT Title, Description, Deadline, CreatorEmployee, EBI.FirstName, EBI.LastName "
+"FROM `Task` T WHERE `AssignedEmployee` = :EmployeeID AND `CompletionDate` IS NOT NULL "
+"JOIN `EmployeeBasicInformation` EBI ON EBI.EmployeeID = T.CreatorEmployee; ";
+
 //To-Do: Add manager ID and name!
 const inline std::string GET_DEPARTMENTS_QUERY =
 "SELECT Title, Description, Location, DepartmentID FROM Department";
@@ -64,9 +75,6 @@ const inline std::string GET_DEPARTMENT_TITLE_QUERY =
 
 const inline std::string GET_JOB_INFO_QUERY = 
 "SELECT Title, Description FROM Job WHERE JobID=:ID;";
-
-const inline std::string GET_EMPLOYEE_SALT_QUERY =
-"SELECT PasswordSalt FROM EmployeeSecurityInformation WHERE ID=:ID;";
 
 const inline std::string GET_APPRAISALS_QUERY = 
 "SELECT Title, Description, IssueDate, SalaryImprovement, EBI.FirstName AS ManagerFirstName, EBI.LastName AS ManagerLastName FROM EmployeeAppraisal EA "
@@ -82,7 +90,7 @@ const inline std::string GET_TASKS_QUERY =
 "SELECT Title, Description, Deadline, CompletionDate, EBI.FirstName AS CreatorFirstName, EB"
 "I.LastName AS CreatorLastname FROM `Task` T "
 "JOIN `EmployeeBasicInformation` EBI ON EBI.`EmployeeID` = T.`CreatorEmployee` "
-"WHERE T.`AssignedEmployee` = :ID;";
+"WHERE T.`AssignedEmployee` = :ID AND T.`CompletionDate` IS NULL; ";
 
 const inline std::string GET_ALL_IDS_QUERY =
 "SELECT DepartmentID, JobID, ManagerID, ManagerAppointmentDate FROM `EmployeeBasicInformation` "

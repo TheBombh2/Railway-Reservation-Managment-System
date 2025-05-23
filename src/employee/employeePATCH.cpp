@@ -3,6 +3,9 @@
 #include "employee.h"
 #include "middleware.h"
 #include "database_connector.h"
+#include "permissions.h"
+#include <chrono>
+#include <soci/soci-backend.h>
 
 void AddEmployeePATCHRequests(crow::App<AUTH_MIDDLEWARE>& app)
 {
@@ -41,5 +44,39 @@ void AddEmployeePATCHRequests(crow::App<AUTH_MIDDLEWARE>& app)
             return crow::response(500, "database error");
          }
          return crow::response(200, "password successfully updated: " + newPassword);
+         });
+
+    CROW_ROUTE(app, "/tasks/<int>/complete").methods(crow::HTTPMethod::PATCH)
+        ([&](const crow::request& req, const int taskID)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         try
+         {
+            soci::session db(pool);
+            std::string assignedEmployee;
+            soci::indicator assignedEmployeeInd;
+            db << GET_TASK_ASSIGNEE_QUERY, soci::into(assignedEmployee, assignedEmployeeInd),
+            soci::use(taskID);
+            if(assignedEmployeeInd == NULL_INDICATOR)
+                return crow::response(404, "not found");
+            if(assignedEmployee != tokenInfo.GetUUID())
+                return crow::response(403, "forbidden");
+            //If the task exists AND we were assigned the task, then we shall now mark it as
+            //complete by giving it a completion date
+            //Now, we need to get the current time
+            const std::chrono::time_point now = std::chrono::system_clock::now();
+            std::time_t now_C_style = std::chrono::system_clock::to_time_t(now);
+            std::tm* finalTm = std::localtime(&now_C_style);
+            
+            db << COMPLETE_TASK_QUERY, soci::use(*finalTm), soci::use(taskID);
+         }
+         catch(const std::exception& e)
+         {
+            CHECK_DATABASE_DISCONNECTION
+            std::cerr << "DATABASE ERROR (/tasks/<int>/complete): " << e.what() << '\n';
+            std::cerr << "<int> value: " << taskID << '\n';
+            return crow::response(500, "database error");
+         }
+         return crow::response(200, "task marked as completed successfully");
          });
 }

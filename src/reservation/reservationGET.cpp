@@ -43,45 +43,6 @@ void DebugPrintRoutesDS(const std::unordered_map<std::string,
 
 void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
-  CROW_ROUTE(app, "/users/<string>/salt").methods(crow::HTTPMethod::GET)
-    ([&](const crow::request& req, const std::string& uuid)
-     {
-        AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
-        if(tokenInfo.GetUUID() != uuid)
-            return crow::response(403, "forbidden");
-        try
-        {
-            soci::session db(pool); 
-            soci::transaction trans(db);
-            soci::indicator ind;
-            std::string saltResult;
-            db << SELECT_CUSTOMER_PASSWORD_SALT_QUERY, soci::use(uuid), soci::into(saltResult, ind);
-            trans.commit();
-            if(db.got_data())
-            {
-                switch(ind)
-                {
-                    case soci::i_ok:
-                        return crow::response(200, saltResult);
-                        break;
-                    case soci::i_null:
-                        return crow::response(404, "user not found");
-                        break;
-                    case soci::i_truncated:
-                        return crow::response(500);
-                }
-            }
-        }
-        catch(const std::exception& e)
-        {
-            CHECK_DATABASE_DISCONNECTION
-            std::cerr << "DATABASE ERROR (/users/<string>/salt): " << e.what() << '\n'; 
-            std::cerr << "<string> value: " << uuid << '\n';
-            return crow::response(500, "database error");
-        }
-        return crow::response(500, "database error");
-     });
-    
     CROW_ROUTE(app, "/users/customer/all-info").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req)
          {
