@@ -1,8 +1,9 @@
 #!/bin/bash
 
 if ! grep -qi "arch" /etc/os-release; then
-    echo "This install script is only supported on Arch Linux. Either install Arch Linux or manually download the dependencies for the project in dependencies.txt. You can also use the precompiled binaries. You will need to install the database management systems (Redis/Valeky and MariaDB/MySQL)."
+    echo "\e[31mThis install script is only supported on Arch Linux. Either install Arch Linux or manually download the dependencies for the project in dependencies.txt. You can also use the precompiled binaries. You will need to install the database management systems (Redis/Valeky and MariaDB/MySQL).\e[0m"
     return -1
+fi
 
 IsDBInstalled() {
     if command -v mariadb > /dev/null || command -v mysql > /dev/null; then
@@ -12,48 +13,51 @@ IsDBInstalled() {
     fi
 }
 
-echo "Creating user to run as the programs"
+echo -e "\e[31mCreating user to run as the programs\e[0m"
 sudo useradd -M -s /bin/nologin rrms
 
-echo "Creating directory for logs"
+echo -e "\e[31mCreating directory for logs\e[0m"
 sudo mkdir /var/log/rrms
 sudo mkdir /var/log/rrms/database/
 
-echo "Creating directory for config information"
+echo -e "\e[31mCreating directory for config information\e[0m"
 sudo mkdir /etc/rrms
 
-echo "Modifying permissions for newly created directories"
+echo -e "\e[31mModifying permissions for newly created directories\e[0m"
 sudo chown -R rrms:rrms /var/log/rrms
 sudo chown -R rrms:rrms /etc/rrms
 
-echo "Installing dependencies for an arch based system"
+echo -e "\e[31mInstalling dependencies for an arch based system\e[0m"
 sudo pacman -Sy --needed --noconfirm cmake make gcc boost boost-libs yaml-cpp valkey hiredis
 sudo systemctl enable --now valkey.service
 sudo sysctl vm.overcommit_memory=1 # Allow valkey to overcommit memory for performance
 
 if ! IsDBInstalled; then 
-    echo "Neither MariaDB or MySQL are installed. The script will not install MariaDB with default settings"
-    echo "Note: It is recommended to read the arch wiki to improve its security or change its data location"
+    echo -e "\e[33mNeither MariaDB or MySQL are installed. The script will not install MariaDB with default settings\e[0m"
+    echo -e "\e[33mNote: It is recommended to read the arch wiki to improve its security or change its data location\e[0m"
     sudo pacman -Sy --needed --noconfirm mariadb
     sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
     sudo systemctl enable --now mariadb.service
+fi
 
-echo "NOTE:"
-echo "IF IT IS YOUR FIRST TIME RUNNING VALKEY, THEN THERE ARE SOME CONFIGURATIONS THAT MUST BE DONE"
-echo "FIRSTLY, YOU CAN OPTIONALLY PROVIDE A PASSWORD IN ITS CONFIGURATION FILE AT THE 'requirepass' LINE"
-echo "SECONDLY, YOU HAVE TO BIND THE IP ADDRESS OF THE SERVER ON WHICH THE BACKEND AND VALKEY WILL BE HOSTED ON IN THE 'bind' SECTION OF THE CONFIG FILE"
-echo "THE CONFIG FILE IS LOCATED AT /etc/valkey/valkey.conf"
+echo -e "\e[33mOTE:"
+echo -e "IF IT IS YOUR FIRST TIME RUNNING VALKEY, THEN THERE ARE SOME CONFIGURATIONS THAT MUST BE DONE"
+echo -e "FIRSTLY, YOU CAN OPTIONALLY PROVIDE A PASSWORD IN ITS CONFIGURATION FILE AT THE 'requirepass' LINE"
+echo -e "SECONDLY, YOU HAVE TO BIND THE IP ADDRESS OF THE SERVER ON WHICH THE BACKEND AND VALKEY WILL BE HOSTED ON IN THE 'bind' SECTION OF THE CONFIG FILE"
+echo "THE CONFIG FILE IS LOCATED AT /etc/valkey/valkey.conf\e[0m"
 
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
-echo "Please note SOCI (MariaDB database wrapper), redis-plus-plus (redis database wrapper), and cpr (HTTP requests library wrapper for libcurl) will be downloaded from the AUR from source!"
+echo -e "\e[33mPlease note SOCI (MariaDB database wrapper), redis-plus-plus (redis database wrapper), and cpr (HTTP requests library wrapper for libcurl) will be downloaded from the AUR from source!\e[0m"
 yay -S soci redis-plus-plus --noconfirm
 yay -S cpr --noconfirm --mflags="--nocheck" # --nocheck is due a bug with the latest version of curl
 
-echo "Now, the project (microservices backend) will start compiling"
-echo "This might take a few minutes depending on your CPU's strength"
+echo "Now, the project (microservices backend) will start compiling\e[0m"
+echo "This might take a few minutes depending on your CPU's strength\e[0m"
 cmake -S . -B ./build/ -DCMAKE_BUILD_TYPE=release
+export MAKEFLAGS="-j$(nproc)"
 cd ./build/
 sudo make install
 sudo systemctl daemon-reload
 sudo systemctl enable --now rrms-authorization.service
 sudo systemctl enable --now rrms-employee.service
+sudo systemctl enable --now rrms-reservation.service
