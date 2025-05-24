@@ -7,10 +7,11 @@ fi
 
 if ! command -v yay > /dev/null; then 
     echo -e "\e[33mThis install script is hardcoded for yay as an AUR helper. yay will be installed now\e[0m"
-    sudo pacman -S --needed git base-devel
+    sudo pacman -S --needed git base-devel --noconfirm
     git clone https://aur.archlinux.org/yay-bin.git
     cd yay-bin
     makepkg -si
+    cd ..
 fi
 
 IsDBInstalled() {
