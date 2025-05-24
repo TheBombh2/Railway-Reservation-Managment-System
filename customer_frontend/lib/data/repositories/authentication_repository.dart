@@ -6,10 +6,6 @@ import 'package:customer_frontend/data/services/customer_service.dart';
 import 'package:customer_frontend/secrets.dart';
 import 'package:customer_frontend/utility/hashing_utility.dart';
 
-
-
-
-
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class AuthenticationRepository {
@@ -40,9 +36,7 @@ class AuthenticationRepository {
 
       _sessionToken = await _authenticationService.login(email, passwordHash);
 
-      final userData = await _customerService.getAllCustomerInfo(
-        _sessionToken,
-      );
+      final userData = await _customerService.getAllCustomerInfo(_sessionToken);
       _user = User.fromJson(userData);
       //Here we should get manager info using session token but for now we will use a placeholder manager
       _controller.add(AuthenticationStatus.authenticated);
@@ -52,12 +46,35 @@ class AuthenticationRepository {
     }
   }
 
+  Future<void> createUser({required UserRegister data}) async {
+    try {
+      final passwordSalt = await _authenticationService.getNewSalt();
+      final passwordHash = HashingUtility.hashWithSHA256(
+        data.password! + passwordSalt,
+      );
+
+      data.password = passwordHash;
+      data.passwordSalt = passwordSalt;
+      await _authenticationService.createUser(data.toJson());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<String> getUuid() async {
     try {
-      
       final uuid = await _authenticationService.getUuid(_sessionToken);
       return uuid;
-      
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  Future<String> getNewSalt() async {
+    try {
+      final salt = await _authenticationService.getNewSalt();
+      return salt;
     } catch (e) {
       rethrow;
     }

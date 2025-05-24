@@ -1,3 +1,4 @@
+import 'package:customer_frontend/data/model/user.dart';
 import 'package:customer_frontend/data/services/api_client.dart';
 import 'package:customer_frontend/secrets.dart';
 import 'package:dio/dio.dart';
@@ -33,12 +34,57 @@ class AuthenticationService {
     
   }
 
+
+
+    Future<void> createUser(dynamic data) async {
+    // simulate recieving session token
+    //return Secrets.rootSessionToken;
+
+    try {
+      final response = await _apiClient.postRequest(
+        '/users/create/customer',
+        body: data,
+        responseType: ResponseType.plain,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        case 404:
+          throw 'Email or password are invalid';
+        default:
+        print(e.toString());
+          throw 'Something went wrong.';
+      }
+    }
+    
+  }
+
+
+
+
   Future<String> getSalt(String email) async {
    
 
     try {
       final response = await _apiClient.getRequest(
         '/users/$email/customer/salt',
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+  Future<String> getNewSalt() async {
+  
+    try {
+      final response = await _apiClient.getRequest(
+        '/utility/salt',
       );
 
       return response;

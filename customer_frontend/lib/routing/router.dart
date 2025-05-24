@@ -5,7 +5,7 @@ import 'package:customer_frontend/ui/auth/bloc/authentication_bloc.dart';
 import 'package:customer_frontend/ui/login/widgets/login_screen.dart';
 import 'package:customer_frontend/ui/auth/widgets/onboarding/onboarding1.dart';
 import 'package:customer_frontend/ui/auth/widgets/onboarding/onboarding2.dart';
-import 'package:customer_frontend/ui/auth/widgets/register_screen.dart';
+import 'package:customer_frontend/ui/register/widgets/register_screen.dart';
 import 'package:customer_frontend/ui/auth/widgets/reset_password_screen.dart';
 import 'package:customer_frontend/ui/home/widgets/home_screen.dart';
 import 'package:customer_frontend/ui/profile/widgets/profile_screen.dart';
@@ -31,7 +31,7 @@ final router = GoRouter(
     final isUnAuthenticated =
         authStatus == AuthenticationStatus.unauthenticated;
 
-    final loggingIn = state.matchedLocation == '/login';
+    final loggingIn = state.matchedLocation.startsWith('/login');
 
     if (isUnAuthenticated && !loggingIn) {
       return '/login';
@@ -47,19 +47,19 @@ final router = GoRouter(
       builder: (ctx, state) => LoginScreen(),
       routes: [
         GoRoute(
-          path: '/register',
+          path: 'register',
           builder: (context, state) => RegisterScreen(),
         ),
         GoRoute(
-          path: '/reset_password',
+          path: 'reset_password',
           builder: (context, state) => ResetPasswordScreen(),
         ),
         GoRoute(
-          path: '/onboarding1',
+          path: 'onboarding1',
           builder: (context, state) => Onboarding1(),
         ),
         GoRoute(
-          path: '/onboarding2',
+          path: 'onboarding2',
           builder: (context, state) => Onboarding2(),
         ),
       ],

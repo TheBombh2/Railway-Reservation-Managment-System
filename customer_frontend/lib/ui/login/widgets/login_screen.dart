@@ -79,9 +79,11 @@ class LoginForm extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.go('/login/register');
+                        },
                         child: Text(
-                          'Forgot Password?',
+                          'New? Register!',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,
