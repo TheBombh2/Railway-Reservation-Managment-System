@@ -1,10 +1,7 @@
 #include <strstream>
-#include <sw/redis++/utils.h>
-#include "crow/app.h"
 #include "authorization.h"
 #include "database_connector.h"
 #include "database_common.h"
-#include "crow/common.h"
 #include "crypto.h"
 
 void AddAuthorizationGETRequests(crow::SimpleApp &app)

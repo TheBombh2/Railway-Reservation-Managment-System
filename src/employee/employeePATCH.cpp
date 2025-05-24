@@ -1,11 +1,9 @@
 #include "crypto.h"
-#include "crow/common.h"
 #include "employee.h"
 #include "middleware.h"
 #include "database_connector.h"
 #include "permissions.h"
 #include <chrono>
-#include <soci/soci-backend.h>
 
 void AddEmployeePATCHRequests(crow::App<AUTH_MIDDLEWARE>& app)
 {

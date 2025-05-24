@@ -2,7 +2,6 @@
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
-#include <yaml-cpp/yaml.h>
 #include <initializer_list>
 #include <fstream>
 #include "misc_functions.h"

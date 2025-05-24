@@ -37,7 +37,7 @@ sudo chown -R rrms:rrms /var/log/rrms
 sudo chown -R rrms:rrms /etc/rrms
 
 echo -e "\e[32mInstalling dependencies for an arch based system\e[0m"
-sudo pacman -Sy --needed --noconfirm cmake make gcc boost boost-libs yaml-cpp valkey hiredis
+sudo pacman -Sy --needed --noconfirm cmake make gcc boost boost-libs yaml-cpp valkey hiredis asio
 sudo systemctl enable --now valkey.service
 sudo sysctl vm.overcommit_memory=1 # Allow valkey to overcommit memory for performance
 

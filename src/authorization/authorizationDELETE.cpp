@@ -1,8 +1,6 @@
 #include <soci/transaction.h>
 #include <sw/redis++/command.h>
 #include "authorization.h"
-#include "crow/app.h"
-#include "crow/common.h"
 #include "database_connector.h"
 
 void AddAuthorizationDELETERequests(crow::SimpleApp &app)

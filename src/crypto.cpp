@@ -1,8 +1,9 @@
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
 #include <iomanip>
 #include <assert.h>
 #include <random>
+#include <array>
 #include <chrono>
 #include <algorithm>
 #include <openssl/rand.h>
@@ -60,7 +61,7 @@ std::string GetUUIDv7()
   //Copied From:
   //https://antonz.org/uuidv7/#cpp
   //
-  //I am not sure if this is the most optimized implemenation in the world, but it'll have to do
+  //I am not sure if this is the most optimized implementation in the world, but it'll have to do
 
   // random bytes
   std::random_device rd;

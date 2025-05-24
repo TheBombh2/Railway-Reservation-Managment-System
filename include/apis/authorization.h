@@ -1,15 +1,10 @@
 #pragma once
-#include <soci/session.h>
-#include <soci/soci.h>
-#include <sw/redis++/redis.h>
 #include "crow/app.h"
-#include "database_connector.h"
 #include "middleware.h"
 
 void AddAuthorizationGETRequests(crow::SimpleApp& app);
 void AddAuthorizationPOSTRequests(crow::SimpleApp& app);
 void AddAuthorizationDELETERequests(crow::SimpleApp& app);
-
 
 const inline std::string DELETE_CUSTOMER_QUERY_BASIC_INFO = 
 "DELETE FROM CustomerBasicInformation WHERE ID=:ID;";
