@@ -29,7 +29,8 @@ class AuthenticationRepository {
   Future<void> login({required String email, required String password}) async {
     try {
       //Should get salt with specific employee when endpoint is ready
-      final passwordSalt = Secrets.rootManagerPasswordSalt;
+      
+      final passwordSalt = await _authenticationService.getSalt(email);
       final passwordHash = HashingUtility.hashWithSHA256(
         password + passwordSalt,
       );
@@ -40,7 +41,7 @@ class AuthenticationRepository {
         _sessionToken,
       );
       _manager = Manager.fromJson(managerData);
-      //Here we should get manager info using session token but for now we will use a placeholder manager
+      
       _controller.add(AuthenticationStatus.authenticated);
     } catch (e) {
       _controller.add(AuthenticationStatus.unauthenticated);

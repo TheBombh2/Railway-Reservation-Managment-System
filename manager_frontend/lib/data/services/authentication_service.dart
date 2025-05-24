@@ -31,6 +31,24 @@ class AuthenticationService {
     
   }
 
+
+   Future<String> getSalt(String email) async {
+   
+
+    try {
+      final response = await _apiClient.getRequest(
+        '/users/$email/employee/salt',
+      );
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
    Future<String> getUuid(String sessionToken) async {
     // simulate recieving session token
     //return Secrets.rootSessionToken;

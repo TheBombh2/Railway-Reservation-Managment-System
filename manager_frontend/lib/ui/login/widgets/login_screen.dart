@@ -135,7 +135,6 @@ class _EmailInput extends StatelessWidget {
     );
     return TextField(
       key: const Key("login_email_field"),
-      controller: TextEditingController()..text = Secrets.rootManagerEmail,
 
       onChanged: (value) {
         context.read<LoginBloc>().add(LoginEmailChanged(value));
