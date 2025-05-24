@@ -5,7 +5,7 @@ if ! grep -qi "arch" /etc/os-release; then
     return -1
 fi
 
-if command -v yay > /dev/null; then 
+if ! command -v yay > /dev/null; then 
     echo -e "\e[33mThis install script is hardcoded for yay as an AUR helper. yay will be installed now\e[0m"
     sudo pacman -S --needed git base-devel
     git clone https://aur.archlinux.org/yay-bin.git
@@ -59,8 +59,8 @@ echo -e "\e[33mPlease note SOCI (MariaDB database wrapper), redis-plus-plus (red
 yay -S soci redis-plus-plus --noconfirm
 yay -S cpr --noconfirm --mflags="--nocheck" # --nocheck is due a bug with the latest version of curl
 
-echo "Now, the project (microservices backend) will start compiling\e[0m"
-echo "This might take a few minutes depending on your CPU's strength\e[0m"
+echo -e "\e[32mNow, the project (microservices backend) will start compiling\e[0m"
+echo -e "\e[32mThis might take a few minutes depending on your CPU's strength\e[0m"
 cmake -S . -B ./build/ -DCMAKE_BUILD_TYPE=release
 export MAKEFLAGS="-j$(nproc)"
 cd ./build/
