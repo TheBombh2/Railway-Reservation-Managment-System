@@ -57,13 +57,13 @@ echo "THE CONFIG FILE IS LOCATED AT /etc/valkey/valkey.conf\e[0m"
 
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
 echo -e "\e[33mPlease note SOCI (MariaDB database wrapper), redis-plus-plus (redis database wrapper), and cpr (HTTP requests library wrapper for libcurl) will be downloaded from the AUR from source!\e[0m"
+export MAKEFLAGS="-j$(nproc)"
 yay -S soci redis-plus-plus --noconfirm
 yay -S cpr --noconfirm --mflags="--nocheck" # --nocheck is due a bug with the latest version of curl
 
 echo -e "\e[32mNow, the project (microservices backend) will start compiling\e[0m"
 echo -e "\e[32mThis might take a few minutes depending on your CPU's strength\e[0m"
 cmake -S . -B ./build/ -DCMAKE_BUILD_TYPE=release
-export MAKEFLAGS="-j$(nproc)"
 cd ./build/
 sudo make install
 sudo systemctl daemon-reload
