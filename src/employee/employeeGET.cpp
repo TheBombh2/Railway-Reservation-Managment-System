@@ -201,11 +201,13 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<std::tm> deadlines(MAX_TASKS_RETURNED);
          std::vector<std::string> managerFirstNames(MAX_TASKS_RETURNED);
          std::vector<std::string> managerLastNames(MAX_TASKS_RETURNED);
+         std::vector<int> taskIDs(MAX_TASKS_RETURNED);
          soci::session db(pool);
          try
          {
             db << GET_TASKS_QUERY, soci::use(uuid), soci::into(titles), soci::into(descriptions),
             soci::into(deadlines), soci::into(completionDates, completionDateIndicators),
+            soci::into(taskIDs),
             soci::into(managerFirstNames), soci::into(managerLastNames);
          }
          catch(const std::exception& e)
@@ -225,6 +227,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
             result["tasks"][i]["deadline"] = FormatTimeToString(deadlines[i]);
             result["tasks"][i]["completionDate"] = 
              completionDateIndicators[i] == soci::indicator::i_ok ? FormatTimeToString(completionDates[i]) : "N/A";
+            result["tasks"][i]["id"] = taskIDs[i];
          }
          return crow::response(200, result);
          });

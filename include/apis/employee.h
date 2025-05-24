@@ -61,7 +61,7 @@ const inline std::string GET_TASK_ASSIGNEE_QUERY =
 const inline std::string COMPLETE_TASK_QUERY =
 "UPDATE `Task` SET `CompletionDate` = :Date WHERE `TaskID` = :ID; ";
 
-const inline std::string GET_UNCOMPLETED_TASKS = 
+const inline std::string GET_COMPLETED_TASKS = 
 "SELECT Title, Description, Deadline, CreatorEmployee, EBI.FirstName, EBI.LastName "
 "FROM `Task` T WHERE `AssignedEmployee` = :EmployeeID AND `CompletionDate` IS NOT NULL "
 "JOIN `EmployeeBasicInformation` EBI ON EBI.EmployeeID = T.CreatorEmployee; ";
@@ -87,7 +87,7 @@ const inline std::string GET_CITATIONS_QUERY =
 "WHERE EA.AssignedEmployee = :ID; ";
 
 const inline std::string GET_TASKS_QUERY = 
-"SELECT Title, Description, Deadline, CompletionDate, EBI.FirstName AS CreatorFirstName, EB"
+"SELECT Title, Description, Deadline, CompletionDate, TaskID,EBI.FirstName AS CreatorFirstName, EB"
 "I.LastName AS CreatorLastname FROM `Task` T "
 "JOIN `EmployeeBasicInformation` EBI ON EBI.`EmployeeID` = T.`CreatorEmployee` "
 "WHERE T.`AssignedEmployee` = :ID AND T.`CompletionDate` IS NULL; ";
