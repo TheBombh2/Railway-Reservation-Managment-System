@@ -166,4 +166,5 @@ const inline std::string GET_CUSTOMER_RESERVATIONS =
 "T.`Name` "
 "FROM `CustomerSeatReservation` CSR "
 "JOIN `TrainCarAssignedTrain` TCAT ON TCAT.`TrainCarID` = CSR.`TrainCarID` "
-"JOIN `Train` T ON T.`ID` = TCAT.`TrainID`; ";
+"JOIN `Train` T ON T.`ID` = TCAT.`TrainID` "
+"WHERE `CustomerID` = :ID; ";

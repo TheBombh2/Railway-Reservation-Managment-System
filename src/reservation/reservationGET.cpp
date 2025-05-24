@@ -459,11 +459,12 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          std::vector<int> seatIDs(MAX_TICKETS_RETURNED);
          std::vector<std::tm> trainArrivalTime(MAX_TICKETS_RETURNED), destinationArrivalTime(MAX_TICKETS_RETURNED);
          std::vector<std::string> trainNames(MAX_TICKETS_RETURNED); 
+         std::string customerUUID = tokenInfo.GetUUID();
          try
          {
             soci::session db(pool);
             db << GET_CUSTOMER_RESERVATIONS, soci::into(seatIDs), soci::into(trainArrivalTime),
-            soci::into(destinationArrivalTime), soci::into(trainNames);
+            soci::into(destinationArrivalTime), soci::into(trainNames), soci::use(customerUUID);
          }
          catch(const std::exception& e)
          {
