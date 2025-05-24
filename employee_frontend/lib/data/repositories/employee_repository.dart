@@ -1,17 +1,15 @@
-
-
 import 'package:employee_frontend/data/model/appraisal.dart';
 import 'package:employee_frontend/data/model/citation.dart';
 import 'package:employee_frontend/data/model/task.dart';
+import 'package:employee_frontend/data/services/authentication_service.dart';
 import 'package:employee_frontend/data/services/employee_service.dart';
 
 class EmployeeRepository {
   EmployeeRepository({required EmployeeService employeeService})
-    : _employeeService = employeeService;
+      : _employeeService = employeeService;
 
   final EmployeeService _employeeService;
 
-  
   Future<TasksListModel> getAllTasks(String sessionToken) async {
     try {
       final raw = await _employeeService.getAllTasks(sessionToken);
@@ -22,9 +20,11 @@ class EmployeeRepository {
     }
   }
 
-   Future<AppraisalsListModel> getAllAppraisals(String employeeID,String sessionToken) async {
+  Future<AppraisalsListModel> getAllAppraisals(
+      String employeeID, String sessionToken) async {
     try {
-      final raw = await _employeeService.getAllAppraisals(employeeID,sessionToken);
+      final raw =
+          await _employeeService.getAllAppraisals(employeeID, sessionToken);
       final list = AppraisalsListModel.fromJson(raw);
       return list;
     } catch (e) {
@@ -32,17 +32,24 @@ class EmployeeRepository {
     }
   }
 
-
-  Future<CitationsListModel> getAllCitations(String employeeID,String sessionToken) async {
+  Future<CitationsListModel> getAllCitations(
+      String employeeID, String sessionToken) async {
     try {
-      final raw = await _employeeService.getAllCitations(employeeID,sessionToken);
+      final raw =
+          await _employeeService.getAllCitations(employeeID, sessionToken);
       final list = CitationsListModel.fromJson(raw);
       return list;
     } catch (e) {
       rethrow;
     }
   }
-  
 
- 
+  Future<void> completeTask(
+      {required int taskID, required String sessionToken}) async {
+    try {
+      await _employeeService.completeTask(taskID, sessionToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

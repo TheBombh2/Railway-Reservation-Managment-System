@@ -17,6 +17,9 @@ class TasksList extends StatelessWidget {
             context,
           ).showSnackBar(SnackBar(content: Text(state.message)));
         }
+        if(state is TasksOperationSuccess){
+          context.read<TasksBloc>().add(LoadTasks());
+        }
       },
       builder: (context, state) {
         if (state is TasksLoading) {
@@ -25,8 +28,11 @@ class TasksList extends StatelessWidget {
           );
         }
         if (state is TasksLoaded) {
-          return ListView.builder(
-            itemCount: state.tasksList.size,
+          return ListView.separated(
+            separatorBuilder: (context, index) {
+              return Divider();
+            },
+            itemCount: state.tasksList.size!,
             itemBuilder: (ctx, index) {
               return TaskItem(
                 task: state.tasksList.tasks![index],

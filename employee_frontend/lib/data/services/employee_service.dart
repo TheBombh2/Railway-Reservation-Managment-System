@@ -71,4 +71,18 @@ Future<Map<String, dynamic>> getAllTasks(String sessionToken) async {
   }
 
 
+    Future<void> completeTask(int taskID,String sessionToken) async {
+    try {
+      final response = await _apiClient.patchRequest(
+        '/tasks/$taskID/complete',
+        sessionToken: sessionToken
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw 'Something went wrong.';
+    }
+  }
+
+
 }

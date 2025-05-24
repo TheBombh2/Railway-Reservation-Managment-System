@@ -1,6 +1,8 @@
 import 'package:employee_frontend/data/model/task.dart';
+import 'package:employee_frontend/ui/shared_features/tasks/bloc/tasks_bloc.dart';
 import 'package:employee_frontend/ui/shared_features/tasks/widgets/task_item_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TaskItem extends StatelessWidget {
   const TaskItem({
@@ -20,7 +22,11 @@ class TaskItem extends StatelessWidget {
           useSafeArea: true,
           enableDrag: true,
           builder: (ctx) {
-            return TaskItemDetails(task:task);
+            final bloc = context.read<TasksBloc>();
+            return BlocProvider.value(
+              value: bloc,
+              child: TaskItemDetails(task: task),
+            );
           }),
       splashColor: Color(0xffF3F5FF),
       hoverColor: Color(0xffF3F5FF),

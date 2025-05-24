@@ -31,6 +31,7 @@ class Task {
   String? managerFirstName;
   String? description;
   String? title;
+  int? taskID;
 
   Task(
       {this.completionDate,
@@ -38,7 +39,8 @@ class Task {
       this.managerLastName,
       this.managerFirstName,
       this.description,
-      this.title});
+      this.title,
+      this.taskID});
 
   Task.fromJson(Map<String, dynamic> json) {
     completionDate = json['completionDate'];
@@ -47,6 +49,7 @@ class Task {
     managerFirstName = json['managerFirstName'];
     description = json['description'];
     title = json['title'];
+    taskID = json['id'];
   }
 
   Map<String, dynamic> toJson() {

@@ -6,7 +6,9 @@ class AuthenticationService {
   final ApiClient _apiClient;
 
   AuthenticationService(Dio dio)
-    : _apiClient = ApiClient(dio, subdomain: 'authorization',portNumber: Secrets.authorizationPortNumber);
+      : _apiClient = ApiClient(dio,
+            subdomain: 'authorization',
+            portNumber: Secrets.authorizationPortNumber);
 
   Future<String> login(String email, String passwordHash) async {
     // simulate recieving session token
@@ -21,6 +23,7 @@ class AuthenticationService {
 
       return response;
     } on DioException catch (e) {
+      //print(e.toString());
       switch (e.response?.statusCode) {
         case 404:
           throw 'Email or password are invalid';
@@ -28,28 +31,59 @@ class AuthenticationService {
           throw 'Something went wrong.';
       }
     }
-    
   }
 
-   Future<String> getUuid(String sessionToken) async {
+  Future<String> getUuidFromSessionToken(String sessionToken) async {
     // simulate recieving session token
     //return Secrets.rootSessionToken;
 
     try {
+      final response = await _apiClient.getRequest('/users/uuid',
+          sessionToken: sessionToken);
+
+      return response;
+    } on DioException catch (e) {
+      switch (e.response?.statusCode) {
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+  Future<String> getUuidWithEmail(String email) async {
+   
+
+    try {
       final response = await _apiClient.getRequest(
-        '/users/uuid',
-        sessionToken: sessionToken
+        '/users/$email/employee/uuid',
+      );
+
+      return response;
+    } on DioException catch (e) {
+      print(e.toString());
+      switch (e.response?.statusCode) {
+        default:
+          throw 'Something went wrong.';
+      }
+    }
+  }
+
+
+  Future<String> getSalt(String email) async {
+   
+
+    try {
+      final response = await _apiClient.getRequest(
+        '/users/$email/employee/salt',
       );
 
       return response;
     } on DioException catch (e) {
       switch (e.response?.statusCode) {
-        
         default:
           throw 'Something went wrong.';
       }
     }
-    
   }
 
   Future<void> logout() async {
@@ -71,6 +105,5 @@ class AuthenticationService {
     }
   
   */
-}
-
+  }
 }

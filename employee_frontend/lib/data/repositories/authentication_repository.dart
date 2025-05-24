@@ -6,16 +6,14 @@ import 'package:employee_frontend/data/services/employee_service.dart';
 import 'package:employee_frontend/secrets.dart';
 import 'package:employee_frontend/utility/hashing_utility.dart';
 
-
-
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class AuthenticationRepository {
   AuthenticationRepository({
     required AuthenticationService authenticationService,
     required EmployeeService employeeService,
-  }) : _authenticationService = authenticationService,
-       _employeeService = employeeService;
+  })  : _authenticationService = authenticationService,
+        _employeeService = employeeService;
 
   final AuthenticationService _authenticationService;
   final EmployeeService _employeeService;
@@ -31,7 +29,8 @@ class AuthenticationRepository {
   Future<void> login({required String email, required String password}) async {
     try {
       //Should get salt with specific employee when endpoint is ready
-      final passwordSalt = Secrets.rootManagerPasswordSalt;
+      final passwordSalt = await _authenticationService.getSalt(email);
+
       final passwordHash = HashingUtility.hashWithSHA256(
         password + passwordSalt,
       );
@@ -52,10 +51,8 @@ class AuthenticationRepository {
 
   Future<String> getUuid() async {
     try {
-      
-      final uuid = await _authenticationService.getUuid(_sessionToken);
+      final uuid = await _authenticationService.getUuidFromSessionToken(_sessionToken);
       return uuid;
-      
     } catch (e) {
       rethrow;
     }

@@ -34,6 +34,22 @@ class ApiClient {
     return response.data;
   }
 
+
+    Future<dynamic> patchRequest(
+    String endPoint, {
+    Map<String, dynamic>? queryParams,
+    String? sessionToken,
+  }) async {
+    final url = '${useIPandPort ? _buildIPBasedUrl() : _buildBaseUrl()}$endPoint';
+
+    final response = await _dio.patch(
+      url,
+      queryParameters: queryParams,
+      options: _buildOptions(sessionToken),
+    );
+    return response.data;
+  }
+
   Future<dynamic> postRequest(
     String endPoint, {
     required Map<String, dynamic> body,

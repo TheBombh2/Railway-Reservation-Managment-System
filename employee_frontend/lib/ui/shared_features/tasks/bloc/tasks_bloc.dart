@@ -15,6 +15,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       required this.authenticationRepository})
       : super(TasksInitial()) {
     on<LoadTasks>(_onLoadTasks);
+    on<CompleteTask>(_onCompleteTask);
   }
 
   Future<void> _onLoadTasks(
@@ -26,6 +27,21 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       var tasksList = await employeeRepository
           .getAllTasks(authenticationRepository.getSessionToken());
       emit(TasksLoaded(tasksList));
+    } catch (e) {
+      emit(TasksError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onCompleteTask(
+    CompleteTask event,
+    Emitter<TasksState> emit,
+  ) async {
+    emit(TasksLoading());
+    try {
+      await employeeRepository.completeTask(
+          taskID: event.taskID,
+          sessionToken: authenticationRepository.getSessionToken());
+      emit(TasksOperationSuccess());
     } catch (e) {
       emit(TasksError(message: e.toString()));
     }
