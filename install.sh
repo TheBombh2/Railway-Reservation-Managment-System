@@ -1,8 +1,16 @@
 #!/bin/bash
 
 if ! grep -qi "arch" /etc/os-release; then
-    echo "\e[31mThis install script is only supported on Arch Linux. Either install Arch Linux or manually download the dependencies for the project in dependencies.txt. You can also use the precompiled binaries. You will need to install the database management systems (Redis/Valeky and MariaDB/MySQL).\e[0m"
+    echo -e "\e[31mThis install script is only supported on Arch Linux. Either install Arch Linux or manually download the dependencies for the project in dependencies.txt. You can also use the precompiled binaries. You will need to install the database management systems (Redis/Valeky and MariaDB/MySQL).\e[0m"
     return -1
+fi
+
+if command -v yay > /dev/null; then 
+    echo -e "\e[33mThis install script is hardcoded for yay as an AUR helper. yay will be installed now\e[0m"
+    sudo pacman -S --needed git base-devel
+    git clone https://aur.archlinux.org/yay-bin.git
+    cd yay-bin
+    makepkg -si
 fi
 
 IsDBInstalled() {
@@ -13,21 +21,21 @@ IsDBInstalled() {
     fi
 }
 
-echo -e "\e[31mCreating user to run as the programs\e[0m"
+echo -e "\e[32mCreating user to run as the programs\e[0m"
 sudo useradd -M -s /bin/nologin rrms
 
-echo -e "\e[31mCreating directory for logs\e[0m"
+echo -e "\e[32mCreating directory for logs\e[0m"
 sudo mkdir /var/log/rrms
 sudo mkdir /var/log/rrms/database/
 
-echo -e "\e[31mCreating directory for config information\e[0m"
+echo -e "\e[32mCreating directory for config information\e[0m"
 sudo mkdir /etc/rrms
 
-echo -e "\e[31mModifying permissions for newly created directories\e[0m"
+echo -e "\e[32mModifying permissions for newly created directories\e[0m"
 sudo chown -R rrms:rrms /var/log/rrms
 sudo chown -R rrms:rrms /etc/rrms
 
-echo -e "\e[31mInstalling dependencies for an arch based system\e[0m"
+echo -e "\e[32mInstalling dependencies for an arch based system\e[0m"
 sudo pacman -Sy --needed --noconfirm cmake make gcc boost boost-libs yaml-cpp valkey hiredis
 sudo systemctl enable --now valkey.service
 sudo sysctl vm.overcommit_memory=1 # Allow valkey to overcommit memory for performance
