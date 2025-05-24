@@ -33,7 +33,7 @@ class AuthenticationRepository {
   Future<void> login({required String email, required String password}) async {
     try {
       //Should get salt with specific employee when endpoint is ready
-      final passwordSalt = Secrets.customerPasswordSalt;
+      final passwordSalt = await _authenticationService.getSalt(email);
       final passwordHash = HashingUtility.hashWithSHA256(
         password + passwordSalt,
       );

@@ -10,7 +10,7 @@ class ApiClient {
   ApiClient(
     this._dio, {
     String subdomain = 'reservation',
-    this.useIPandPort = false,
+    this.useIPandPort = true,
     this.portNumber = Secrets.reservationPortNumber,
   }) : _subdomain = subdomain;
 

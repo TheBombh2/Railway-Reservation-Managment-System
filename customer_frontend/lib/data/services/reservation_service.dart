@@ -57,11 +57,12 @@ class ReservationService {
     }
   }
 
-  Future<void> reserveTrain(dynamic ticket, String passwordHash) async {
+  Future<void> reserveTrain(dynamic ticket, String sessionToken) async {
     try {
       final response = await _apiClient.postRequest(
         '/reservations/create',
         body: ticket,
+        sessionToken: sessionToken,
         responseType: ResponseType.plain,
       );
 

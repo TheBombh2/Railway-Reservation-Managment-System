@@ -25,7 +25,7 @@ class AppraisalsScreen extends StatelessWidget {
         appBar: AppBar(
           leading: BackButton(color: Color(0xff0076CB)),
           title: Text(
-            'Appraisals',
+            'My Tickets',
             style: TextStyle(
               color: Color(0xff0076CB),
               fontSize: 22,
