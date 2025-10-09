@@ -1,5 +1,6 @@
 #include "authorization.h"
 #include "crow/app.h"
+#include "crow/logging.h"
 #include "database_connector.h"
 #include "global_variables.h"
 #include "misc_functions.h"
@@ -22,7 +23,6 @@ int main(int argc, char **argv) {
     WriteInitialSecretsFile();
     return -2;
   }
-  std::cout << "WE INITIALIZED\n";
   InitializeConnectionStrings();
   InitializeConnectionPool();
   InitializeRedisString();
@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
   YAML::Node root = LoadSecretsFile();
 
   crow::SimpleApp authorizationApp;
+    authorizationApp.loglevel(crow::LogLevel::Warning);
   AddAuthorizationGETRequests(authorizationApp);
   AddAuthorizationPOSTRequests(authorizationApp);
   AddAuthorizationDELETERequests(authorizationApp);

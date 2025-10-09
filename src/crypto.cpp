@@ -32,7 +32,7 @@ std::string GetRandomSalt(const int& length)
   return output;
 }
 
-std::string CeasarCipher(const std::string& inputText, CEASAR_CIPHER_MODE mode, int amount)
+std::string CaesarCipher(const std::string& inputText, CAESAR_CIPHER_MODE mode, int amount)
 {
   std::string output;
   output.resize(inputText.size());
@@ -41,9 +41,9 @@ std::string CeasarCipher(const std::string& inputText, CEASAR_CIPHER_MODE mode, 
   for(unsigned int i = 0; i < inputText.size(); i++)
   {
     int asciiVal = static_cast<int>(inputText[i]);
-    if(mode == CEASAR_CIPHER_MODE::Encrypt)
+    if(mode == CAESAR_CIPHER_MODE::Encrypt)
       asciiVal += amount;
-    else if(mode == CEASAR_CIPHER_MODE::Decrypt)
+    else if(mode == CAESAR_CIPHER_MODE::Decrypt)
       asciiVal -= amount;
   
     //Truncate output to limited values

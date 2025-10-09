@@ -23,7 +23,8 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
             return crow::response(400, "bad request");
         } 
         
-        std::string uuid = GetCustomerUUID(email);
+        soci::session db(pool);
+        std::string uuid = GetCustomerUUID(email, db);
         if(uuid.empty())
         {
             return crow::response(404, "user not found");
@@ -32,7 +33,6 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
 
         try
         {
-            soci::session db(pool);
             db << GET_CUSTOMER_PASSWORD_HASH, soci::use(uuid), soci::into(passwordHashDB);
         }
         catch(const std::exception& e)
@@ -66,7 +66,7 @@ void AddAuthorizationPOSTRequests(crow::SimpleApp &app)
             return crow::response(400, "bad request");
          }
          soci::session db(pool);
-         std::string uuid = GetEmployeeUUID(email);
+         std::string uuid = GetEmployeeUUID(email, db);
          std::string hashDatabase;
          if(uuid.empty())
             return crow::response(404, "user not found");

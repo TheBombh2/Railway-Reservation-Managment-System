@@ -122,7 +122,8 @@ void AddReservationGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         ([&](const crow::request& req, const std::string& email)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
-         std::string customerUUID = GetCustomerUUID(email);
+         soci::session db(pool);
+         std::string customerUUID = GetCustomerUUID(email, db);
          if(customerUUID.empty())
             return crow::response(404, "not found");
          if(tokenInfo.GetUUID() != customerUUID)

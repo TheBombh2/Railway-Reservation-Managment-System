@@ -372,7 +372,7 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
          }
          crow::json::wvalue result;
          result["size"] = employeeIDs.size();
-         std::cout << "EMPLOYEE SIZE: " << '\n';
+         //std::cout << "EMPLOYEE SIZE: " << '\n';
          for(unsigned int i = 0; i < employeeIDs.size(); i++)
          {
             result["employees"][i]["employeeFirstName"] = employeeFirstNames[i];
@@ -396,7 +396,8 @@ void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
         ([&](const crow::request& req, const std::string& email)
          {
          AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
-         std::string employeeUUID = GetEmployeeUUID(email);
+         soci::session db(pool);
+         std::string employeeUUID = GetEmployeeUUID(email, db);
          if(employeeUUID.empty())
             return crow::response(404, "not found");
          return crow::response(200, employeeUUID);

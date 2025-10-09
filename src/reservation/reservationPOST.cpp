@@ -153,9 +153,9 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             //Then, we will create a X,Y, and Z amount of seats in each car according to the
             //parameters given
             long long carIDs[3];
-            for(unsigned int i = 0; i < 3; i++)
+            for(unsigned int i = 1; i <= 3; i++)
             {
-                db << CREATE_TRAIN_CAR_QUERY, soci::use(i + 1), soci::use(trainTypeID);
+                db << CREATE_TRAIN_CAR_QUERY, soci::use(i), soci::use(trainTypeID);
                 db.get_last_insert_id("Train Car", carIDs[i]);
             }
             
@@ -166,14 +166,14 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             }
 
             //Now, we create seats for those cars
-            for(int i = 0; i < firstClassSeatNum; i++)
-                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i + 1), soci::use(carIDs[0]);
+            for(int i = 1; i <= firstClassSeatNum; i++)
+                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i), soci::use(carIDs[0]);
 
-            for(int i = 0; i < secondClassSeatNum; i++)
-                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i + 1), soci::use(carIDs[1]);
+            for(int i = 1; i <= secondClassSeatNum; i++)
+                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i), soci::use(carIDs[1]);
 
-            for(int i = 0; i < thirdClassSeatNum; i++)
-                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i + 1), soci::use(carIDs[2]);
+            for(int i = 1; i <= thirdClassSeatNum; i++)
+                db << CREATE_TRAIN_SEATS_QUERY, soci::use(i), soci::use(carIDs[2]);
 
             trans.commit();
          }
@@ -411,7 +411,8 @@ void AddReservationPOSTRequests(crow::App<AUTH_MIDDLEWARE> &app)
             soci::transaction trans(db);
             for(int i = 0; i < ticketsNum; i++)
             {
-                db << CREATE_CUSTOMER_SEAT_RESERVATION, soci::use(thisMinimumSeatNum + i + 1),
+                int temp = thisMinimumSeatNum + i + 1;
+                db << CREATE_CUSTOMER_SEAT_RESERVATION, soci::use(temp),
                 soci::use(trainCarIDs[ticketType - 1]),
                 soci::use(customerID), soci::use(trainArrivalDate), soci::use(destinationArrivalDate),
                 soci::use(costNum), soci::use(SAMPLE_PDF_PATH);

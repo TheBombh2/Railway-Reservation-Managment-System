@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <filesystem>
 #include <iostream>
+#include "crow/logging.h"
 #include "middleware.h"
 #include "crow/app.h"
 #include "global_variables.h"
@@ -31,6 +32,7 @@ int main(int argc, char** argv)
   YAML::Node root = LoadSecretsFile();
 
   crow::App<AUTH_MIDDLEWARE> reservationApp;
+    reservationApp.loglevel(crow::LogLevel::Warning);
   AddReservationGETRequests(reservationApp); 
   AddReservationPOSTRequests(reservationApp);
   AddReservationDELETERequests(reservationApp);

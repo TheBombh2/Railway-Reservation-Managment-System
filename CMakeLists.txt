@@ -12,14 +12,14 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "../lib/$<CONFIG>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/$<CONFIG>")
 set(CMAKE_INSTALL_PREFIX "/usr")
-set(BUILD_SHARED_LIBS ON)
+set(BUILD_SHARED_LIBS OFF)
 set(CPR_USE_SYSTEM_CURL ON)
 
 # Used for concise linking 
 set(COMMON_LIBS
   yaml-cpp
-  SOCI::soci_core
-  SOCI::soci_mysql
+  SOCI::MySQL
+  Threads::Threads
   misc_functions
   database_connector
   database_common
@@ -31,6 +31,7 @@ find_package(ZLIB REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system date_time)   # Asio requires Boost
 set(SOCI_STATIC true)
 find_package(SOCI REQUIRED)
+find_package(Threads REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(cpr REQUIRED)
 
@@ -79,7 +80,7 @@ install(FILES ./src/systemd/rrms-authorization.service
 
 add_compile_options(
     $<$<CONFIG:Debug>:-g>
-    $<$<CONFIG:Release>:-O2 -s>
+    $<$<CONFIG:Release>:-O3 -s>
 )
 
 add_custom_target(debug

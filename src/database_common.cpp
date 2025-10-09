@@ -3,9 +3,8 @@
 #include "database_connector.h"
 #include "database_common.h"
 
-std::string GetCustomerUUID(const std::string& email)
+std::string GetCustomerUUID(const std::string& email, soci::session& db)
 {
-    soci::session db(pool);
     std::string uuid;
     try
     {
@@ -13,6 +12,7 @@ std::string GetCustomerUUID(const std::string& email)
     }
     catch(const std::exception& e)
     {
+        CHECK_DATABASE_DISCONNECTION
         std::cerr << "DATABASE ERROR (GetCustomerUUID(const std::string& email)): " << e.what() << '\n';
         std::cerr << "email: " << email << '\n';
         return "";
@@ -20,9 +20,8 @@ std::string GetCustomerUUID(const std::string& email)
     return uuid;
 }
 
-std::string GetEmployeeUUID(const std::string &email)
+std::string GetEmployeeUUID(const std::string &email, soci::session& db)
 {
-    soci::session db(pool);
     std::string uuid;
     try
     {
@@ -30,6 +29,7 @@ std::string GetEmployeeUUID(const std::string &email)
     }
     catch (const std::exception& e)
     {
+        CHECK_DATABASE_DISCONNECTION
         std::cerr << "DATABASE ERROR (GetEmployeeUUID(const std::string& email)): " << e.what() << '\n';
         std::cerr << "email: " << email << '\n';
         return "";
@@ -49,6 +49,7 @@ std::string GetEmployeeManagerUUID(const std::string& uuid)
     }
     catch(const std::exception& e)
     {
+        CHECK_DATABASE_DISCONNECTION
         std::cerr << "DATABASE ERROR (GetEmployeeMangerUUID(const std::string& uuid)): " << e.what() << '\n';
         std::cerr << "uuid: " << uuid << '\n';
         return "0";
@@ -73,6 +74,7 @@ std::pair<uint8_t, unsigned long long> GetEmployeePermissions(const std::string&
     }
     catch(const std::exception& e)
     {
+        CHECK_DATABASE_DISCONNECTION
         std::cerr << "DATABASE ERROR (GetEmployeePermissions(const std::string& uuid)): " << e.what() << '\n';
         std::cerr << "uuid: " << uuid << '\n';
         return std::make_pair(0, 0);

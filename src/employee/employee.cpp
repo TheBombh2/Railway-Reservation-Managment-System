@@ -37,6 +37,7 @@ int main(int argc, char** argv)
   AddEmployeePATCHRequests(employeeApp);
 
     unsigned short portNum = root["services"]["EMPLOYEE_PORT_NUMBER"].as<unsigned short>();
+    employeeApp.loglevel(crow::LogLevel::Warning);
   employeeApp.multithreaded().port(portNum).run();
   return 0;
 }

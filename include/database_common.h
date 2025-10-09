@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <utility>
 #include <string>
+#include "database_connector.h"
 
 #define CHECK_NULLABILITY(stringVar) stringVar, stringVar.size() ? OK_INDICATOR : NULL_INDICATOR 
 #define CHECK_NULLABILITY_DOUBLE(doubleVar) doubleVar, doubleVar != 0.0 ? OK_INDICATOR : NULL_INDICATOR
@@ -20,8 +21,8 @@ const inline std::string GET_EMPLOYEE_PERMISSIONS_QUERY =
 const inline std::string GET_EMPLOYEE_MANAGER_UUID_QUERY =
 "SELECT ManagerID FROM EmployeeBasicInformation WHERE EmployeeID=:ID";
 
-std::string GetCustomerUUID(const std::string& email);
-std::string GetEmployeeUUID(const std::string& email);
+std::string GetCustomerUUID(const std::string& email, soci::session& db);
+std::string GetEmployeeUUID(const std::string& email, soci::session& db);
 std::string GetEmployeeManagerUUID(const std::string& uuid);
 std::pair<uint8_t, unsigned long long> GetEmployeePermissions(const std::string& uuid);
 
