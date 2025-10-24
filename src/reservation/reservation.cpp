@@ -27,12 +27,13 @@ int main(int argc, char** argv)
   InitializeConnectionStrings();
   InitializeConnectionPool();
   InitializeRedisString();
-  InitializeAuthURL();
+  InitializeAuth();
   dbRedis = new redis::Redis(redisConnectionOptions, redisPoolOptions);
   YAML::Node root = LoadSecretsFile();
 
   crow::App<AUTH_MIDDLEWARE> reservationApp;
     reservationApp.loglevel(crow::LogLevel::Warning);
+
   AddReservationGETRequests(reservationApp); 
   AddReservationPOSTRequests(reservationApp);
   AddReservationDELETERequests(reservationApp);

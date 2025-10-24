@@ -35,7 +35,7 @@ void InitializeRedisString();
 inline redis::ConnectionOptions redisConnectionOptions;
 inline redis::ConnectionPoolOptions redisPoolOptions;
 inline std::mutex poolMutex;
-inline soci::connection_pool pool(THREADS_NUMBER * 1.5);
+inline soci::connection_pool pool(THREADS_NUMBER);
 
 inline soci::indicator NULL_INDICATOR = soci::indicator::i_null;
 inline soci::indicator OK_INDICATOR = soci::indicator::i_ok;

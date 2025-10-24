@@ -3,7 +3,7 @@
 #include <string>
 #include <array>
 
-int GetSubPermissionIndex(uint8_t permission);
+constexpr int GetSubPermissionIndex(uint8_t permission) noexcept;
 
 class SessionTokenInfo
 {
@@ -23,7 +23,7 @@ class SessionTokenInfo
     bool HasSubPermission(uint8_t perm, uint8_t subPerm);
 
   private:
+    std::string uuid;
     uint8_t permission;
     std::array<uint8_t, 8> subPermissions;
-    std::string uuid;
 };

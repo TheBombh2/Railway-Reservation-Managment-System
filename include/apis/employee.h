@@ -2,6 +2,7 @@
 #include "crow/app.h"
 #include "middleware.h"
 #include "permissions.h"
+#include "tokens.h"
 
 void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE>& app);
 void AddEmployeePOSTRequests(crow::App<AUTH_MIDDLEWARE>& app);

@@ -7,6 +7,7 @@
 #include "date/date.h"
 #include "crow/app.h"
 #include "middleware.h"
+#include "tokens.h"
 
 class RouteGraph
 {

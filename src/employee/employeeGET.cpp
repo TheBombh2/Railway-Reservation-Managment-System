@@ -1,4 +1,5 @@
 #include <vector>
+#include "crow/common.h"
 #include "database_common.h"
 #include "database_connector.h"
 #include "employee.h"
@@ -8,6 +9,14 @@
 
 void AddEmployeeGETRequests(crow::App<AUTH_MIDDLEWARE> &app)
 {
+
+    CROW_ROUTE(app, "/hello-world").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         AUTH_INIT(PERMISSIONS::NONE_PERM, SUB_PERMISSIONS::NONE_SUBPERM)
+         return crow::response(200, "Hello, World!");
+         });
+
     CROW_ROUTE(app, "/users/<string>/appraisals").methods(crow::HTTPMethod::GET)
         ([&](const crow::request& req, const std::string& uuidRequest)
          {

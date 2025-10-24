@@ -26,18 +26,26 @@ int main(int argc, char** argv)
   InitializeConnectionStrings();
   InitializeConnectionPool();
   InitializeRedisString();
-  InitializeAuthURL();
+  InitializeAuth();
   dbRedis = new redis::Redis(redisConnectionOptions, redisPoolOptions);
   YAML::Node root = LoadSecretsFile();
 
   crow::App<AUTH_MIDDLEWARE> employeeApp;
+  crow::App helloWorldApp;
   AddEmployeeGETRequests(employeeApp); 
   AddEmployeePOSTRequests(employeeApp);
   AddEmployeeDELETERequests(employeeApp);
   AddEmployeePATCHRequests(employeeApp);
 
+    CROW_ROUTE(helloWorldApp, "/hello-world").methods(crow::HTTPMethod::GET)
+        ([&](const crow::request& req)
+         {
+         return crow::response(200, "Hello, World!");
+         });
+
     unsigned short portNum = root["services"]["EMPLOYEE_PORT_NUMBER"].as<unsigned short>();
     employeeApp.loglevel(crow::LogLevel::Warning);
   employeeApp.multithreaded().port(portNum).run();
+  //helloWorldApp.port(portNum).run();
   return 0;
 }

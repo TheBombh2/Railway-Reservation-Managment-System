@@ -38,6 +38,7 @@ void WriteInitialSecretsFile()
   YAML::Node database;
   YAML::Node application; 
   YAML::Node services;
+  YAML::Node performance;
 
   database["DB_IP"] = "127.0.0.1";
   database["DB_PORT"] = 3306;
@@ -67,9 +68,12 @@ void WriteInitialSecretsFile()
   services["FINANCIAL_IP_ADDRESS"] = "127.0.0.1";
   services["FINANCIAL_USE_SSL"] = false;
 
+  performance["ESTIMATED_USERS"] = 20000;
+
   root["database"] = database;
   root["application"] = application;
   root["services"] = services;
+  root["performance"] = performance;
   
   std::ofstream outputFile(SECRETS_LOCATION);
   outputFile << root;

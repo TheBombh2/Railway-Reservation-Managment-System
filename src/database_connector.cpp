@@ -68,7 +68,7 @@ void InitializeRedisString()
   redisConnectionOptions.socket_timeout = std::chrono::milliseconds(600);
   redisConnectionOptions.connect_timeout = std::chrono::milliseconds(600);
   redisConnectionOptions.db = 0;
-  redisPoolOptions.size = THREADS_NUMBER;
+  redisPoolOptions.size = THREADS_NUMBER * 1.5;
   redisPoolOptions.wait_timeout = std::chrono::milliseconds(600);
   redisPoolOptions.connection_lifetime = std::chrono::minutes(10);
   std::cout << "Size of redis object: " << sizeof(redis::Redis) << '\n';

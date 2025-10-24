@@ -11,8 +11,8 @@ void AddAuthorizationGETRequests(crow::SimpleApp &app)
     ([](const crow::request& req)
      {
         std::string salt = GetRandomSalt(SALT_LENGTH);
-        if(salt.empty())
-          return crow::response(500);
+        //if(salt.empty())
+          //return crow::response(500);
         return crow::response(200, salt);
      });
 

@@ -1,14 +1,17 @@
 #include <cstdint>
 #include <sstream>
+#include <bit>
 #include "tokens.h"
 #include "permissions.h"
 
-int GetSubPermissionIndex(uint8_t permission)
+constexpr int GetSubPermissionIndex(uint8_t permission) noexcept
 {
     if(permission == 0)
         return -1;
 
-    switch(permission)
+    return std::countr_zero(permission);
+
+    /*switch(permission)
     {
         case PERMISSIONS::HUMAN_RESOURCES:
             return DEP_HUMAN_RESOURCES;
@@ -27,8 +30,9 @@ int GetSubPermissionIndex(uint8_t permission)
         case PERMISSIONS::JOBS:
             return DEPARTMENT_IDS::DEP_JOBS;
     }
-    return -1;
+    return -1;*/
 }
+
 SessionTokenInfo::SessionTokenInfo(uint8_t permission, std::string subPermissionsString, std::string uuid)
 {
   this->uuid.reserve(36);

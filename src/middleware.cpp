@@ -10,7 +10,7 @@
 #include "misc_functions.h"
 #include "tokens.h"
 
-void InitializeAuthURL()
+void InitializeAuth()
 {
     YAML::Node root = LoadSecretsFile();
     std::string possibleIP = root["services"]["AUTHORIZATION_IP_ADDRESS"].as<std::string>();
@@ -33,18 +33,29 @@ void InitializeAuthURL()
         //This means the IP address section contained what we can only assume to be a valid URL.
         authServiceURL = possibleIP + ':' + std::to_string(portNum);
     }
+    authServiceFinalURL = authServiceURL + authTokenPath;
+    int tokenCacheSize = root["performance"]["ESTIMATED_USERS"].as<int>();
+    TOKEN_CACHE.reserve(tokenCacheSize);
 }
 
 SessionTokenInfo GetSessionTokenInfo(const std::string& token)
 {
-    cpr::Response r = cpr::Get(cpr::Url(authServiceURL +  authTokenPath), cpr::Bearer(token));
+    auto possibleTokenInfo = TOKEN_CACHE.find(token);
+    if(possibleTokenInfo != TOKEN_CACHE.end())
+    {
+        return possibleTokenInfo->second;
+    }
+
+    cpr::Response r = cpr::Get(cpr::Url(authServiceFinalURL), cpr::Bearer(token));
     if(r.status_code == 200)
     {
         crow::json::rvalue body = crow::json::load(r.text); 
-        return SessionTokenInfo(static_cast<uint8_t>(body["permission"].i())
+        SessionTokenInfo temp(static_cast<uint8_t>(body["permission"].i())
                                 , body["subPermission"].s()
                                 , body["uuid"].s());
-        }
+        TOKEN_CACHE[token] = temp;
+        return temp;
+    }
     else
     {
         std::cerr << "auth service returned code: " << r.status_code << '\n';
@@ -69,7 +80,7 @@ void AUTH_MIDDLEWARE::before_handle(crow::request& req, crow::response& res, con
     {
         res.code = 403;
         res.body = "invalid session token";
-        std::cerr << "Session token UUID: " << tokenInfo.GetUUID() << '\n';
+        //std::cerr << "Session token UUID: " << tokenInfo.GetUUID() << '\n';
         res.end();
         return;
     }
